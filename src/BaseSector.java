@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class BaseSector {
     protected int x, y; // координаты верхнего левого угла
@@ -16,6 +17,8 @@ public abstract class BaseSector {
         this.width = frame.getWidth();
         this.height = frame.getHeight();
 
+        Random random = new Random();
+
         StandardCell cell = new StandardCell(0,0);
         for (int in = 0, i = 40; i + 2*cell.r < width; i+=2*cell.r, ++in){
             cells.add(new ArrayList<BaseCell>());
@@ -27,14 +30,22 @@ public abstract class BaseSector {
         for (int in = 0, i = 40; in <= cells.size(); ++in, i+=2*cell.r){
             verticalWalls.add(new ArrayList<StandardVerticalWall>());
             for (int jn = 0, j = 40; jn < cells.get(0).size(); ++jn, j+=2*cell.r){
-                verticalWalls.get(in).add(new StandardVerticalWall(i, j, 2*cell.r));
+                if (random.nextInt(4) == 1) {
+                    verticalWalls.get(in).add(new StandardVerticalWall(i, j, 2*cell.r));
+                }else{
+                    verticalWalls.get(in).add(null);
+                }
             }
         }
 
         for (int in = 0, i = 40; in < cells.size(); ++in, i+=2*cell.r){
             parallelWalls.add(new ArrayList<StandardParallelWall>());
             for (int jn = 0, j = 40; jn <= cells.get(0).size(); ++jn, j+=2*cell.r){
-                parallelWalls.get(in).add(new StandardParallelWall(i, j, 2*cell.r));
+                if (random.nextInt(4) == 1) {
+                    parallelWalls.get(in).add(new StandardParallelWall(i, j, 2*cell.r));
+                }else{
+                    parallelWalls.get(in).add(null);
+                }
             }
         }
     }
@@ -49,13 +60,17 @@ public abstract class BaseSector {
 
         for (ArrayList<StandardVerticalWall> partVerticalWalls : verticalWalls){
             for (StandardVerticalWall verticalWall : partVerticalWalls){
-                verticalWall.paint(g);
+                if (verticalWall != null){
+                    verticalWall.paint(g);
+                }
             }
         }
 
         for (ArrayList<StandardParallelWall> partParallelWalls : parallelWalls){
             for (StandardParallelWall parallelWall : partParallelWalls){
-                parallelWall.paint(g);
+                if (parallelWall != null){
+                    parallelWall.paint(g);
+                }
             }
         }
     }

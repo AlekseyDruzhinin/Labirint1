@@ -7,8 +7,8 @@ public abstract class BaseSector {
     protected int height;
 
     ArrayList<ArrayList<BaseCell>> cells = new ArrayList<>();
-    ArrayList<ArrayList<BaseWall>> verticalWalls = new ArrayList<>();
-    ArrayList<ArrayList<BaseWall>> parallelWalls = new ArrayList<>();
+    ArrayList<ArrayList<StandardVerticalWall>> verticalWalls = new ArrayList<>();
+    ArrayList<ArrayList<StandardParallelWall>> parallelWalls = new ArrayList<>();
 
     public BaseSector(int x, int y, MyFrame frame) {
         this.x = x;
@@ -25,16 +25,16 @@ public abstract class BaseSector {
         }
 
         for (int in = 0, i = 40; in <= cells.size(); ++in, i+=2*cell.r){
-            verticalWalls.add(new ArrayList<BaseWall>());
-            for (int jn = 0, j = 40; jn <= cells.get(in).size(); ++jn, j+=2*cell.r){
+            verticalWalls.add(new ArrayList<StandardVerticalWall>());
+            for (int jn = 0, j = 40; jn < cells.get(0).size(); ++jn, j+=2*cell.r){
                 verticalWalls.get(in).add(new StandardVerticalWall(i, j, 2*cell.r));
             }
         }
 
-        for (int in = 0, i = 40; in <= cells.size(); ++in, i+=2*cell.r){
-            verticalWalls.add(new ArrayList<BaseWall>());
-            for (int jn = 0, j = 40; jn <= cells.get(in).size(); ++jn, j+=2*cell.r){
-                verticalWalls.get(in).add(new StandardVerticalWall(i, j, 2*cell.r));
+        for (int in = 0, i = 40; in < cells.size(); ++in, i+=2*cell.r){
+            parallelWalls.add(new ArrayList<StandardParallelWall>());
+            for (int jn = 0, j = 40; jn <= cells.get(0).size(); ++jn, j+=2*cell.r){
+                parallelWalls.get(in).add(new StandardParallelWall(i, j, 2*cell.r));
             }
         }
     }
@@ -45,7 +45,18 @@ public abstract class BaseSector {
             for (BaseCell cell : partCells){
                 cell.paint(g);
             }
+        }
 
+        for (ArrayList<StandardVerticalWall> partVerticalWalls : verticalWalls){
+            for (StandardVerticalWall verticalWall : partVerticalWalls){
+                verticalWall.paint(g);
+            }
+        }
+
+        for (ArrayList<StandardParallelWall> partParallelWalls : parallelWalls){
+            for (StandardParallelWall parallelWall : partParallelWalls){
+                parallelWall.paint(g);
+            }
         }
     }
 }

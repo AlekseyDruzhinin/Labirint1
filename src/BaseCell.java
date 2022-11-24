@@ -2,7 +2,7 @@ import java.awt.*;
 
 public abstract class BaseCell {
     protected int x, y; // координаты центра
-    protected int r = 40; // радиус клетки
+    protected int r = Constants.R; // радиус клетки
 
     // на вход координаты левого верхнего угла
     public BaseCell(int x, int y) {

@@ -63,8 +63,10 @@ public abstract class BaseSector {
             parallelWalls.get(iy).get(j).flag = true;
         }
 
-        int j2 = random.nextInt(1,parallelWalls.get(iy).size());
-        parallelWalls.get(iy).get(j2).flag = false;
+        for (int i = 0; i < Constants.NUM_GEN_PARALLEL; ++i){
+            int j2 = random.nextInt(1,parallelWalls.get(iy).size());
+            parallelWalls.get(iy).get(j2).flag = false;
+        }
 
         int ix = random.nextInt(width-1)+x+1;
 
@@ -80,10 +82,10 @@ public abstract class BaseSector {
             verticalWalls.get(ix).get(j).flag = true;
         }
 
-        int j1 = random.nextInt(1,(Math.min(j2+1,verticalWalls.get(ix).size())));
-        verticalWalls.get(ix).get(j1).flag = false;
-        j1 = random.nextInt(Math.min(j2,verticalWalls.get(ix).size()-1),verticalWalls.get(ix).size());
-        verticalWalls.get(ix).get(j1).flag = false;
+        for (int i = 0; i < Constants.NUM_GEN_VERTICAL; ++i){
+            int j1 = random.nextInt(1,verticalWalls.get(ix).size());
+            verticalWalls.get(ix).get(j1).flag = false;
+        }
 
         /*if (iy >= parallelWalls.size()){
             return;

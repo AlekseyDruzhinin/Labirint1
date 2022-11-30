@@ -1,8 +1,8 @@
 import java.awt.*;
 
 public class StandardParallelWall extends BaseWall{
-    public StandardParallelWall(int x, int y, int l) {
-        super(x, y, l);
+    public StandardParallelWall(int x, int y, int l, boolean flag) {
+        super(x, y, l, flag);
     }
 
     @Override

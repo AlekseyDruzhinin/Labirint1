@@ -20,9 +20,9 @@ public abstract class BaseSector {
         Random random = new Random();
 
         StandardCell cell = new StandardCell(0,0);
-        for (int in = 0, i = 40; i + 2*cell.r < width; i+=2*cell.r, ++in){
+        for (int in = 0, i = 40; i + 2*cell.r < Constants.LEFT_END; i+=2*cell.r, ++in){
             cells.add(new ArrayList<BaseCell>());
-            for (int jn = 0, j = 40; j + 2*cell.r < height; j+=2*cell.r, ++jn){
+            for (int jn = 0, j = 40; j + 2*cell.r < Constants.DOWN_END; j+=2*cell.r, ++jn){
                 cells.get(in).add(new StandardCell(i, j));
             }
         }

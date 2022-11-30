@@ -53,6 +53,18 @@ public abstract class BaseSector {
             return;
         }
 
+        int iy = random.nextInt(height-1)+y+1;
+
+        for (int j = 1; j < parallelWalls.get(iy).size(); ++j){
+            //verticalWalls.get(ix).get(j) = new StandardVerticalWall(cells.get(ix-1).get(j-1).x+Constants.R, cells.get(ix-1).get(j-1).y - Constants.R, 2*Constants.R);
+            parallelWalls.get(iy).get(j).x = cells.get(j-1).get(iy-1).x - Constants.R;
+            parallelWalls.get(iy).get(j).y = cells.get(j-1).get(iy-1).y - Constants.R;
+            parallelWalls.get(iy).get(j).l = 2*Constants.R;
+            parallelWalls.get(iy).get(j).flag = true;
+        }
+
+        int j2 = random.nextInt(1,parallelWalls.get(iy).size());
+        parallelWalls.get(iy).get(j2).flag = false;
 
         int ix = random.nextInt(width-1)+x+1;
 
@@ -68,25 +80,15 @@ public abstract class BaseSector {
             verticalWalls.get(ix).get(j).flag = true;
         }
 
-        int j1 = random.nextInt(1,verticalWalls.get(ix).size());
+        int j1 = random.nextInt(1,(Math.min(j2+1,verticalWalls.get(ix).size())));
         verticalWalls.get(ix).get(j1).flag = false;
-
-        int iy = random.nextInt(height-1)+y+1;
+        j1 = random.nextInt(Math.min(j2,verticalWalls.get(ix).size()-1),verticalWalls.get(ix).size());
+        verticalWalls.get(ix).get(j1).flag = false;
 
         /*if (iy >= parallelWalls.size()){
             return;
         }*/
 
-        for (int j = 1; j < parallelWalls.get(iy).size(); ++j){
-            //verticalWalls.get(ix).get(j) = new StandardVerticalWall(cells.get(ix-1).get(j-1).x+Constants.R, cells.get(ix-1).get(j-1).y - Constants.R, 2*Constants.R);
-            parallelWalls.get(iy).get(j).x = cells.get(j-1).get(iy-1).x - Constants.R;
-            parallelWalls.get(iy).get(j).y = cells.get(j-1).get(iy-1).y - Constants.R;
-            parallelWalls.get(iy).get(j).l = 2*Constants.R;
-            parallelWalls.get(iy).get(j).flag = true;
-        }
-
-        int j2 = random.nextInt(1,parallelWalls.get(iy).size());
-        parallelWalls.get(iy).get(j2).flag = false;
 
         randomGenerate(x, y, iy - y, ix - x );
         randomGenerate(ix, y, iy - y,width-(ix-x));

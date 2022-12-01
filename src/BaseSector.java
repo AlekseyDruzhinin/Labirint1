@@ -17,7 +17,7 @@ public abstract class BaseSector {
         this.width = frame.getWidth();
         this.height = frame.getHeight();
 
-        Random random = new Random();
+        Random random = new Random(654654);
 
         StandardCell cell = new StandardCell(0,0);
         for (int in = 0, i = 40; i + 2*cell.r < frame.getWidth(); i+=2*cell.r, ++in){
@@ -44,11 +44,11 @@ public abstract class BaseSector {
             }
         }
 
-        randomGenerate(0, 0, size_height, size_wight );
+
 
     }
 
-    private void randomGenerate(int x, int y, int height, int width){
+    public void randomGenerate(int x, int y, int height, int width, Graphics g) throws InterruptedException {
         if (height <= 1 || width <= 1){
             return;
         }
@@ -119,17 +119,19 @@ public abstract class BaseSector {
         if (number!=0){
             verticalWalls.get(ix).get(j1).flag = false;
         }
-        number--;
+        //number--;
 
         /*if (iy >= parallelWalls.size()){
             return;
         }*/
 
+        paint(g);
+        Thread.sleep(3000);
 
-        randomGenerate(x, y, iy - y, ix - x );
-        randomGenerate(ix, y, iy - y,width-(ix-x));
-        randomGenerate(x, iy, height-(iy-y),ix - x );
-        randomGenerate(ix, iy, height-(iy-y), width-(ix-x) );
+        randomGenerate(x, y, iy - y, ix - x, g );
+        randomGenerate(ix, y, iy - y,width-(ix-x), g);
+        randomGenerate(x, iy, height-(iy-y),ix - x, g);
+        randomGenerate(ix, iy, height-(iy-y), width-(ix-x), g);
     }
 
     // не учитывая положения сектора на плоскости

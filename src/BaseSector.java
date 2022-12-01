@@ -6,7 +6,7 @@ public abstract class BaseSector {
     protected int x, y; // координаты верхнего левого угла
     protected int width;
     protected int height;
-    Random random = new Random(645456);
+    Random random = new Random();
     ArrayList<ArrayList<BaseCell>> cells = new ArrayList<>();
     ArrayList<ArrayList<StandardVerticalWall>> verticalWalls = new ArrayList<>();
     ArrayList<ArrayList<StandardParallelWall>> parallelWalls = new ArrayList<>();
@@ -20,9 +20,9 @@ public abstract class BaseSector {
         Random random = new Random();
 
         StandardCell cell = new StandardCell(0,0);
-        for (int in = 0, i = 40; i + 2*cell.r < Constants.LEFT_END; i+=2*cell.r, ++in){
+        for (int in = 0, i = 40; i + 2*cell.r < frame.getWidth(); i+=2*cell.r, ++in){
             cells.add(new ArrayList<BaseCell>());
-            for (int jn = 0, j = 40; j + 2*cell.r < Constants.DOWN_END; j+=2*cell.r, ++jn){
+            for (int jn = 0, j = 40; j + 2*cell.r < frame.getHeight(); j+=2*cell.r, ++jn){
                 cells.get(in).add(new StandardCell(i, j));
             }
         }
@@ -53,9 +53,12 @@ public abstract class BaseSector {
             return;
         }
 
-        int iy = random.nextInt(height-1)+y+1;
+        int number = random.nextInt(0, 4);
 
-        for (int j = 1; j < parallelWalls.get(iy).size(); ++j){
+        int iy = random.nextInt(height-1)+y+1;
+        int ix = random.nextInt(width-1)+x+1;
+
+        for (int j = x+1; j < x+width+1; ++j){
             //verticalWalls.get(ix).get(j) = new StandardVerticalWall(cells.get(ix-1).get(j-1).x+Constants.R, cells.get(ix-1).get(j-1).y - Constants.R, 2*Constants.R);
             parallelWalls.get(iy).get(j).x = cells.get(j-1).get(iy-1).x - Constants.R;
             parallelWalls.get(iy).get(j).y = cells.get(j-1).get(iy-1).y - Constants.R;
@@ -63,18 +66,34 @@ public abstract class BaseSector {
             parallelWalls.get(iy).get(j).flag = true;
         }
 
-        for (int i = 0; i < Constants.NUM_GEN_PARALLEL; ++i){
-            int j2 = random.nextInt(1,parallelWalls.get(iy).size());
+
+        int j2;
+        if (ix-x-1<=1){
+            j2 = x;
+        }else {
+            j2 = random.nextInt(1,ix-x)+x;
+        }
+        if (number!=0){
             parallelWalls.get(iy).get(j2).flag = false;
         }
+        number--;
+        if (width-1-ix+x <= 1){
+            j2 = ix -x;
+        }else{
+            j2 = random.nextInt(ix-x,width-1)+x;
+        }
+        if (number!=0){
+            parallelWalls.get(iy).get(j2).flag = false;
+        }
+        number--;
 
-        int ix = random.nextInt(width-1)+x+1;
+
 
         /*if (ix >= verticalWalls.size()){
             return;
         }*/
 
-        for (int j = 1; j < verticalWalls.get(ix).size(); ++j){
+        for (int j = y+1; j < y+height+1; ++j){
             //verticalWalls.get(ix).get(j) = new StandardVerticalWall(cells.get(ix-1).get(j-1).x+Constants.R, cells.get(ix-1).get(j-1).y - Constants.R, 2*Constants.R);
             verticalWalls.get(ix).get(j).x = cells.get(ix-1).get(j-1).x+Constants.R;
             verticalWalls.get(ix).get(j).y = cells.get(ix-1).get(j-1).y - Constants.R;
@@ -82,10 +101,25 @@ public abstract class BaseSector {
             verticalWalls.get(ix).get(j).flag = true;
         }
 
-        for (int i = 0; i < Constants.NUM_GEN_VERTICAL; ++i){
-            int j1 = random.nextInt(1,verticalWalls.get(ix).size());
+        int j1;
+        if (iy-y-1<=1){
+            j1 = y;
+        }else {
+            j1 = random.nextInt(1,iy-y)+y;
+        }
+        if (number!=0){
             verticalWalls.get(ix).get(j1).flag = false;
         }
+        number--;
+        if (height-1-iy+y <= 1){
+            j1 = iy -y;
+        }else{
+            j1 = random.nextInt(iy-y,height-1)+y;
+        }
+        if (number!=0){
+            verticalWalls.get(ix).get(j1).flag = false;
+        }
+        number--;
 
         /*if (iy >= parallelWalls.size()){
             return;

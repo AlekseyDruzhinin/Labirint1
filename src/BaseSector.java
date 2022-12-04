@@ -8,7 +8,7 @@ public abstract class BaseSector {
     int cnt = 0;
     protected int width;
     protected int height;
-    Random random = new Random(564564);
+    Random random = new Random();
     ArrayList<ArrayList<BaseCell>> cells = new ArrayList<>();
     ArrayList<ArrayList<StandardVerticalWall>> verticalWalls = new ArrayList<>();
     ArrayList<ArrayList<StandardParallelWall>> parallelWalls = new ArrayList<>();
@@ -44,12 +44,13 @@ public abstract class BaseSector {
             }
         }
 
-
+        randomGenerate(0, 0, size_height, size_wight);
 
     }
 
-    public void randomGenerate(int x, int y, int height, int width, Graphics g) throws InterruptedException {
-        int randomNumber = random.nextInt(4);
+    public void randomGenerate(int x, int y, int height, int width) {
+        //int randomNumber = random.nextInt(4);
+        int randomNumber = 1;
 
         if (height <= 1 || width <= 1){
             return;
@@ -103,13 +104,10 @@ public abstract class BaseSector {
         }
 
 
-        paint(g);
-        Thread.sleep(1000);
-
-        randomGenerate(x, y, iy - y, ix - x, g );
-        randomGenerate(ix, y, iy - y,width-(ix-x), g);
-        randomGenerate(x, iy, height-(iy-y),ix - x, g);
-        randomGenerate(ix, iy, height-(iy-y), width-(ix-x), g);
+        randomGenerate(x, y, iy - y, ix - x);
+        randomGenerate(ix, y, iy - y,width-(ix-x));
+        randomGenerate(x, iy, height-(iy-y),ix - x);
+        randomGenerate(ix, iy, height-(iy-y), width-(ix-x));
     }
 
     // не учитывая положения сектора на плоскости

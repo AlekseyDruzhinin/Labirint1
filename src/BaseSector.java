@@ -4,6 +4,8 @@ import java.util.Random;
 
 public abstract class BaseSector {
     protected int x, y; // координаты верхнего левого угла
+
+    int cnt = 0;
     protected int width;
     protected int height;
     Random random = new Random(564564);
@@ -47,10 +49,12 @@ public abstract class BaseSector {
     }
 
     public void randomGenerate(int x, int y, int height, int width, Graphics g) throws InterruptedException {
+        int randomNumber = random.nextInt(4);
+
         if (height <= 1 || width <= 1){
             return;
         }
-
+        cnt++;
         int number = random.nextInt(0, 4);
 
         int iy = random.nextInt(height-1)+y+1;
@@ -68,7 +72,17 @@ public abstract class BaseSector {
 
 
         int j1;
-        j1 = random.nextInt(                                                                               );
+        if (randomNumber != 0){
+            j1 = random.nextInt(ix-x)+x+1;
+            parallelWalls.get(iy).get(j1).flag = false;
+        }
+
+        if (randomNumber != 0){
+            j1 = random.nextInt(ix-x, width)+x+1;
+            parallelWalls.get(iy).get(j1).flag = false;
+        }
+
+
 
         for (int j = y+1; j < y+height+1; ++j){
             //verticalWalls.get(ix).get(j) = new StandardVerticalWall(cells.get(ix-1).get(j-1).x+Constants.R, cells.get(ix-1).get(j-1).y - Constants.R, 2*Constants.R);
@@ -78,6 +92,15 @@ public abstract class BaseSector {
             verticalWalls.get(ix).get(j).flag = true;
         }
 
+        if (randomNumber != 0){
+            j1 = random.nextInt(iy-y)+y+1;
+            verticalWalls.get(ix).get(j1).flag = false;
+        }
+
+        if (randomNumber != 0){
+            j1 = random.nextInt(iy-y, height)+y+1;
+            verticalWalls.get(ix).get(j1).flag = false;
+        }
 
 
         paint(g);

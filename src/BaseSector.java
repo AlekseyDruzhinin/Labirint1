@@ -61,7 +61,7 @@ public abstract class BaseSector {
         int iy = random.nextInt(height-1)+y+1;
         int ix = random.nextInt(width-1)+x+1;
 
-        System.out.println(height-1);
+        //System.out.println(height-1);
 
         for (int j = x+1; j < x+width+1; ++j){
             //verticalWalls.get(ix).get(j) = new StandardVerticalWall(cells.get(ix-1).get(j-1).x+Constants.R, cells.get(ix-1).get(j-1).y - Constants.R, 2*Constants.R);

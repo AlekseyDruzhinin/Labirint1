@@ -40,7 +40,7 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
             sector.paint(g);
         }
         if (userHuman != null){
-            userHuman.go();
+            userHuman.go(sector);
             userHuman.paint(g);
         }
 
@@ -51,6 +51,10 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
     @Override
     public boolean dispatchKeyEvent(KeyEvent e) {
         if (e.getID() == KeyEvent.KEY_PRESSED){
+            if (e.getKeyChar() == 'p'){
+                userHuman.flagChit = !userHuman.flagChit;
+            }
+
             if (e.getKeyChar() == 's'){
                 userHuman.flagDown = true;
             }
@@ -78,6 +82,7 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
             if (e.getKeyChar() == 'd'){
                 userHuman.flagRight = false;
             }
+
         }
         return false;
     }

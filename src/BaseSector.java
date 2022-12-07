@@ -10,7 +10,7 @@ public abstract class BaseSector {
     protected int height;
     Random random = new Random();
     ArrayList<ArrayList<BaseCell>> cells = new ArrayList<>();
-    ArrayList<ArrayList<StandardVerticalWall>> verticalWalls = new ArrayList<>();
+    ArrayList<ArrayList<StandardVerticalWall>> verticalWalls = new ArrayList<>(); // нумерация второго ряда с 1
     ArrayList<ArrayList<StandardParallelWall>> parallelWalls = new ArrayList<>();
 
     public BaseSector(int x, int y, MyFrame frame) {
@@ -46,6 +46,33 @@ public abstract class BaseSector {
 
         randomGenerate(0, 0, size_height, size_wight);
 
+        for (int j = 1; j < parallelWalls.get(0).size(); ++j){
+            parallelWalls.get(0).get(j).flag = true;
+            parallelWalls.get(0).get(j).y = y;
+            parallelWalls.get(0).get(j).x = x + (j-1) * 2 * Constants.R;
+            parallelWalls.get(0).get(j).l = Constants.R * 2;
+        }
+
+        for (int j = 1; j < parallelWalls.get(parallelWalls.size()-1).size(); ++j){
+            parallelWalls.get(parallelWalls.size()-1).get(j).flag = true;
+            parallelWalls.get(parallelWalls.size()-1).get(j).y = cells.get(0).get(cells.get(0).size()-1).y+Constants.R;
+            parallelWalls.get(parallelWalls.size()-1).get(j).x = x + (j-1) * 2 * Constants.R;
+            parallelWalls.get(parallelWalls.size()-1).get(j).l = Constants.R * 2;
+        }
+
+        for (int j = 1; j < verticalWalls.get(0).size(); ++j){
+            verticalWalls.get(0).get(j).flag = true;
+            verticalWalls.get(0).get(j).x = x;
+            verticalWalls.get(0).get(j).y = y + (j-1) * 2 * Constants.R;
+            verticalWalls.get(0).get(j).l = Constants.R * 2;
+        }
+
+        for (int j = 1; j < verticalWalls.get(verticalWalls.size()-1).size(); ++j){
+            verticalWalls.get(verticalWalls.size()-1).get(j).flag = true;
+            verticalWalls.get(verticalWalls.size()-1).get(j).x = cells.get(cells.size()-1).get(0).x+Constants.R;
+            verticalWalls.get(verticalWalls.size()-1).get(j).y = x + (j-1) * 2 * Constants.R;
+            verticalWalls.get(verticalWalls.size()-1).get(j).l = Constants.R * 2;
+        }
     }
 
     public void randomGenerate(int x, int y, int height, int width) {

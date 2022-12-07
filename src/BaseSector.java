@@ -20,9 +20,9 @@ public abstract class BaseSector {
         this.height = frame.getHeight();
 
         StandardCell cell = new StandardCell(0,0);
-        for (int in = 0, i = 40; i + 2*cell.r < frame.getWidth(); i+=2*cell.r, ++in){
+        for (int in = 0, i = Constants.SDVIG; i + 2*cell.r < frame.getWidth(); i+=2*cell.r, ++in){
             cells.add(new ArrayList<BaseCell>());
-            for (int jn = 0, j = 40; j + 2*cell.r < frame.getHeight(); j+=2*cell.r, ++jn){
+            for (int jn = 0, j = Constants.SDVIG; j + 2*cell.r < frame.getHeight(); j+=2*cell.r, ++jn){
                 cells.get(in).add(new StandardCell(i, j));
             }
         }

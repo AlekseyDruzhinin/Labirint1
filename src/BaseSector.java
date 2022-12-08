@@ -8,7 +8,7 @@ public abstract class BaseSector {
     int cnt = 0;
     protected int width;
     protected int height;
-    Random random = new Random();
+    Random random = new Random(Constants.SEED);
     ArrayList<ArrayList<BaseCell>> cells = new ArrayList<>();
     ArrayList<ArrayList<StandardVerticalWall>> verticalWalls = new ArrayList<>(); // нумерация второго ряда с 1
     ArrayList<ArrayList<StandardParallelWall>> parallelWalls = new ArrayList<>();

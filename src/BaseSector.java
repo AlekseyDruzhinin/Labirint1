@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class BaseSector {
-    protected int x, y; // координаты верхнего левого угла
+    protected double x, y; // координаты верхнего левого угла
 
     int cnt = 0;
     protected int width;
@@ -13,7 +13,7 @@ public abstract class BaseSector {
     ArrayList<ArrayList<StandardVerticalWall>> verticalWalls = new ArrayList<>(); // нумерация второго ряда с 1
     ArrayList<ArrayList<StandardParallelWall>> parallelWalls = new ArrayList<>();
 
-    public BaseSector(int x, int y, MyFrame frame) {
+    public BaseSector(double x, double y, MyFrame frame) {
         this.x = x;
         this.y = y;
         this.width = frame.getWidth();
@@ -157,6 +157,31 @@ public abstract class BaseSector {
             for (StandardParallelWall parallelWall : partParallelWalls){
                 if (parallelWall.flag){
                     parallelWall.paint(g);
+                }
+            }
+        }
+    }
+
+    public void go(double v){
+        x += v;
+        for (ArrayList<BaseCell> partCells : cells){
+            for (BaseCell cell : partCells){
+                cell.x += v;
+            }
+        }
+
+        for (ArrayList<StandardVerticalWall> partVerticalWalls : verticalWalls){
+            for (StandardVerticalWall verticalWall : partVerticalWalls){
+                if (verticalWall.flag){
+                    verticalWall.x += v;
+                }
+            }
+        }
+
+        for (ArrayList<StandardParallelWall> partParallelWalls : parallelWalls){
+            for (StandardParallelWall parallelWall : partParallelWalls){
+                if (parallelWall.flag){
+                    parallelWall.x += v;
                 }
             }
         }

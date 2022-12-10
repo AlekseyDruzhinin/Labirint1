@@ -1,6 +1,6 @@
 public class StandardCell extends BaseCell{
 
-    public StandardCell(int x, int y) {
+    public StandardCell(double x, double y) {
         super(x, y);
     }
 }

@@ -1,11 +1,11 @@
 import java.awt.*;
 
 public abstract class BaseWall {
-    public int x, y; // координаты левого верхнего угла
+    public double x, y; // координаты левого верхнего угла
     public int l; // длинна стены (2r клетки);
     public boolean flag;
 
-    public BaseWall(int x, int y, int l, boolean flag) {
+    public BaseWall(double x, double y, int l, boolean flag) {
         this.x = x;
         this.y = y;
         this.l = l;

@@ -34,6 +34,9 @@ public abstract class Human {
     }
 
     public void go(Labirint labirint){
+        if (indexSector >= labirint.sectors.size()-1){
+            labirint.addSector();
+        }
         BaseSector sector = labirint.sectors.get(indexSector);
         if (i >= sector.cells.size()/2-2){
             flagGoSector = true;

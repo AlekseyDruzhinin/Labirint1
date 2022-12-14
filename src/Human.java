@@ -3,6 +3,7 @@ import java.awt.*;
 public abstract class Human {
     double x, y; // координаты центра
     int i, j; // координаты ячейки
+    int indexSector = 0; // номер сектора
 
     boolean flagGoSector = false;
 
@@ -33,15 +34,16 @@ public abstract class Human {
     }
 
     public void go(Labirint labirint){
-        BaseSector sector = labirint.sectors.get(0);
+        BaseSector sector = labirint.sectors.get(indexSector);
         if (i >= sector.cells.size()/2-2){
             flagGoSector = true;
         }
 
         if (!flagGoSector){
+            //переход по ячейкам
             if (flagDown) {
                 y += v;
-                if (y > sector.cells.get(i).get(j).y + Constants.R){
+                if (y > sector.cells.get(i).get(j).y + Constants.R) {
                     j++;
                 }
             }
@@ -53,17 +55,18 @@ public abstract class Human {
             }
             if (flagLeft) {
                 x -= v;
-                if (x < sector.cells.get(i).get(j).x - Constants.R){
+                if (x < sector.cells.get(i).get(j).x - Constants.R) {
                     i--;
                 }
             }
             if (flagRight) {
                 x += v;
-                if (x > sector.cells.get(i).get(j).x + Constants.R){
+                if (x > sector.cells.get(i).get(j).x + Constants.R) {
                     i++;
                 }
             }
 
+            //удары о стенки
             if (!flagChit){
                 //ячейка в которой мы
                 while (j+1 < sector.parallelWalls.size() && i+1 < sector.parallelWalls.get(j+1).size() && y+Constants.R/2 > sector.parallelWalls.get(j+1).get(i+1).y && sector.parallelWalls.get(j+1).get(i+1).flag){
@@ -138,11 +141,21 @@ public abstract class Human {
                 if (x < sector.cells.get(i).get(j).x - Constants.R){
                     i--;
                 }
+                if (i < 0){
+                    i = sector.cells.size()-1;
+                    --indexSector;
+                    sector = labirint.sectors.get(indexSector);
+                }
             }
             if (flagRight) {
                 labirint.go(-v);
                 if (x > sector.cells.get(i).get(j).x + Constants.R){
                     i++;
+                }
+                if (i >= sector.cells.size()){
+                    i = 0;
+                    ++indexSector;
+                    sector = labirint.sectors.get(indexSector);
                 }
             }
 

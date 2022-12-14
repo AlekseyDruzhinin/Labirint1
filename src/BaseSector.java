@@ -80,7 +80,7 @@ public abstract class BaseSector {
         for (int j = 1; j < verticalWalls.get(verticalWalls.size()-1).size(); ++j){
             verticalWalls.get(verticalWalls.size()-1).get(j).flag = true;
             verticalWalls.get(verticalWalls.size()-1).get(j).x = cells.get(cells.size()-1).get(0).x+Constants.R;
-            verticalWalls.get(verticalWalls.size()-1).get(j).y = x + (j-1) * 2 * Constants.R;
+            verticalWalls.get(verticalWalls.size()-1).get(j).y = y + (j-1) * 2 * Constants.R;
             verticalWalls.get(verticalWalls.size()-1).get(j).l = Constants.R * 2;
         }
     }
@@ -147,7 +147,6 @@ public abstract class BaseSector {
         randomGenerate(ix, iy, height-(iy-y), width-(ix-x));
     }
 
-    // не учитывая положения сектора на плоскости
     public void paint(Graphics g){
         for (ArrayList<BaseCell> partCells : cells){
             for (BaseCell cell : partCells){
@@ -182,17 +181,13 @@ public abstract class BaseSector {
 
         for (ArrayList<StandardVerticalWall> partVerticalWalls : verticalWalls){
             for (StandardVerticalWall verticalWall : partVerticalWalls){
-                if (verticalWall.flag){
-                    verticalWall.x += v;
-                }
+                verticalWall.x += v;
             }
         }
 
         for (ArrayList<StandardParallelWall> partParallelWalls : parallelWalls){
             for (StandardParallelWall parallelWall : partParallelWalls){
-                if (parallelWall.flag){
-                    parallelWall.x += v;
-                }
+                parallelWall.x += v;
             }
         }
     }

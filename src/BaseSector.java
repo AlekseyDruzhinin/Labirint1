@@ -8,7 +8,9 @@ public abstract class BaseSector {
     int cnt = 0;
     protected int width;
     protected int height;
-    Random random = new Random(Constants.SEED);
+    int widthCnt;
+    int heightCnt;
+    Random random = new Random();
     ArrayList<ArrayList<BaseCell>> cells = new ArrayList<>();
     ArrayList<ArrayList<StandardVerticalWall>> verticalWalls = new ArrayList<>(); // нумерация второго ряда с 1
     ArrayList<ArrayList<StandardParallelWall>> parallelWalls = new ArrayList<>();
@@ -20,12 +22,20 @@ public abstract class BaseSector {
         this.height = frame.getHeight();
 
         StandardCell cell = new StandardCell(0,0);
-        for (int in = 0, i = Constants.SDVIG; i + 2*cell.r < frame.getWidth(); i+=2*cell.r, ++in){
-            cells.add(new ArrayList<BaseCell>());
-            for (int jn = 0, j = Constants.SDVIG; j + 2*cell.r < frame.getHeight(); j+=2*cell.r, ++jn){
-                cells.get(in).add(new StandardCell(i, j));
+        {
+            double i = this.x;
+            for (int in = 0; i + 2*cell.r < frame.getWidth()+x; i+=Constants.R*2.0, ++in){
+                cells.add(new ArrayList<BaseCell>());
+                double j = this.y;
+                for (int jn = 0; j + 2*cell.r < frame.getHeight(); j+=Constants.R*2.0, ++jn){
+                    cells.get(in).add(new StandardCell(i, j));
+                }
             }
         }
+
+
+        this.widthCnt = cells.size();
+        this.heightCnt = cells.get(0).size();
 
         int size_wight = cells.size();
         int size_height = cells.get(0).size();

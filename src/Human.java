@@ -32,7 +32,8 @@ public abstract class Human {
         }
     }
 
-    public void go(BaseSector sector){
+    public void go(Labirint labirint){
+        BaseSector sector = labirint.sectors.get(0);
         if (i >= sector.cells.size()/2-2){
             flagGoSector = true;
         }
@@ -133,13 +134,13 @@ public abstract class Human {
                 }
             }
             if (flagLeft) {
-                sector.go(v);
+                labirint.go(v);
                 if (x < sector.cells.get(i).get(j).x - Constants.R){
                     i--;
                 }
             }
             if (flagRight) {
-                sector.go(-v);
+                labirint.go(-v);
                 if (x > sector.cells.get(i).get(j).x + Constants.R){
                     i++;
                 }
@@ -154,29 +155,29 @@ public abstract class Human {
                     y += v;
                 }
                 while (i < sector.verticalWalls.size() && j+1 < sector.verticalWalls.get(i).size() && x-Constants.R/2 < sector.verticalWalls.get(i).get(j+1).x && sector.verticalWalls.get(i).get(j+1).flag){
-                    sector.go(-v);
+                    labirint.go(-v);
                 }
                 while (i+1 < sector.verticalWalls.size() && j+1 < sector.verticalWalls.get(i+1).size() && x+Constants.R/2 > sector.verticalWalls.get(i+1).get(j+1).x && sector.verticalWalls.get(i+1).get(j+1).flag){
-                    sector.go(v);
+                    labirint.go(v);
                 }
 
                 //ячейка слева
                 while (j+1 < sector.parallelWalls.size() && i < sector.parallelWalls.get(j+1).size() && sector.parallelWalls.get(j+1).get(i).flag && x-Constants.R/2 < sector.parallelWalls.get(j+1).get(i).x + sector.parallelWalls.get(j+1).get(i).l && y+Constants.R/2 > sector.parallelWalls.get(j+1).get(i).y){
-                    sector.go(-v);
+                    labirint.go(-v);
                     y -= v;
                 }
                 while (j < sector.parallelWalls.size() && i < sector.parallelWalls.get(j).size() && sector.parallelWalls.get(j).get(i).flag && x-Constants.R/2 < sector.parallelWalls.get(j).get(i).x + sector.parallelWalls.get(j).get(i).l && y-Constants.R/2 < sector.parallelWalls.get(j).get(i).y){
-                    sector.go(-v);
+                    labirint.go(-v);
                     y += v;
                 }
 
                 //ячейка справа
                 while (j+1 < sector.parallelWalls.size() && i+2 < sector.parallelWalls.get(j+1).size() && sector.parallelWalls.get(j+1).get(i+2).flag && x+Constants.R/2 > sector.parallelWalls.get(j+1).get(i+2).x && y+Constants.R/2 > sector.parallelWalls.get(j+1).get(i+2).y){
-                    sector.go(v);
+                    labirint.go(v);
                     y -= v;
                 }
                 while (j < sector.parallelWalls.size() && i+2 < sector.parallelWalls.get(j).size() && sector.parallelWalls.get(j).get(i+2).flag && x+Constants.R/2 > sector.parallelWalls.get(j).get(i+2).x && y-Constants.R/2 < sector.parallelWalls.get(j).get(i+2).y){
-                    sector.go(v);
+                    labirint.go(v);
                     y += v;
                 }
 
@@ -184,21 +185,21 @@ public abstract class Human {
                 //ячейка сверху
                 while (i+1 < sector.verticalWalls.size() && j < sector.verticalWalls.get(i+1).size() && sector.verticalWalls.get(i+1).get(j).flag && y-Constants.R/2 < sector.verticalWalls.get(i+1).get(j).y + sector.verticalWalls.get(i).get(j).l && x+Constants.R/2 > sector.verticalWalls.get(i+1).get(j).x){
                     y += v;
-                    sector.go(v);
+                    labirint.go(v);
                 }
                 while (i < sector.verticalWalls.size() && j < sector.verticalWalls.get(i).size() && sector.verticalWalls.get(i).get(j).flag && y-Constants.R/2 < sector.verticalWalls.get(i).get(j).y + sector.verticalWalls.get(i).get(j).l && x-Constants.R/2 < sector.verticalWalls.get(i).get(j).x){
                     y += v;
-                    sector.go(-v);
+                    labirint.go(-v);
                 }
 
                 //ячейка снизу
                 while (i+1 < sector.verticalWalls.size() && j+2 < sector.verticalWalls.get(i+1).size() && sector.verticalWalls.get(i+1).get(j+2).flag && y+Constants.R/2 > sector.verticalWalls.get(i+1).get(j+2).y && x+Constants.R/2 > sector.verticalWalls.get(i+1).get(j+2).x){
                     y -= v;
-                    sector.go(v);
+                    labirint.go(v);
                 }
                 while (i < sector.verticalWalls.size() && j+2 < sector.verticalWalls.get(i).size() && sector.verticalWalls.get(i).get(j+2).flag && y+Constants.R/2 > sector.verticalWalls.get(i).get(j+2).y && x-Constants.R/2 < sector.verticalWalls.get(i).get(j+2).x){
                     y -= v;
-                    sector.go(-v);
+                    labirint.go(-v);
                 }
             }
         }

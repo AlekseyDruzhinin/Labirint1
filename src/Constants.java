@@ -13,4 +13,6 @@ public class Constants {
 
     public static int NUM_GEN_PARALLEL = 20 ;
     public static int NUM_GEN_VERTICAL = 20;
+
+    public static double V_POLE;
 }

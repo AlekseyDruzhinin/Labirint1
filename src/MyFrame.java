@@ -27,6 +27,7 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
         //System.out.println(sector.cells.get(0).size() +" " + sector.cells.get(0).get(0).r);
         userHuman = new UserHuman(Constants.SDVIG+Constants.R, Constants.SDVIG+Constants.R, 0, 0);
         //System.out.println(userHuman.x + " " + userHuman.y);
+        Constants.V_POLE = Constants.V_NORMAL/2.0;
     }
 
     @Override

@@ -14,12 +14,14 @@ public abstract class BaseSector {
     ArrayList<ArrayList<BaseCell>> cells = new ArrayList<>();
     ArrayList<ArrayList<StandardVerticalWall>> verticalWalls = new ArrayList<>(); // нумерация второго ряда с 1
     ArrayList<ArrayList<StandardParallelWall>> parallelWalls = new ArrayList<>();
+    double rightBound;
 
     public BaseSector(double x, double y, MyFrame frame) {
         this.x = x;
         this.y = y;
         this.width = frame.getWidth();
         this.height = frame.getHeight();
+        this.rightBound = this.x;
 
         StandardCell cell = new StandardCell(0,0);
         {
@@ -148,6 +150,9 @@ public abstract class BaseSector {
     }
 
     public void paint(Graphics g){
+        g.setColor(new Color(5, 5, 5));
+        g.fillRect((int)this.x, (int)this.y, (int)this.rightBound, cells.get(0).size()*Constants.R*2);
+
         for (ArrayList<BaseCell> partCells : cells){
             for (BaseCell cell : partCells){
                 cell.paint(g);

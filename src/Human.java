@@ -7,7 +7,7 @@ public abstract class Human {
 
     boolean flagGoSector = false;
 
-    double v = Constants.V_NORMAL; // скорость
+    double vHuman = Constants.V_NORMAL; // скорость
 
     boolean flagDown = false, flagUp = false, flagLeft = false, flagRight = false;
 
@@ -33,7 +33,8 @@ public abstract class Human {
         }
     }
 
-    public void go(Labirint labirint){
+    public void go(Labirint labirint, long time){
+        double v = (double)time * vHuman;
         if (indexSector >= labirint.sectors.size()-1){
             labirint.addSector();
         }

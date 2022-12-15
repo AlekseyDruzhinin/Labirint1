@@ -9,7 +9,7 @@ public class Constants {
     public static int SEED = 5254;
 
     public static double V_NORMAL;
-    public static double V_NORMAL_1 = 1000;
+    public static double V_NORMAL_1 = 3000;
 
     public static int NUM_GEN_PARALLEL = 20 ;
     public static int NUM_GEN_VERTICAL = 20;

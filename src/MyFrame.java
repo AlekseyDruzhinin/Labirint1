@@ -2,12 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
+import java.sql.Date;
 import java.util.ArrayList;
 
 public class MyFrame extends JFrame implements  KeyEventDispatcher{
     Labirint labirint;
     UserHuman userHuman;
+    long timePriviosPrint;
+
     public MyFrame() {
+        timePriviosPrint = System.currentTimeMillis();
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(this);
 
@@ -23,11 +27,12 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
         //System.out.println(sector.cells.get(0).size() +" " + sector.cells.get(0).get(0).r);
         userHuman = new UserHuman(Constants.SDVIG+Constants.R, Constants.SDVIG+Constants.R, 0, 0);
         //System.out.println(userHuman.x + " " + userHuman.y);
-
     }
 
     @Override
     public void paint(Graphics g) {
+        long nowTime = System.currentTimeMillis();
+        System.out.println(nowTime + " " + (nowTime - timePriviosPrint) + " " + Constants.V_NORMAL);
         BufferStrategy bufferStrategy = getBufferStrategy();
         if (bufferStrategy == null) {
             createBufferStrategy(2);
@@ -40,9 +45,11 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
             labirint.paint(g);
         }
         if (userHuman != null){
-            userHuman.go(labirint);
+            userHuman.go(labirint, nowTime - timePriviosPrint);
             userHuman.paint(g);
         }
+
+        timePriviosPrint = nowTime;
 
         g.dispose();
         bufferStrategy.show();
@@ -66,6 +73,17 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
             }
             if (e.getKeyChar() == 'd'){
                 userHuman.flagRight = true;
+            }
+
+            if (e.getKeyChar() == '+'){
+                Constants.V_NORMAL_1 -= 100;
+                Constants.V_NORMAL = (double) getHeight() / (double) Constants.V_NORMAL_1;
+                userHuman.vHuman = Constants.V_NORMAL;
+            }
+            if (e.getKeyChar() == '-'){
+                Constants.V_NORMAL_1 += 100;
+                Constants.V_NORMAL = (double) getHeight() / (double) Constants.V_NORMAL_1;
+                userHuman.vHuman = Constants.V_NORMAL;
             }
         }
 

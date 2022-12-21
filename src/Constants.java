@@ -15,4 +15,17 @@ public class Constants {
     public static int NUM_GEN_VERTICAL = 20;
 
     public static double V_POLE;
+    // скорость заполнения квадратиком
+
+    //10.0
+    public static  double V_POLE_1 = 10.0;
+
+    //время запуска программы
+    public  static long TIME_START_PROGRAM;
+
+    //время до начала разрушения лабиринта 5000
+    public static long TIME_TO_DIED_LABIRINT = 1000;
+
+    //умер ли персоонаж
+    public static boolean USER_DIED = false;
 }

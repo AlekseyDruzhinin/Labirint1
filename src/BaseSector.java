@@ -10,18 +10,19 @@ public abstract class BaseSector {
     protected int height;
     int widthCnt;
     int heightCnt;
+
+    boolean iAmDied = false;
     Random random = new Random();
     ArrayList<ArrayList<BaseCell>> cells = new ArrayList<>();
     ArrayList<ArrayList<StandardVerticalWall>> verticalWalls = new ArrayList<>(); // нумерация второго ряда с 1
     ArrayList<ArrayList<StandardParallelWall>> parallelWalls = new ArrayList<>();
-    double rightBound;
+    double rightBound = 0.0;
 
     public BaseSector(double x, double y, MyFrame frame) {
         this.x = x;
         this.y = y;
         this.width = frame.getWidth();
         this.height = frame.getHeight();
-        this.rightBound = this.x;
 
         StandardCell cell = new StandardCell(0,0);
         {
@@ -150,8 +151,6 @@ public abstract class BaseSector {
     }
 
     public void paint(Graphics g){
-        g.setColor(new Color(5, 5, 5));
-        g.fillRect((int)this.x, (int)this.y, (int)this.rightBound, cells.get(0).size()*Constants.R*2);
 
         for (ArrayList<BaseCell> partCells : cells){
             for (BaseCell cell : partCells){
@@ -174,6 +173,10 @@ public abstract class BaseSector {
                 }
             }
         }
+
+        g.setColor(new Color(5, 5, 5));
+        g.fillRect((int)this.x, (int)this.y, (int)this.rightBound, cells.get(0).size()*Constants.R*2);
+        g.setColor(Color.RED);
     }
 
     public void go(double v){
@@ -195,5 +198,13 @@ public abstract class BaseSector {
                 parallelWall.x += v;
             }
         }
+    }
+
+    public boolean update(double v){
+        rightBound += v;
+        if (rightBound >= width){
+            iAmDied = true;
+        }
+        return iAmDied;
     }
 }

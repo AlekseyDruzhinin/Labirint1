@@ -7,6 +7,8 @@ public class Labirint {
     MyFrame panel;
     Random random = new Random();
 
+    int indexDied = 0;
+
     public Labirint(MyFrame panel) {
         this.panel = panel;
         sectors.add(new StandardSector(Constants.SDVIG, Constants.SDVIG, panel));
@@ -31,6 +33,17 @@ public class Labirint {
             if (random.nextInt(3) == 0){
                 sectors.get(sectors.size()-1).verticalWalls.get(0).get(i).flag = false;
                 sectors.get(sectors.size()-2).verticalWalls.get(sectors.get(sectors.size()-2).verticalWalls.size()-1).get(i).flag = false;
+            }
+        }
+    }
+
+    public void update(long time){
+        boolean itIsDied = sectors.get(indexDied).update((double)time * Constants.V_POLE);
+        if (itIsDied){
+            if (indexDied == 0){
+                indexDied = 1;
+            }else{
+                sectors.remove(0);
             }
         }
     }

@@ -1,16 +1,21 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
-import java.sql.Date;
-import java.util.ArrayList;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 
 public class MyFrame extends JFrame implements  KeyEventDispatcher{
     Labirint labirint;
     UserHuman userHuman;
     long timePriviosPrint;
+    BufferedImage image;
 
-    public MyFrame() {
+    public MyFrame() throws IOException {
+        image = ImageIO.read(new File("data\\GameOver.png"));
         timePriviosPrint = System.currentTimeMillis();
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(this);
@@ -27,7 +32,7 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
         //System.out.println(sector.cells.get(0).size() +" " + sector.cells.get(0).get(0).r);
         userHuman = new UserHuman(Constants.SDVIG+Constants.R, Constants.SDVIG+Constants.R, 0, 0);
         //System.out.println(userHuman.x + " " + userHuman.y);
-        Constants.V_POLE = Constants.V_NORMAL/2.0;
+        Constants.V_POLE = Constants.V_NORMAL/Constants.V_POLE_1;
     }
 
     @Override
@@ -42,15 +47,28 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
         g = bufferStrategy.getDrawGraphics();
         g.clearRect(0, 0, getWidth(), getHeight());
 
-        if (labirint != null){
-            labirint.paint(g);
-        }
-        if (userHuman != null){
-            userHuman.go(labirint, nowTime - timePriviosPrint);
-            userHuman.paint(g);
+        if (Constants.USER_DIED){
+
+            g.drawImage(image, this.getWidth()/2-this.getHeight()/2, 0, this.getHeight(), this.getHeight(), null);
+
+        }else{
+            if (nowTime - Constants.TIME_START_PROGRAM > Constants.TIME_TO_DIED_LABIRINT){
+                labirint.update(nowTime - timePriviosPrint);
+                userHuman.update(labirint);
+            }
+
+            if (labirint != null){
+                labirint.paint(g);
+            }
+            if (userHuman != null){
+                userHuman.go(labirint, nowTime - timePriviosPrint);
+                userHuman.paint(g);
+            }
+
+            timePriviosPrint = nowTime;
         }
 
-        timePriviosPrint = nowTime;
+
 
         g.dispose();
         bufferStrategy.show();

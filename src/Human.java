@@ -223,6 +223,11 @@ public abstract class Human {
 
     }
 
-
+    public void update(Labirint labirint){
+        BaseSector sector = labirint.sectors.get(indexSector);
+        if (x - sector.x-Constants.R/2 < sector.rightBound){
+            Constants.USER_DIED = true;
+        }
+    }
 }
 

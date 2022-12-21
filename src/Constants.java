@@ -24,8 +24,11 @@ public class Constants {
     public  static long TIME_START_PROGRAM;
 
     //время до начала разрушения лабиринта 5000
-    public static long TIME_TO_DIED_LABIRINT = 1000;
+    public static long TIME_TO_DIED_LABIRINT = 5000;
 
     //умер ли персоонаж
     public static boolean USER_DIED = false;
+
+    //скорость поворота
+    public static double V_ANGLE = 1.0;
 }

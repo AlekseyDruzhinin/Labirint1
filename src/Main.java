@@ -6,6 +6,8 @@ public class Main {
         MyFrame frame = new MyFrame();
         while (true){
             frame.repaint();
+
+            //Thread.sleep(10000);
         }
         //System.out.println("End");
     }

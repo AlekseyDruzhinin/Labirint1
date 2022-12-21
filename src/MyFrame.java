@@ -47,6 +47,7 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
         g = bufferStrategy.getDrawGraphics();
         g.clearRect(0, 0, getWidth(), getHeight());
 
+
         if (Constants.USER_DIED){
 
             g.drawImage(image, this.getWidth()/2-this.getHeight()/2, 0, this.getHeight(), this.getHeight(), null);
@@ -54,8 +55,9 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
         }else{
             if (nowTime - Constants.TIME_START_PROGRAM > Constants.TIME_TO_DIED_LABIRINT){
                 labirint.update(nowTime - timePriviosPrint);
-                userHuman.update(labirint);
             }
+
+            userHuman.update(labirint);
 
             if (labirint != null){
                 labirint.paint(g);

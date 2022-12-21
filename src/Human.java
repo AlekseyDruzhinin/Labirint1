@@ -1,9 +1,17 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public abstract class Human {
     double x, y; // координаты центра
     int i, j; // координаты ячейки
     int indexSector = 0; // номер сектора
+
+    BufferedImage image;
 
     boolean flagGoSector = false;
 
@@ -13,16 +21,24 @@ public abstract class Human {
 
     boolean flagChit = false;
 
-    public Human(int x, int y, int i, int j) {
+    AffineTransform tx;
+    AffineTransformOp op;
+
+    double angleInDegrees = 0.0; // Угол поворота в градусах
+
+    public Human(int x, int y, int i, int j) throws IOException {
         this.x = x;
         this.y = y;
         this.i = i;
         this.j = j;
+        this.image = ImageIO.read(new File("data\\UserHuman.png"));
     }
 
     public void paint(Graphics g){
         g.setColor(new Color(0xF911F31D, true));
-        g.fillOval((int)x-Constants.R/2, (int)y-Constants.R/2, Constants.R, Constants.R);
+        //g.fillOval((int)x-Constants.R/2, (int)y-Constants.R/2, Constants.R, Constants.R);
+        //g.drawImage(image, (int)x-Constants.R/2, (int)y-Constants.R/2, Constants.R, Constants.R, null);
+        g.drawImage(op.filter(image, null), (int)x-Constants.R/2, (int)y-Constants.R/2, Constants.R, Constants.R, null);
         g.setColor(Color.BLUE);
         g.fillOval((int)x-1, (int)y-1, 2, 2);
         g.setColor(Color.RED);
@@ -223,8 +239,17 @@ public abstract class Human {
 
     }
 
+    public void rotate(){
+        angleInDegrees = (angleInDegrees + Constants.V_ANGLE)%360;
+        double angleInRadians = Math.toRadians(angleInDegrees);
+        double locationX = image.getWidth() / 2;
+        double locationY = image.getHeight() / 2;
+        tx = AffineTransform.getRotateInstance(angleInRadians, locationX, locationY);
+        op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+    }
     public void update(Labirint labirint){
-        BaseSector sector = labirint.sectors.get(indexSector);
+        this.rotate();
+        BaseSector sector = labirint.sectors.get(labirint.indexDied);
         if (x - sector.x-Constants.R/2 < sector.rightBound){
             Constants.USER_DIED = true;
         }

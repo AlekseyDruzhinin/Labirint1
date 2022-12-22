@@ -33,12 +33,15 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
         userHuman = new UserHuman(Constants.SDVIG+Constants.R, Constants.SDVIG+Constants.R, 0, 0);
         //System.out.println(userHuman.x + " " + userHuman.y);
         Constants.V_POLE = Constants.V_NORMAL/Constants.V_POLE_1;
+
+        Constants.FRAME_WIGHT = getWidth();
+        Constants.FRAME_HEIGHT = getHeight();
     }
 
     @Override
     public void paint(Graphics g) {
         long nowTime = System.currentTimeMillis();
-        System.out.println(nowTime + " " + (nowTime - timePriviosPrint) + " " + Constants.V_NORMAL);
+        //System.out.println(nowTime + " " + (nowTime - timePriviosPrint) + " " + Constants.V_NORMAL);
         BufferStrategy bufferStrategy = getBufferStrategy();
         if (bufferStrategy == null) {
             createBufferStrategy(2);
@@ -57,7 +60,9 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
                 labirint.update(nowTime - timePriviosPrint);
             }
 
-            userHuman.update(labirint);
+            if (userHuman != null){
+                userHuman.update(labirint);
+            }
 
             if (labirint != null){
                 labirint.paint(g);

@@ -31,14 +31,18 @@ public abstract class Human {
         this.y = y;
         this.i = i;
         this.j = j;
-        this.image = ImageIO.read(new File("data\\UserHuman.png"));
+        this.image = ImageIO.read(new File("data\\Human2.png"));
+        image.getScaledInstance(Constants.R*2, Constants.R*2, Image.SCALE_DEFAULT);
     }
 
     public void paint(Graphics g){
         g.setColor(new Color(0xF911F31D, true));
         //g.fillOval((int)x-Constants.R/2, (int)y-Constants.R/2, Constants.R, Constants.R);
         //g.drawImage(image, (int)x-Constants.R/2, (int)y-Constants.R/2, Constants.R, Constants.R, null);
-        g.drawImage(op.filter(image, null), (int)x-Constants.R/2, (int)y-Constants.R/2, Constants.R, Constants.R, null);
+        //System.out.println(image.getWidth() + " " + image.getHeight());
+        BufferedImage newImage = op.filter(image, null);
+        //System.out.println(newImage.getWidth() + " " + newImage.getHeight());
+        g.drawImage(newImage, (int)x-Constants.R/2, (int)y-Constants.R/2, 100, 100, null);
         g.setColor(Color.BLUE);
         g.fillOval((int)x-1, (int)y-1, 2, 2);
         g.setColor(Color.RED);

@@ -31,4 +31,7 @@ public class Constants {
 
     //скорость поворота
     public static double V_ANGLE = 1.0;
+
+    public static int FRAME_WIGHT;
+    public static int FRAME_HEIGHT;
 }

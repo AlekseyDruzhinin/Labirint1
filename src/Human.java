@@ -32,7 +32,12 @@ public abstract class Human {
         this.i = i;
         this.j = j;
         this.image = ImageIO.read(new File("data\\Human2.png"));
-        image.getScaledInstance(Constants.R*2, Constants.R*2, Image.SCALE_DEFAULT);
+
+        double k = 2.0 * (double) Constants.R / (double) image.getHeight();
+        tx = AffineTransform.getScaleInstance(k, k);
+        op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+        image = op.filter(image, null);
+
     }
 
     public void paint(Graphics g){
@@ -42,7 +47,7 @@ public abstract class Human {
         //System.out.println(image.getWidth() + " " + image.getHeight());
         BufferedImage newImage = op.filter(image, null);
         //System.out.println(newImage.getWidth() + " " + newImage.getHeight());
-        g.drawImage(newImage, (int)x-Constants.R/2, (int)y-Constants.R/2, 100, 100, null);
+        g.drawImage(newImage, (int)x-Constants.R, (int)y-Constants.R,null);
         g.setColor(Color.BLUE);
         g.fillOval((int)x-1, (int)y-1, 2, 2);
         g.setColor(Color.RED);

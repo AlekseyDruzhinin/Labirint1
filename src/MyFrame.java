@@ -83,21 +83,26 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent e) {
+        // w - 87
+        // a - 65
+        // s - 83
+        // d - 68
         if (e.getID() == KeyEvent.KEY_PRESSED){
+            System.out.println(e.getKeyCode());
             if (e.getKeyChar() == 'p'){
                 userHuman.flagChit = !userHuman.flagChit;
             }
 
-            if (e.getKeyChar() == 's'){
+            if (e.getKeyCode() == 83){
                 userHuman.flagDown = true;
             }
-            if (e.getKeyChar() == 'w'){
+            if (e.getKeyCode() == 87){
                 userHuman.flagUp = true;
             }
-            if (e.getKeyChar() == 'a'){
+            if (e.getKeyCode() == 65){
                 userHuman.flagLeft = true;
             }
-            if (e.getKeyChar() == 'd'){
+            if (e.getKeyCode() == 68){
                 userHuman.flagRight = true;
             }
 
@@ -114,16 +119,16 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
         }
 
         if (e.getID() == KeyEvent.KEY_RELEASED){
-            if (e.getKeyChar() == 's'){
+            if (e.getKeyCode() == 83){
                 userHuman.flagDown = false;
             }
-            if (e.getKeyChar() == 'w'){
+            if (e.getKeyCode() == 87){
                 userHuman.flagUp = false;
             }
-            if (e.getKeyChar() == 'a'){
+            if (e.getKeyCode() == 65){
                 userHuman.flagLeft = false;
             }
-            if (e.getKeyChar() == 'd'){
+            if (e.getKeyCode() == 68){
                 userHuman.flagRight = false;
             }
 

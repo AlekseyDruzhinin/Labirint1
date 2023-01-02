@@ -24,7 +24,7 @@ public abstract class Human {
     AffineTransform tx;
     AffineTransformOp op;
 
-    double angleInDegrees = 0.0; // Угол поворота в градусах
+    double angleInRadians = 0.0; // Угол поворота в градусах
 
     public Human(int x, int y, int i, int j) throws IOException {
         this.x = x;
@@ -37,6 +37,8 @@ public abstract class Human {
         tx = AffineTransform.getScaleInstance(k, k);
         op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
         image = op.filter(image, null);
+
+        this.rotate(0.0);
 
     }
 
@@ -248,16 +250,14 @@ public abstract class Human {
 
     }
 
-    public void rotate(){
-        angleInDegrees = (angleInDegrees + Constants.V_ANGLE)%360;
-        double angleInRadians = Math.toRadians(angleInDegrees);
+    public void rotate(double incrementInRadian){
+        angleInRadians += incrementInRadian;
         double locationX = image.getWidth() / 2;
         double locationY = image.getHeight() / 2;
         tx = AffineTransform.getRotateInstance(angleInRadians, locationX, locationY);
         op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
     }
     public void update(Labirint labirint){
-        this.rotate();
         BaseSector sector = labirint.sectors.get(labirint.indexDied);
         if (x - sector.x-Constants.R/2 < sector.rightBound){
             Constants.USER_DIED = true;

@@ -2,19 +2,25 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 
-public class MyFrame extends JFrame implements  KeyEventDispatcher{
+public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListener, MouseMotionListener {
     Labirint labirint;
     UserHuman userHuman;
     long timePriviosPrint;
     BufferedImage image;
 
     public MyFrame() throws IOException {
+        addMouseListener(this);
+        addMouseMotionListener(this);
+
         image = ImageIO.read(new File("data\\GameOver.png"));
         timePriviosPrint = System.currentTimeMillis();
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
@@ -134,5 +140,40 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher{
 
         }
         return false;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
     }
 }

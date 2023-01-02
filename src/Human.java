@@ -250,8 +250,7 @@ public abstract class Human {
 
     }
 
-    public void rotate(double incrementInRadian){
-        angleInRadians += incrementInRadian;
+    public void rotate(double angleInRadians){
         double locationX = image.getWidth() / 2;
         double locationY = image.getHeight() / 2;
         tx = AffineTransform.getRotateInstance(angleInRadians, locationX, locationY);

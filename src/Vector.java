@@ -6,6 +6,11 @@ public class Vector {
         this.y = y;
     }
 
+    public Vector(double length, double agreeInRadians, boolean flag){
+        this.x = length * Math.sin(agreeInRadians);
+        this.y = length * Math.cos(agreeInRadians);
+    }
+
     public double scalarComposition(Vector vector) {
         return this.x * vector.x + this.y * vector.y;
     }

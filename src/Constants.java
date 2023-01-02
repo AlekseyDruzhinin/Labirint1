@@ -30,7 +30,7 @@ public class Constants {
     public static boolean USER_DIED = false;
 
     //скорость поворота
-    public static double V_ANGLE = 1.0;
+    public static double V_ANGLE =0.1;
 
     public static int FRAME_WIGHT;
     public static int FRAME_HEIGHT;

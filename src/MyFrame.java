@@ -68,6 +68,11 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
             if (userHuman != null){
                 userHuman.update(labirint);
+
+                Vector vectorMouse = new Vector(-(double)getMousePosition().x+userHuman.x, -(double)getMousePosition().y + userHuman.y);
+                Vector vectorUp = new Vector(0.0, 1.0);
+                userHuman.rotate(Math.atan2(vectorUp.vectorComposition(vectorMouse), vectorUp.scalarComposition(vectorMouse)));
+                System.out.println(vectorMouse.x + " " + vectorMouse.y);
             }
 
             if (labirint != null){
@@ -94,7 +99,7 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
         // s - 83
         // d - 68
         if (e.getID() == KeyEvent.KEY_PRESSED){
-            System.out.println(e.getKeyCode());
+            //System.out.println(e.getKeyCode());
             if (e.getKeyChar() == 'p'){
                 userHuman.flagChit = !userHuman.flagChit;
             }
@@ -174,6 +179,9 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
+//        Vector vectorMouse = new Vector(-(double)e.getX()+userHuman.x, -(double)e.getY() + userHuman.y);
+//        Vector vectorUp = new Vector(0.0, 1.0);
+//        userHuman.rotate(Math.atan2(vectorUp.vectorComposition(vectorMouse), vectorUp.scalarComposition(vectorMouse)));
+//        System.out.println(vectorMouse.x + " " + vectorMouse.y);
     }
 }

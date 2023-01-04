@@ -1,9 +1,11 @@
 public class Vector {
     double x, y;
+    double length;
 
     public Vector(double x, double y) {
         this.x = x;
         this.y = y;
+        this.length = Math.sqrt(x * x + y * y);
     }
 
     public Vector(double length, double agreeInRadians, boolean flag){
@@ -19,12 +21,12 @@ public class Vector {
         return this.x * vector.y - this.y * vector.x;
     }
 
-    public double length() {
-        return Math.sqrt(x * x + y * y);
-    }
-
     public void rotate(double agreeInRadians){
         this.x = Math.cos(agreeInRadians) - Math.sin(agreeInRadians);
         this.y = Math.sin(agreeInRadians) + Math.cos(agreeInRadians);
+    }
+
+    public Vector normVector(double size){
+        return new Vector(x/length*size, y/length*size);
     }
 }

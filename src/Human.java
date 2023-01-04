@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public abstract class Human {
+public abstract class Human extends BaseHuman {
     double x, y; // координаты центра
     int i, j; // координаты ячейки
     int indexSector = 0; // номер сектора

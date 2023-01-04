@@ -68,15 +68,17 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
             if (userHuman != null){
                 userHuman.update(labirint);
-
-                Vector vectorMouse = new Vector(-(double)getMousePosition().x+userHuman.x, -(double)getMousePosition().y + userHuman.y);
-                Vector vectorUp = new Vector(0.0, 1.0);
-                userHuman.rotate(Math.atan2(vectorUp.vectorComposition(vectorMouse), vectorUp.scalarComposition(vectorMouse)));
-                System.out.println(vectorMouse.x + " " + vectorMouse.y);
+                if (getMousePosition() != null){
+                    Vector vectorMouse = new Vector(-(double)getMousePosition().x+userHuman.x, -(double)getMousePosition().y + userHuman.y);
+                    Vector vectorUp = new Vector(0.0, 1.0);
+                    userHuman.rotate(Math.atan2(vectorUp.vectorComposition(vectorMouse), vectorUp.scalarComposition(vectorMouse)));
+                    //System.out.println(vectorMouse.x + " " + vectorMouse.y);
+                }
             }
 
             if (labirint != null){
                 labirint.paint(g);
+                labirint.goBullets(nowTime - timePriviosPrint);
             }
             if (userHuman != null){
                 userHuman.go(labirint, nowTime - timePriviosPrint);
@@ -85,8 +87,6 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
             timePriviosPrint = nowTime;
         }
-
-
 
         g.dispose();
         bufferStrategy.show();
@@ -149,7 +149,8 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        StandardBullet bullet = new StandardBullet(userHuman.x, userHuman.y, new Vector(e.getX()-userHuman.x, e.getY()-userHuman.y), userHuman);
+        labirint.addBullet(bullet);
     }
 
     @Override

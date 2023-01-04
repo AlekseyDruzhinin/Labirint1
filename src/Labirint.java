@@ -7,6 +7,8 @@ public class Labirint {
     MyFrame panel;
     Random random = new Random();
 
+    ArrayList<BaseBullet> userBullets = new ArrayList<>();
+
     int indexDied = 0;
 
     public Labirint(MyFrame panel) {
@@ -15,15 +17,27 @@ public class Labirint {
         addSector();
     }
 
+    public BaseCell getCell(int i, int j, int k){
+        return sectors.get(i).cells.get(j).get(k);
+    }
     public void paint(Graphics g){
         for (BaseSector sector : sectors){
             sector.paint(g);
+        }
+        for (BaseBullet bullet : userBullets){
+            bullet.paint(g);
+            g.setColor(Color.GREEN);
+            g.fillRect((int)getCell(0, bullet.i, bullet.j).x, (int)getCell(0, bullet.i, bullet.j).y, Constants.R, Constants.R);
+            g.setColor(Color.GREEN);
         }
     }
 
     public void go(double v){
         for (BaseSector sector : sectors){
             sector.go(v);
+        }
+        for (BaseBullet bullet : userBullets){
+            bullet.x += v;
         }
     }
 
@@ -45,6 +59,16 @@ public class Labirint {
             }else{
                 sectors.remove(0);
             }
+        }
+    }
+
+    public void addBullet(BaseBullet bullet){
+        userBullets.add(bullet);
+    }
+
+    public void goBullets(long time){
+        for (BaseBullet bullet : userBullets){
+            bullet.go(this, time);
         }
     }
 }

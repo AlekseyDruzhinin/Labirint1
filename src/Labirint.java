@@ -26,10 +26,16 @@ public class Labirint {
         }
         for (BaseBullet bullet : userBullets){
             bullet.paint(g);
-            g.setColor(Color.GREEN);
-            g.fillRect((int)getCell(0, bullet.i, bullet.j).x, (int)getCell(0, bullet.i, bullet.j).y, Constants.R, Constants.R);
-            g.setColor(Color.GREEN);
+            if (Constants.DEVELORER){
+                g.setColor(Color.BLUE);
+                g.fillRect((int)getCell(bullet.indexSector, bullet.i, bullet.j).x, (int)getCell(0, bullet.i, bullet.j).y, Constants.R, Constants.R);
+                g.setColor(Color.RED);
+            }
         }
+    }
+
+    public BaseSector getSector(int i){
+        return sectors.get(i);
     }
 
     public void go(double v){
@@ -67,8 +73,14 @@ public class Labirint {
     }
 
     public void goBullets(long time){
+        ArrayList<BaseBullet> delBullets = new ArrayList<>();
         for (BaseBullet bullet : userBullets){
-            bullet.go(this, time);
+            if(!bullet.go(this, time)) {
+                delBullets.add(bullet);
+            }
+        }
+        for (BaseBullet bullet : delBullets){
+            userBullets.remove(bullet);
         }
     }
 }

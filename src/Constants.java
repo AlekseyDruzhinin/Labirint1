@@ -34,4 +34,6 @@ public class Constants {
 
     public static int FRAME_WIGHT;
     public static int FRAME_HEIGHT;
+
+    public static boolean DEVELORER = false;
 }

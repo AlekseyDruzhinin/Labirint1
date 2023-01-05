@@ -7,8 +7,6 @@ public class StandardBullet extends BaseBullet {
 
     public StandardBullet(double x, double y, Vector v, Human human) {
         super(x, y, v, human);
-        this.x = x;
-        this.y = y;
         this.v = v.normVector(mV);
     }
 

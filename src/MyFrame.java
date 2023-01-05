@@ -82,6 +82,11 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
             }
             if (userHuman != null){
                 userHuman.go(labirint, nowTime - timePriviosPrint);
+                if (Constants.DEVELORER){
+                    g.setColor(Color.GREEN);
+                    g.fillRect((int)labirint.getCell(userHuman.indexSector, userHuman.i, userHuman.j).x, (int)labirint.getCell(userHuman.indexSector    , userHuman.i, userHuman.j).y, Constants.R, Constants.R);
+                    g.setColor(Color.RED);
+                }
                 userHuman.paint(g);
             }
 
@@ -98,12 +103,38 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
         // a - 65
         // s - 83
         // d - 68
+        // p - 80
+        // r - 82
         if (e.getID() == KeyEvent.KEY_PRESSED){
             //System.out.println(e.getKeyCode());
-            if (e.getKeyChar() == 'p'){
-                userHuman.flagChit = !userHuman.flagChit;
+            if (e.getKeyCode() == 82){
+                if (Constants.DEVELORER == false){
+                    Constants.DEVELORER = true;
+                    //System.out.println(Constants.DEVELORER);
+                }else{
+                    Constants.DEVELORER = false;
+                    userHuman.flagChit = false;
+                    Constants.V_NORMAL_1 = 3000;
+                    Constants.V_NORMAL = (double) getHeight() / (double) Constants.V_NORMAL_1;
+                    userHuman.vHuman = Constants.V_NORMAL;
+                }
             }
+            if (Constants.DEVELORER){
+                if (e.getKeyCode() == 80){
+                    userHuman.flagChit = !userHuman.flagChit;
+                }
 
+                if (e.getKeyChar() == '+'){
+                    Constants.V_NORMAL_1 -= 100;
+                    Constants.V_NORMAL = (double) getHeight() / (double) Constants.V_NORMAL_1;
+                    userHuman.vHuman = Constants.V_NORMAL;
+                }
+                if (e.getKeyChar() == '-'){
+                    Constants.V_NORMAL_1 += 100;
+                    Constants.V_NORMAL = (double) getHeight() / (double) Constants.V_NORMAL_1;
+                    userHuman.vHuman = Constants.V_NORMAL;
+                }
+            }
             if (e.getKeyCode() == 83){
                 userHuman.flagDown = true;
             }
@@ -115,17 +146,6 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
             }
             if (e.getKeyCode() == 68){
                 userHuman.flagRight = true;
-            }
-
-            if (e.getKeyChar() == '+'){
-                Constants.V_NORMAL_1 -= 100;
-                Constants.V_NORMAL = (double) getHeight() / (double) Constants.V_NORMAL_1;
-                userHuman.vHuman = Constants.V_NORMAL;
-            }
-            if (e.getKeyChar() == '-'){
-                Constants.V_NORMAL_1 += 100;
-                Constants.V_NORMAL = (double) getHeight() / (double) Constants.V_NORMAL_1;
-                userHuman.vHuman = Constants.V_NORMAL;
             }
         }
 

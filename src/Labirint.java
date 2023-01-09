@@ -4,6 +4,8 @@ import java.util.Random;
 
 public class Labirint {
     ArrayList<BaseSector> sectors = new ArrayList<>();
+    ArrayList<BaseBullet> diedBullets = new ArrayList<>();//список пулек, которые умерли, но слеж ещё рисуется
+
     MyFrame panel;
     Random random = new Random();
 
@@ -32,6 +34,9 @@ public class Labirint {
                 g.setColor(Color.RED);
             }
         }
+        for (BaseBullet bullet : diedBullets){
+            bullet.paintLine(g);
+        }
     }
 
     public BaseSector getSector(int i){
@@ -43,6 +48,9 @@ public class Labirint {
             sector.go(v);
         }
         for (BaseBullet bullet : userBullets){
+            bullet.x += v;
+        }
+        for (BaseBullet bullet : diedBullets){
             bullet.x += v;
         }
     }
@@ -76,11 +84,19 @@ public class Labirint {
         ArrayList<BaseBullet> delBullets = new ArrayList<>();
         for (BaseBullet bullet : userBullets){
             if(!bullet.go(this, time)) {
+                bullet.died(this, time);
                 delBullets.add(bullet);
             }
         }
         for (BaseBullet bullet : delBullets){
             userBullets.remove(bullet);
+            diedBullets.add(bullet);
+        }
+        long nowTime = System.currentTimeMillis();
+        for (BaseBullet bullet : diedBullets){
+            if (nowTime - bullet.timeDied > Constants.TIME_LIFE_AFTER_DIED){
+                diedBullets.remove(bullet);
+            }
         }
     }
 }

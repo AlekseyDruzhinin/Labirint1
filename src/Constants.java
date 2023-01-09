@@ -1,4 +1,6 @@
 public class Constants {
+
+    public static long TIME_LIFE_AFTER_DIED = 3000; // время существование следа после смерти пульки
     public static int R = 20;
     public static int COUNT_CELL_DOWN = 13;
     public static int SDVIG = 40;

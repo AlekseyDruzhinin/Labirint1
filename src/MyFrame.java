@@ -68,8 +68,9 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
             if (userHuman != null){
                 userHuman.update(labirint);
-                if (getMousePosition() != null){
-                    Vector vectorMouse = new Vector(-(double)getMousePosition().x+userHuman.x, -(double)getMousePosition().y + userHuman.y);
+                Point gMP = getMousePosition();
+                if (gMP != null){
+                    Vector vectorMouse = new Vector(-(double)gMP.x+userHuman.x, -(double)gMP.y + userHuman.y);
                     Vector vectorUp = new Vector(0.0, 1.0);
                     userHuman.rotate(Math.atan2(vectorUp.vectorComposition(vectorMouse), vectorUp.scalarComposition(vectorMouse)));
                     //System.out.println(vectorMouse.x + " " + vectorMouse.y);

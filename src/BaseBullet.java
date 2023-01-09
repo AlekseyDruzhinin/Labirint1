@@ -1,6 +1,10 @@
 import java.awt.*;
 
 public abstract class BaseBullet {
+    double startX, startY; // координаты появления пули для следа
+    double endX, endY; // координаты сметри пули
+    long timeDied; // время создания пули
+    boolean iAmDied = false;
     double x, y;
     Vector v;
 
@@ -14,36 +18,38 @@ public abstract class BaseBullet {
     public BaseBullet(double x, double y, Vector v, Human human) {
         this.x = x;
         this.y = y;
+        this.startX = this.x;
+        this.startY = this.y;
         this.v = v;
         this.i = human.i;
         this.j = human.j;
         this.indexSector = human.indexSector;
     }
 
-    public void paint(Graphics g){
+    public void paint(Graphics g) {
 
     }
 
-    public boolean go(Labirint labirint, long time){
+    public boolean go(Labirint labirint, long time) {
         if (y > labirint.getCell(indexSector, i, j).y + Constants.R) {
-            j += (y - labirint.getCell(indexSector, i, j).y + Constants.R) / (2 * Constants.R);
+            ++j;
         }
         if (y < labirint.getCell(indexSector, i, j).y - Constants.R) {
-            j -= (-y + labirint.getCell(indexSector, i, j).y - Constants.R) / (2 * Constants.R);
+            --j;
         }
         if (x < labirint.getCell(indexSector, i, j).x - Constants.R) {
-            i -= (-x + labirint.getCell(indexSector, i, j).x - Constants.R) / (2 * Constants.R);
+            --i;
+            if (i < 0) {
+                i = labirint.getSector(indexSector).cells.size() - 1;
+                --indexSector;
+            }
         }
-        if (i < 0) {
-            i = labirint.getSector(indexSector).cells.size() - i;
-            --indexSector;
-        }
-        if (x > labirint.getCell(indexSector, i, j).x + Constants.R) {
-            i += (x - labirint.getCell(indexSector, i, j).x + Constants.R) / (2 * Constants.R);
-        }
-        if (i >= labirint.getSector(indexSector).cells.size()) {
-            i %= labirint.getSector(indexSector).cells.size();
-            ++indexSector;
+        while (x > labirint.getCell(indexSector, i, j).x + Constants.R) {
+            ++i;
+            if (i >= labirint.getSector(indexSector).cells.size()) {
+                i = 0;
+                ++indexSector;
+            }
         }
 //        System.out.println(indexSector);
         x += (double) time * v.x;
@@ -99,4 +105,14 @@ public abstract class BaseBullet {
         }
         return true;
     }
+
+    public void paintLine(Graphics g) {
+    }
+
+    public void died(Labirint labirint, long time){
+        iAmDied = true;
+        timeDied = System.currentTimeMillis();
+        this.go(labirint, time);
+        endX = this.x;
+        endY = this.y;
 }

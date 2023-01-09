@@ -14,7 +14,17 @@ public class StandardBullet extends BaseBullet {
     public void paint(Graphics g) {
         g.setColor(Color.BLACK);
         g.fillRect((int)(x-size/2), (int)(y-size/2), (int)(size/2), (int)(size/2));
+        g.setColor(new Color(92, 221, 239, 255));
+        g.drawLine((int)startX, (int)startY, (int)x, (int)y);
         g.setColor(Color.RED);
+
         //System.out.println(mV);
+    }
+
+    @Override
+    public void paintLine(Graphics g){
+        g.setColor(new Color(92, 221, 239, 255));
+        g.drawLine((int)startX, (int)startY, (int)endX, (int)endY);
+        g.setColor(Color.RED);
     }
 }

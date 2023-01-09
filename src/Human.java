@@ -60,6 +60,8 @@ public abstract class Human extends BaseHuman {
                 g.setColor(Color.RED);
             }
         }
+
+//        System.out.println(i + " " + j + " " + indexSector);
     }
 
     public void go(Labirint labirint, long time) {
@@ -159,36 +161,36 @@ public abstract class Human extends BaseHuman {
         } else {
             if (flagDown) {
                 y += v;
-                if (y > labirint.getCell(indexSector, i, j).y + Constants.R) {
-                    j += (y - labirint.getCell(indexSector, i, j).y + Constants.R) / (2 * Constants.R);
+                while (y > labirint.getCell(indexSector, i, j).y + Constants.R) {
+                    ++j;
                 }
             }
             if (flagUp) {
                 y -= v;
-                if (y < labirint.getCell(indexSector, i, j).y - Constants.R) {
-                    j -= (-y + labirint.getCell(indexSector, i, j).y - Constants.R) / (2 * Constants.R);
+                while (y < labirint.getCell(indexSector, i, j).y - Constants.R) {
+                    --j;
                 }
             }
             if (flagLeft) {
                 labirint.go(v);
-                if (x < labirint.getCell(indexSector, i, j).x - Constants.R) {
-                    i -= (-x + labirint.getCell(indexSector, i, j).x - Constants.R) / (2 * Constants.R);
-                }
-                if (i < 0) {
-                    i = labirint.getSector(indexSector).cells.size() - 1;
-                    --indexSector;
-                    sector = labirint.sectors.get(indexSector);
+                while (x < labirint.getCell(indexSector, i, j).x - Constants.R) {
+                  --i;
+                  if (i < 0) {
+                      i = labirint.getSector(indexSector).cells.size() - 1;
+                      --indexSector;
+                      sector = labirint.sectors.get(indexSector);
+                  }
                 }
             }
             if (flagRight) {
                 labirint.go(-v);
                 if (x > labirint.getCell(indexSector, i, j).x + Constants.R) {
-                    i += (x - labirint.getCell(indexSector, i, j).x + Constants.R) / (2 * Constants.R);
-                }
-                if (i >= labirint.getSector(indexSector).cells.size()) {
-                    i = 0;
-                    ++indexSector;
-                    sector = labirint.sectors.get(indexSector);
+                    ++i;
+                    if (i >= labirint.getSector(indexSector).cells.size()) {
+                        i = 0;
+                        ++indexSector;
+                        sector = labirint.sectors.get(indexSector);
+                    }
                 }
             }
 

@@ -51,7 +51,8 @@ public class Labirint {
             bullet.x += v;
         }
         for (BaseBullet bullet : diedBullets){
-            bullet.x += v;
+            bullet.startX += v;
+            bullet.endX += v;
         }
     }
 
@@ -91,12 +92,19 @@ public class Labirint {
         for (BaseBullet bullet : delBullets){
             userBullets.remove(bullet);
             diedBullets.add(bullet);
+            Segment segment = new Segment(bullet.x, bullet.y, bullet.x + bullet.v.x, bullet.y + bullet.v.y);
+            MyPoint point = segment.pointLineIntersection(new)
+                    // разделить стенки
         }
         long nowTime = System.currentTimeMillis();
+        ArrayList<BaseBullet> delDiedBullets = new ArrayList<>();
         for (BaseBullet bullet : diedBullets){
             if (nowTime - bullet.timeDied > Constants.TIME_LIFE_AFTER_DIED){
-                diedBullets.remove(bullet);
+                delDiedBullets.add(bullet);
             }
+        }
+        for (BaseBullet bullet : delDiedBullets){
+            diedBullets.remove(bullet);
         }
     }
 }

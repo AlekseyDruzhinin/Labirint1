@@ -109,10 +109,11 @@ public abstract class BaseBullet {
     public void paintLine(Graphics g) {
     }
 
-    public void died(Labirint labirint, long time){
+    public void died(Labirint labirint, long time) {
         iAmDied = true;
         timeDied = System.currentTimeMillis();
         this.go(labirint, time);
         endX = this.x;
         endY = this.y;
+    }
 }

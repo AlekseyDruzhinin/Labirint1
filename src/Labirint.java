@@ -1,10 +1,14 @@
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Labirint {
     ArrayList<BaseSector> sectors = new ArrayList<>();
     ArrayList<BaseBullet> diedBullets = new ArrayList<>();//список пулек, которые умерли, но слеж ещё рисуется
+
+    //массив ботов
+    ArrayList<BaseBot> bots = new ArrayList<>();
 
     MyFrame panel;
     Random random = new Random();
@@ -13,9 +17,11 @@ public class Labirint {
 
     int indexDied = 0;
 
-    public Labirint(MyFrame panel) {
+    public Labirint(MyFrame panel) throws IOException {
         this.panel = panel;
         sectors.add(new StandardSector(Constants.SDVIG, Constants.SDVIG, panel));
+        RedBot redBot = new RedBot(getCell(0, 10, 10).x, getCell(0, 10, 10).y, 10, 10, 0);
+        bots.add(redBot);
         addSector();
     }
 
@@ -38,6 +44,14 @@ public class Labirint {
         for (BaseBullet bullet : diedBullets) {
             bullet.paintLine(g);
         }
+        for (BaseBot bot : bots) {
+            if (Constants.DEVELORER) {
+                g.setColor(new Color(239, 124, 124, 255));
+                g.fillRect((int) getCell(bot.indexSector, bot.i, bot.j).x, (int) getCell(bot.indexSector, bot.i, bot.j).y, Constants.R, Constants.R);
+                g.setColor(Color.RED);
+            }
+            bot.paint(g);
+        }
     }
 
     public BaseSector getSector(int i) {
@@ -54,6 +68,9 @@ public class Labirint {
         for (BaseBullet bullet : diedBullets) {
             bullet.startX += v;
             bullet.endX += v;
+        }
+        for (BaseBot bot : bots) {
+            bot.x += v;
         }
     }
 

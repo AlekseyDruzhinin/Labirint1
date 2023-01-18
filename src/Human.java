@@ -26,7 +26,7 @@ public abstract class Human extends BaseHuman {
 
     double angleInRadians = 0.0; // Угол поворота в градусах
 
-    public Human(int x, int y, int i, int j) throws IOException {
+    public Human(double x, double y, int i, int j) throws IOException {
         this.x = x;
         this.y = y;
         this.i = i;

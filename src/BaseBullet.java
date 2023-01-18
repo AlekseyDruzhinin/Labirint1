@@ -5,6 +5,7 @@ public abstract class BaseBullet {
     double endX, endY; // координаты сметри пули
     long timeDied; // время создания пули
     boolean iAmDied = false;
+    boolean iAmInBot = false;
 
     // где мы застряли
     boolean iAmInVerticalWall = false;

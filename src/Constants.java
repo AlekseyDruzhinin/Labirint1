@@ -1,5 +1,7 @@
 public class Constants {
 
+    public static double DAMAGE_USER_BULLET = 0.1;
+
     public static long TIME_LIFE_AFTER_DIED = 3000; // время существование следа после смерти пульки
     public static int R = 20;
     public static int COUNT_CELL_DOWN = 13;

@@ -13,24 +13,19 @@ public abstract class BaseBot{
     int i, j; // координаты ячейки
     int indexSector = 0; // номер сектора
 
-    ArrayList<Coordinates> fieldOfView = new ArrayList<>(); // набор координат ячеек, которые просматривает бот
+    double hp = 1.0; // hp - число от 0 до 1 (доля закрышенного прямоугольника)
 
     BufferedImage image;
     AffineTransform tx;
     AffineTransformOp op;
 
     double angleInRadians = 0.0; // Угол поворота в градусах
-    public BaseBot(double x, double y, int i, int j, int indexSector, Labirint labirint) throws IOException {
+    public BaseBot(double x, double y, int i, int j, int indexSector) throws IOException {
         this.x = x;
         this.y = y;
         this.i = i;
         this.j = j;
         this.indexSector = indexSector;
-
-        fieldOfView.add(new Coordinates(this.indexSector, this.i, this.j));
-        for (int i1 = this.i, iS1 = this.indexSector; iS1 < labirint.sectors.size() && i1 < labirint.getSector(iS1).cells.size();){
-            fieldOfView.add(new Coordinates(iS1, i1, j));
-        }
     }
 
     public void paint(Graphics g) {
@@ -45,6 +40,8 @@ public abstract class BaseBot{
         g.fillOval((int) x - 1, (int) y - 1, 2, 2);
         g.setColor(Color.RED);
 //        System.out.println(i + " " + j + " " + indexSector);
+        g.setColor(Color.BLACK);
+        g.fillRect((int)(x)-Constants.R, (int)y - Constants.R/2, (int)(((double)Constants.R*2) * hp), Constants.R/10);
     }
 
     public void rotate(double angleInRadians) {
@@ -52,5 +49,16 @@ public abstract class BaseBot{
         double locationY = image.getHeight() / 2;
         tx = AffineTransform.getRotateInstance(angleInRadians, locationX, locationY);
         op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+    }
+
+    public boolean insertWithBullet (BaseBullet bullet){
+        if (Math.abs((x-bullet.x)*(x-bullet.x) + (y-bullet.y)*(y-bullet.y)) <= ((double)(Constants.R)/2) * ((double)(Constants.R)/2)){
+            return true;
+        }
+        return false;
+    }
+
+    public void hit(){
+        hp -= Constants.DAMAGE_USER_BULLET;
     }
 }

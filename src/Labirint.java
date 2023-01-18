@@ -20,7 +20,7 @@ public class Labirint {
     public Labirint(MyFrame panel) throws IOException {
         this.panel = panel;
         sectors.add(new StandardSector(Constants.SDVIG, Constants.SDVIG, panel));
-        RedBot redBot = new RedBot(getCell(0, 10, 10).x, getCell(0, 10, 10).y, 10, 10, 0);
+        RedBot redBot = new RedBot(getCell(0, 20, 10).x, getCell(0, 20, 10).y, 20, 10, 0);
         bots.add(redBot);
         addSector();
     }
@@ -101,26 +101,43 @@ public class Labirint {
 
     public void goBullets(long time) {
         ArrayList<BaseBullet> delBullets = new ArrayList<>();
+        ArrayList<BaseBot> delBot = new ArrayList<>();
         for (BaseBullet bullet : userBullets) {
             if (!bullet.go(this, time)) {
                 bullet.died(this, time);
                 delBullets.add(bullet);
             }
+            for (BaseBot bot : bots){
+                if (Math.abs((bullet.x-bot.x)*(bullet.x-bot.x) + (bullet.y-bot.y)*(bullet.y-bot.y)) < (double)(Constants.R*Constants.R)/16.0){
+                    bullet.iAmInBot = true;
+                    bullet.died(this, time);
+                    delBullets.add(bullet);
+                    bot.hit();
+                    if (bot.hp < 0.0){
+                        delBot.add(bot);
+                    }
+                }
+            }
+            for (BaseBot bot : delBot){
+                bots.remove(bot);
+            }
         }
         for (BaseBullet bullet : delBullets) {
             userBullets.remove(bullet);
             diedBullets.add(bullet);
-            Segment segmentJumpBullet = new Segment(bullet.x, bullet.y, bullet.x + bullet.v.x, bullet.y + bullet.v.y);
-            if (bullet.iAmInVerticalWall) {
-                Segment wall = new Segment(bullet.verticalWall);
-                MyPoint point = segmentJumpBullet.pointLineIntersection(wall);
-                bullet.endX = point.x;
-                bullet.endY = point.y;
-            } else {
-                Segment wall = new Segment(bullet.parallelWall);
-                MyPoint point = segmentJumpBullet.pointLineIntersection(wall);
-                bullet.endX = point.x;
-                bullet.endY = point.y;
+            if (!bullet.iAmInBot){
+                Segment segmentJumpBullet = new Segment(bullet.x, bullet.y, bullet.x + bullet.v.x, bullet.y + bullet.v.y);
+                if (bullet.iAmInVerticalWall) {
+                    Segment wall = new Segment(bullet.verticalWall);
+                    MyPoint point = segmentJumpBullet.pointLineIntersection(wall);
+                    bullet.endX = point.x;
+                    bullet.endY = point.y;
+                } else {
+                    Segment wall = new Segment(bullet.parallelWall);
+                    MyPoint point = segmentJumpBullet.pointLineIntersection(wall);
+                    bullet.endX = point.x;
+                    bullet.endY = point.y;
+                }
             }
         }
         long nowTime = System.currentTimeMillis();

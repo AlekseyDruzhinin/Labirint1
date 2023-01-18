@@ -5,6 +5,11 @@ public abstract class BaseBullet {
     double endX, endY; // координаты сметри пули
     long timeDied; // время создания пули
     boolean iAmDied = false;
+
+    // где мы застряли
+    boolean iAmInVerticalWall = false;
+    StandardVerticalWall verticalWall;
+    StandardParallelWall parallelWall;
     double x, y;
     Vector v;
 
@@ -31,10 +36,10 @@ public abstract class BaseBullet {
     }
 
     public boolean go(Labirint labirint, long time) {
-        if (y > labirint.getCell(indexSector, i, j).y + Constants.R) {
+        if (y > labirint.getCell(indexSector, i, j).y + Constants.R && j + 1 < labirint.getSector(indexSector).cells.get(i).size()) {
             ++j;
         }
-        if (y < labirint.getCell(indexSector, i, j).y - Constants.R) {
+        if (y < labirint.getCell(indexSector, i, j).y - Constants.R && j - 1 > 0) {
             --j;
         }
         if (x < labirint.getCell(indexSector, i, j).x - Constants.R) {
@@ -58,49 +63,67 @@ public abstract class BaseBullet {
 
         BaseSector sector = labirint.getSector(indexSector);
         //ячейка в которой мы
-        while (j + 1 < sector.parallelWalls.size() && i + 1 < sector.parallelWalls.get(j + 1).size() && y + Constants.R / 2 > sector.parallelWalls.get(j + 1).get(i + 1).y && sector.parallelWalls.get(j + 1).get(i + 1).flag) {
+        while (j + 1 < sector.parallelWalls.size() && i + 1 < sector.parallelWalls.get(j + 1).size() && y > sector.parallelWalls.get(j + 1).get(i + 1).y && sector.parallelWalls.get(j + 1).get(i + 1).flag) {
+            parallelWall = sector.parallelWalls.get(j + 1).get(i + 1);
             return false;
         }
-        while (j < sector.parallelWalls.size() && i + 1 < sector.parallelWalls.get(j).size() && y - Constants.R / 2 < sector.parallelWalls.get(j).get(i + 1).y && sector.parallelWalls.get(j).get(i + 1).flag) {
+        while (j < sector.parallelWalls.size() && i + 1 < sector.parallelWalls.get(j).size() && y < sector.parallelWalls.get(j).get(i + 1).y && sector.parallelWalls.get(j).get(i + 1).flag) {
+            parallelWall = sector.parallelWalls.get(j).get(i + 1);
             return false;
         }
-        while (i < sector.verticalWalls.size() && j + 1 < sector.verticalWalls.get(i).size() && x - Constants.R / 2 < sector.verticalWalls.get(i).get(j + 1).x && sector.verticalWalls.get(i).get(j + 1).flag) {
+        while (i < sector.verticalWalls.size() && j + 1 < sector.verticalWalls.get(i).size() && x < sector.verticalWalls.get(i).get(j + 1).x && sector.verticalWalls.get(i).get(j + 1).flag) {
+            iAmInVerticalWall = true;
+            verticalWall = sector.verticalWalls.get(i).get(j + 1);
             return false;
         }
-        while (i + 1 < sector.verticalWalls.size() && j + 1 < sector.verticalWalls.get(i + 1).size() && x + Constants.R / 2 > sector.verticalWalls.get(i + 1).get(j + 1).x && sector.verticalWalls.get(i + 1).get(j + 1).flag) {
+        while (i + 1 < sector.verticalWalls.size() && j + 1 < sector.verticalWalls.get(i + 1).size() && x > sector.verticalWalls.get(i + 1).get(j + 1).x && sector.verticalWalls.get(i + 1).get(j + 1).flag) {
+            iAmInVerticalWall = true;
+            verticalWall = sector.verticalWalls.get(i + 1).get(j + 1);
             return false;
         }
 
         //ячейка слева
-        while (j + 1 < sector.parallelWalls.size() && i < sector.parallelWalls.get(j + 1).size() && sector.parallelWalls.get(j + 1).get(i).flag && x - Constants.R / 2 < sector.parallelWalls.get(j + 1).get(i).x + sector.parallelWalls.get(j + 1).get(i).l && y + Constants.R / 2 > sector.parallelWalls.get(j + 1).get(i).y) {
+        while (j + 1 < sector.parallelWalls.size() && i < sector.parallelWalls.get(j + 1).size() && sector.parallelWalls.get(j + 1).get(i).flag && x < sector.parallelWalls.get(j + 1).get(i).x + sector.parallelWalls.get(j + 1).get(i).l && y > sector.parallelWalls.get(j + 1).get(i).y) {
+            parallelWall = sector.parallelWalls.get(j + 1).get(i);
             return false;
         }
-        while (j < sector.parallelWalls.size() && i < sector.parallelWalls.get(j).size() && sector.parallelWalls.get(j).get(i).flag && x - Constants.R / 2 < sector.parallelWalls.get(j).get(i).x + sector.parallelWalls.get(j).get(i).l && y - Constants.R / 2 < sector.parallelWalls.get(j).get(i).y) {
+        while (j < sector.parallelWalls.size() && i < sector.parallelWalls.get(j).size() && sector.parallelWalls.get(j).get(i).flag && x < sector.parallelWalls.get(j).get(i).x + sector.parallelWalls.get(j).get(i).l && y < sector.parallelWalls.get(j).get(i).y) {
+            parallelWall = sector.parallelWalls.get(j).get(i);
             return false;
         }
 
         //ячейка справа
-        while (j + 1 < sector.parallelWalls.size() && i + 2 < sector.parallelWalls.get(j + 1).size() && sector.parallelWalls.get(j + 1).get(i + 2).flag && x + Constants.R / 2 > sector.parallelWalls.get(j + 1).get(i + 2).x && y + Constants.R / 2 > sector.parallelWalls.get(j + 1).get(i + 2).y) {
+        while (j + 1 < sector.parallelWalls.size() && i + 2 < sector.parallelWalls.get(j + 1).size() && sector.parallelWalls.get(j + 1).get(i + 2).flag && x > sector.parallelWalls.get(j + 1).get(i + 2).x && y > sector.parallelWalls.get(j + 1).get(i + 2).y) {
+            parallelWall = sector.parallelWalls.get(j + 1).get(i + 2);
             return false;
         }
-        while (j < sector.parallelWalls.size() && i + 2 < sector.parallelWalls.get(j).size() && sector.parallelWalls.get(j).get(i + 2).flag && x + Constants.R / 2 > sector.parallelWalls.get(j).get(i + 2).x && y - Constants.R / 2 < sector.parallelWalls.get(j).get(i + 2).y) {
+        while (j < sector.parallelWalls.size() && i + 2 < sector.parallelWalls.get(j).size() && sector.parallelWalls.get(j).get(i + 2).flag && x > sector.parallelWalls.get(j).get(i + 2).x && y < sector.parallelWalls.get(j).get(i + 2).y) {
+            parallelWall = sector.parallelWalls.get(j).get(i + 2);
             return false;
         }
 
 
         //ячейка сверху
-        while (i + 1 < sector.verticalWalls.size() && j < sector.verticalWalls.get(i + 1).size() && sector.verticalWalls.get(i + 1).get(j).flag && y - Constants.R / 2 < sector.verticalWalls.get(i + 1).get(j).y + sector.verticalWalls.get(i).get(j).l && x + Constants.R / 2 > sector.verticalWalls.get(i + 1).get(j).x) {
+        while (i + 1 < sector.verticalWalls.size() && j < sector.verticalWalls.get(i + 1).size() && sector.verticalWalls.get(i + 1).get(j).flag && y < sector.verticalWalls.get(i + 1).get(j).y + sector.verticalWalls.get(i).get(j).l && x > sector.verticalWalls.get(i + 1).get(j).x) {
+            iAmInVerticalWall = true;
+            verticalWall = sector.verticalWalls.get(i + 1).get(j);
             return false;
         }
-        while (i < sector.verticalWalls.size() && j < sector.verticalWalls.get(i).size() && sector.verticalWalls.get(i).get(j).flag && y - Constants.R / 2 < sector.verticalWalls.get(i).get(j).y + sector.verticalWalls.get(i).get(j).l && x - Constants.R / 2 < sector.verticalWalls.get(i).get(j).x) {
+        while (i < sector.verticalWalls.size() && j < sector.verticalWalls.get(i).size() && sector.verticalWalls.get(i).get(j).flag && y < sector.verticalWalls.get(i).get(j).y + sector.verticalWalls.get(i).get(j).l && x < sector.verticalWalls.get(i).get(j).x) {
+            iAmInVerticalWall = true;
+            verticalWall = sector.verticalWalls.get(i).get(j);
             return false;
         }
 
         //ячейка снизу
-        while (i + 1 < sector.verticalWalls.size() && j + 2 < sector.verticalWalls.get(i + 1).size() && sector.verticalWalls.get(i + 1).get(j + 2).flag && y + Constants.R / 2 > sector.verticalWalls.get(i + 1).get(j + 2).y && x + Constants.R / 2 > sector.verticalWalls.get(i + 1).get(j + 2).x) {
+        while (i + 1 < sector.verticalWalls.size() && j + 2 < sector.verticalWalls.get(i + 1).size() && sector.verticalWalls.get(i + 1).get(j + 2).flag && y > sector.verticalWalls.get(i + 1).get(j + 2).y && x > sector.verticalWalls.get(i + 1).get(j + 2).x) {
+            iAmInVerticalWall = true;
+            verticalWall = sector.verticalWalls.get(i + 1).get(j + 2);
             return false;
         }
-        while (i < sector.verticalWalls.size() && j + 2 < sector.verticalWalls.get(i).size() && sector.verticalWalls.get(i).get(j + 2).flag && y + Constants.R / 2 > sector.verticalWalls.get(i).get(j + 2).y && x - Constants.R / 2 < sector.verticalWalls.get(i).get(j + 2).x) {
+        while (i < sector.verticalWalls.size() && j + 2 < sector.verticalWalls.get(i).size() && sector.verticalWalls.get(i).get(j + 2).flag && y > sector.verticalWalls.get(i).get(j + 2).y && x < sector.verticalWalls.get(i).get(j + 2).x) {
+            iAmInVerticalWall = true;
+            verticalWall = sector.verticalWalls.get(i).get(j + 2);
             return false;
         }
         return true;

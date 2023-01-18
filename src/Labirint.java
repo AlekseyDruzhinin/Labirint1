@@ -19,91 +19,101 @@ public class Labirint {
         addSector();
     }
 
-    public BaseCell getCell(int i, int j, int k){
+    public BaseCell getCell(int i, int j, int k) {
         return sectors.get(i).cells.get(j).get(k);
     }
-    public void paint(Graphics g){
-        for (BaseSector sector : sectors){
+
+    public void paint(Graphics g) {
+        for (BaseSector sector : sectors) {
             sector.paint(g);
         }
-        for (BaseBullet bullet : userBullets){
+        for (BaseBullet bullet : userBullets) {
             bullet.paint(g);
-            if (Constants.DEVELORER){
+            if (Constants.DEVELORER) {
                 g.setColor(Color.BLUE);
-                g.fillRect((int)getCell(bullet.indexSector, bullet.i, bullet.j).x, (int)getCell(0, bullet.i, bullet.j).y, Constants.R, Constants.R);
+                g.fillRect((int) getCell(bullet.indexSector, bullet.i, bullet.j).x, (int) getCell(0, bullet.i, bullet.j).y, Constants.R, Constants.R);
                 g.setColor(Color.RED);
             }
         }
-        for (BaseBullet bullet : diedBullets){
+        for (BaseBullet bullet : diedBullets) {
             bullet.paintLine(g);
         }
     }
 
-    public BaseSector getSector(int i){
+    public BaseSector getSector(int i) {
         return sectors.get(i);
     }
 
-    public void go(double v){
-        for (BaseSector sector : sectors){
+    public void go(double v) {
+        for (BaseSector sector : sectors) {
             sector.go(v);
         }
-        for (BaseBullet bullet : userBullets){
+        for (BaseBullet bullet : userBullets) {
             bullet.x += v;
         }
-        for (BaseBullet bullet : diedBullets){
+        for (BaseBullet bullet : diedBullets) {
             bullet.startX += v;
             bullet.endX += v;
         }
     }
 
-    public void addSector(){
-        sectors.add(new StandardSector(sectors.get(sectors.size()-1).x+ sectors.get(sectors.size()-1).widthCnt * Constants.R * 2, Constants.SDVIG, panel));
-        for (int i = 1; i < sectors.get(0).verticalWalls.get(0).size(); ++i){
-            if (random.nextInt(3) == 0){
-                sectors.get(sectors.size()-1).verticalWalls.get(0).get(i).flag = false;
-                sectors.get(sectors.size()-2).verticalWalls.get(sectors.get(sectors.size()-2).verticalWalls.size()-1).get(i).flag = false;
+    public void addSector() {
+        sectors.add(new StandardSector(sectors.get(sectors.size() - 1).x + sectors.get(sectors.size() - 1).widthCnt * Constants.R * 2, Constants.SDVIG, panel));
+        for (int i = 1; i < sectors.get(0).verticalWalls.get(0).size(); ++i) {
+            if (random.nextInt(3) == 0) {
+                sectors.get(sectors.size() - 1).verticalWalls.get(0).get(i).flag = false;
+                sectors.get(sectors.size() - 2).verticalWalls.get(sectors.get(sectors.size() - 2).verticalWalls.size() - 1).get(i).flag = false;
             }
         }
     }
 
-    public void update(long time){
-        boolean itIsDied = sectors.get(indexDied).update((double)time * Constants.V_POLE);
-        if (itIsDied){
-            if (indexDied == 0){
+    public void update(long time) {
+        boolean itIsDied = sectors.get(indexDied).update((double) time * Constants.V_POLE);
+        if (itIsDied) {
+            if (indexDied == 0) {
                 indexDied = 1;
-            }else{
+            } else {
                 sectors.remove(0);
             }
         }
     }
 
-    public void addBullet(BaseBullet bullet){
+    public void addBullet(BaseBullet bullet) {
         userBullets.add(bullet);
     }
 
-    public void goBullets(long time){
+    public void goBullets(long time) {
         ArrayList<BaseBullet> delBullets = new ArrayList<>();
-        for (BaseBullet bullet : userBullets){
-            if(!bullet.go(this, time)) {
+        for (BaseBullet bullet : userBullets) {
+            if (!bullet.go(this, time)) {
                 bullet.died(this, time);
                 delBullets.add(bullet);
             }
         }
-        for (BaseBullet bullet : delBullets){
+        for (BaseBullet bullet : delBullets) {
             userBullets.remove(bullet);
             diedBullets.add(bullet);
-            Segment segment = new Segment(bullet.x, bullet.y, bullet.x + bullet.v.x, bullet.y + bullet.v.y);
-            MyPoint point = segment.pointLineIntersection(new)
-                    // разделить стенки
+            Segment segmentJumpBullet = new Segment(bullet.x, bullet.y, bullet.x + bullet.v.x, bullet.y + bullet.v.y);
+            if (bullet.iAmInVerticalWall) {
+                Segment wall = new Segment(bullet.verticalWall);
+                MyPoint point = segmentJumpBullet.pointLineIntersection(wall);
+                bullet.endX = point.x;
+                bullet.endY = point.y;
+            } else {
+                Segment wall = new Segment(bullet.parallelWall);
+                MyPoint point = segmentJumpBullet.pointLineIntersection(wall);
+                bullet.endX = point.x;
+                bullet.endY = point.y;
+            }
         }
         long nowTime = System.currentTimeMillis();
         ArrayList<BaseBullet> delDiedBullets = new ArrayList<>();
-        for (BaseBullet bullet : diedBullets){
-            if (nowTime - bullet.timeDied > Constants.TIME_LIFE_AFTER_DIED){
+        for (BaseBullet bullet : diedBullets) {
+            if (nowTime - bullet.timeDied > Constants.TIME_LIFE_AFTER_DIED) {
                 delDiedBullets.add(bullet);
             }
         }
-        for (BaseBullet bullet : delDiedBullets){
+        for (BaseBullet bullet : delDiedBullets) {
             diedBullets.remove(bullet);
         }
     }

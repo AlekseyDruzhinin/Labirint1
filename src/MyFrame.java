@@ -170,13 +170,16 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        StandardBullet bullet = new StandardBullet(userHuman.x, userHuman.y, new Vector(e.getX()-userHuman.x, e.getY()-userHuman.y), userHuman);
-        labirint.addBullet(bullet);
+
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        StandardBullet bullet = new StandardBullet(userHuman.x, userHuman.y, new Vector(e.getX()-userHuman.x, e.getY()-userHuman.y), userHuman);
+        labirint.addBullet(bullet);
+        System.out.println("mousePressed");
+        System.out.println("kghlidufghliaeurghliaerughliaerug");
+        System.out.println(Constants.i++);
     }
 
     @Override

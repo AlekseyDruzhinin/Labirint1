@@ -5,16 +5,12 @@ import java.util.Random;
 
 public class Labirint {
     ArrayList<BaseSector> sectors = new ArrayList<>();
-    ArrayList<BaseBullet> diedBullets = new ArrayList<>();//список пулек, которые умерли, но слеж ещё рисуется
 
     //массив ботов
     ArrayList<BaseBot> bots = new ArrayList<>();
 
     MyFrame panel;
     Random random = new Random();
-
-    ArrayList<BaseBullet> userBullets = new ArrayList<>();
-
     int indexDied = 0;
 
     public Labirint(MyFrame panel) throws IOException {
@@ -33,17 +29,6 @@ public class Labirint {
         for (BaseSector sector : sectors) {
             sector.paint(g);
         }
-        for (BaseBullet bullet : userBullets) {
-            bullet.paint(g);
-            if (Constants.DEVELORER) {
-                g.setColor(Color.BLUE);
-                g.fillRect((int) getCell(bullet.indexSector, bullet.i, bullet.j).x, (int) getCell(0, bullet.i, bullet.j).y, Constants.R, Constants.R);
-                g.setColor(Color.RED);
-            }
-        }
-        for (BaseBullet bullet : diedBullets) {
-            bullet.paintLine(g);
-        }
         for (BaseBot bot : bots) {
             if (Constants.DEVELORER) {
                 g.setColor(new Color(239, 124, 124, 255));
@@ -61,13 +46,6 @@ public class Labirint {
     public void go(double v) {
         for (BaseSector sector : sectors) {
             sector.go(v);
-        }
-        for (BaseBullet bullet : userBullets) {
-            bullet.x += v;
-        }
-        for (BaseBullet bullet : diedBullets) {
-            bullet.startX += v;
-            bullet.endX += v;
         }
         for (BaseBot bot : bots) {
             bot.x += v;
@@ -95,60 +73,6 @@ public class Labirint {
         }
     }
 
-    public void addBullet(BaseBullet bullet) {
-        userBullets.add(bullet);
-    }
-
     public void goBullets(long time) {
-        ArrayList<BaseBullet> delBullets = new ArrayList<>();
-        ArrayList<BaseBot> delBot = new ArrayList<>();
-        for (BaseBullet bullet : userBullets) {
-            if (!bullet.go(this, time)) {
-                bullet.died(this, time);
-                delBullets.add(bullet);
-            }
-            for (BaseBot bot : bots){
-                if (Math.abs((bullet.x-bot.x)*(bullet.x-bot.x) + (bullet.y-bot.y)*(bullet.y-bot.y)) < (double)(Constants.R*Constants.R)/16.0){
-                    bullet.iAmInBot = true;
-                    bullet.died(this, time);
-                    delBullets.add(bullet);
-                    bot.hit();
-                    if (bot.hp < 0.0){
-                        delBot.add(bot);
-                    }
-                }
-            }
-            for (BaseBot bot : delBot){
-                bots.remove(bot);
-            }
-        }
-        for (BaseBullet bullet : delBullets) {
-            userBullets.remove(bullet);
-            diedBullets.add(bullet);
-            if (!bullet.iAmInBot){
-                Segment segmentJumpBullet = new Segment(bullet.x, bullet.y, bullet.x + bullet.v.x, bullet.y + bullet.v.y);
-                if (bullet.iAmInVerticalWall) {
-                    Segment wall = new Segment(bullet.verticalWall);
-                    MyPoint point = segmentJumpBullet.pointLineIntersection(wall);
-                    bullet.endX = point.x;
-                    bullet.endY = point.y;
-                } else {
-                    Segment wall = new Segment(bullet.parallelWall);
-                    MyPoint point = segmentJumpBullet.pointLineIntersection(wall);
-                    bullet.endX = point.x;
-                    bullet.endY = point.y;
-                }
-            }
-        }
-        long nowTime = System.currentTimeMillis();
-        ArrayList<BaseBullet> delDiedBullets = new ArrayList<>();
-        for (BaseBullet bullet : diedBullets) {
-            if (nowTime - bullet.timeDied > Constants.TIME_LIFE_AFTER_DIED) {
-                delDiedBullets.add(bullet);
-            }
-        }
-        for (BaseBullet bullet : delDiedBullets) {
-            diedBullets.remove(bullet);
-        }
     }
 }

@@ -51,13 +51,6 @@ public abstract class BaseBot{
         op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
     }
 
-    public boolean insertWithBullet (BaseBullet bullet){
-        if (Math.abs((x-bullet.x)*(x-bullet.x) + (y-bullet.y)*(y-bullet.y)) <= ((double)(Constants.R)/2) * ((double)(Constants.R)/2)){
-            return true;
-        }
-        return false;
-    }
-
     public void hit(){
         hp -= Constants.DAMAGE_USER_BULLET;
     }

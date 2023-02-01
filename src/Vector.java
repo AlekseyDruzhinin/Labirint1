@@ -8,9 +8,29 @@ public class Vector {
         this.length = Math.sqrt(x * x + y * y);
     }
 
-    public Vector(double length, double agreeInRadians, boolean flag){
-        this.x = length * Math.sin(agreeInRadians);
-        this.y = length * Math.cos(agreeInRadians);
+   public void setLength(double lengthNew){
+        x = x / length * lengthNew;
+        y = y / length * lengthNew;
+   }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getLength() {
+        return length;
     }
 
     public double scalarComposition(Vector vector) {

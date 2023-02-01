@@ -12,9 +12,3 @@ public class Main {
         //System.out.println("End");
     }
 }
-
-//public class Main {
-//    public static void main(String[] args) {
-//        System.out.println(Math.cos(60.0));
-//    }
-//}

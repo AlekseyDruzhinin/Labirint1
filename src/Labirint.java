@@ -9,6 +9,8 @@ public class Labirint {
     //массив ботов
     ArrayList<BaseBot> bots = new ArrayList<>();
 
+    ArrayList<BaseBullet> bullets = new ArrayList<>();
+
     MyFrame panel;
     Random random = new Random();
     int indexDied = 0;
@@ -37,6 +39,9 @@ public class Labirint {
             }
             bot.paint(g);
         }
+        for (BaseBullet bullet : bullets){
+            bullet.print(g);
+        }
     }
 
     public BaseSector getSector(int i) {
@@ -49,6 +54,10 @@ public class Labirint {
         }
         for (BaseBot bot : bots) {
             bot.x += v;
+        }
+        for (BaseBullet bullet : bullets){
+            bullet.segment.setX1(bullet.segment.getX1() + v);
+            bullet.segment.setX2(bullet.segment.getX2() + v);
         }
     }
 
@@ -73,6 +82,13 @@ public class Labirint {
         }
     }
 
-    public void goBullets(long time) {
+    public void addBullet(BaseBullet bullet){
+        bullets.add(bullet);
+    }
+
+    public  void goBullets(long time){
+        for (BaseBullet bullet : bullets){
+            bullet.go(this, time);
+        }
     }
 }

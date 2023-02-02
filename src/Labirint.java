@@ -40,7 +40,7 @@ public class Labirint {
             bot.paint(g);
         }
         for (BaseBullet bullet : bullets){
-            bullet.print(g);
+            bullet.print(g, this);
         }
     }
 
@@ -71,13 +71,17 @@ public class Labirint {
         }
     }
 
-    public void update(long time) {
+    public void update(long time, Human userHuman) {
         boolean itIsDied = sectors.get(indexDied).update((double) time * Constants.V_POLE);
         if (itIsDied) {
             if (indexDied == 0) {
                 indexDied = 1;
             } else {
                 sectors.remove(0);
+                userHuman.indexSector--;
+                for (BaseBot bot : bots){
+                    bot.indexSector--;
+                }
             }
         }
     }

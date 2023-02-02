@@ -63,7 +63,7 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
         }else{
             if (nowTime - Constants.TIME_START_PROGRAM > Constants.TIME_TO_DIED_LABIRINT){
-                labirint.update(nowTime - timePriviosPrint);
+                labirint.update(nowTime - timePriviosPrint, userHuman);
             }
 
             if (userHuman != null){
@@ -175,7 +175,7 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
     @Override
     public void mousePressed(MouseEvent e) {
-        BaseBullet bullet = new BaseBullet(userHuman.x, userHuman.y, e.getX(), e.getY());
+        BaseBullet bullet = new BaseBullet(userHuman.x, userHuman.y, e.getX(), e.getY(), userHuman);
         labirint.addBullet(bullet);
     }
 

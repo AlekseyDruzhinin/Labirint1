@@ -90,9 +90,9 @@ public class Labirint {
         bullets.add(bullet);
     }
 
-    public  void goBullets(long time){
+    public  void goBullets(long time, Graphics g) {
         for (BaseBullet bullet : bullets){
-            bullet.go(this, time);
+            bullet.go(this, time, g);
         }
     }
 }

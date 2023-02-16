@@ -79,7 +79,8 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
             if (labirint != null){
                 labirint.paint(g);
-                labirint.goBullets(nowTime - timePriviosPrint);
+                long mega_bufer = nowTime - timePriviosPrint;
+                labirint.goBullets(mega_bufer, g);
             }
             if (userHuman != null){
                 userHuman.go(labirint, nowTime - timePriviosPrint);

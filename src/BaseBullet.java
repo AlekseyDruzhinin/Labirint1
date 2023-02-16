@@ -28,7 +28,8 @@ public class BaseBullet {
         }
     }
 
-    public void go(Labirint labirint, long time) {
+    public void go(Labirint labirint, long time, Graphics g) {
+        this.checkDied(labirint, time, g);
         this.updateCell(labirint, segment.getX2() + (double) time * v.getX(), segment.getY2() + (double) time * v.getY());
 
         segment.setX2((int) (segment.getX2() + (double) time * v.getX()));
@@ -63,5 +64,27 @@ public class BaseBullet {
         }
 
         j += dj;
+    }
+
+    public void checkDied(Labirint labirint, long time, Graphics g) {
+        //System.out.println(i + " " + j);
+        Segment jump = new Segment(segment.getX1(), segment.getY1(), segment.getX2() + (double) time * v.getX(), segment.getY2() + (double) time * v.getY());
+        MyPoint pointDied = new MyPoint(0.0, 0.0);
+        BaseSector sector = labirint.getSector(indexSector);
+        Segment wallp = new Segment(sector.parallelWalls.get(j).get(i+1));
+        if (jump.isIntersection(wallp)){
+            pointDied = jump.getIntersection(wallp);
+            pointDied.print(g);
+            while(true){
+
+            }
+        }
+        wallp = new Segment(sector.parallelWalls.get(j+1).get(i+1));
+        if (jump.isIntersection(wallp)){
+            pointDied = jump.getIntersection(wallp);
+            pointDied.print(g);
+            while(true){}
+        }
+
     }
 }

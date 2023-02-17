@@ -3,13 +3,13 @@ public class Line {
 
     public Line(Segment segment) {
         if (segment.getX1() == segment.getX2()){
-            this.a = 0;
-            this.b = (segment.getX2()-segment.getX1())/(segment.getY1() - segment.getY2());
-            this.c = -b* segment.getY1();
+            this.b = 0.0;
+            this.a = 1.0;
+            this.c = -segment.getX1();
         }else if (segment.getY1() == segment.getY2()){
-            this.b = 0;
-            this.a = (segment.getY2()-segment.getY1())/(segment.getX1() - segment.getX2());
-            this.c = -a*segment.getX1();
+            this.a = 0;
+            this.b = 1.0;
+            this.c = -segment.getY1();
         }else{
             this.a = 1.0;
             this.b = (segment.getX2()-segment.getX1())/(segment.getY1() - segment.getY2());

@@ -7,6 +7,8 @@ public class BaseBullet {
     int i, j;
     int indexSector;
 
+    MyPoint pointDiedBullet = new MyPoint(0.0, 0.0);
+
     public BaseBullet(double bornX, double bornY, double mouseX, double mouseY, Human userHuman) {
         this.segment = new Segment(bornX, bornY, bornX, bornY);
         this.v = new Vector(mouseX - bornX, mouseY - bornY);
@@ -28,12 +30,16 @@ public class BaseBullet {
         }
     }
 
-    public void go(Labirint labirint, long time, Graphics g) {
-        this.checkDied(labirint, time, g);
+    public boolean go(Labirint labirint, long time, Graphics g) {
+        boolean flagIAmDied = this.checkDied(labirint, time, g);
         this.updateCell(labirint, segment.getX2() + (double) time * v.getX(), segment.getY2() + (double) time * v.getY());
 
-        segment.setX2((int) (segment.getX2() + (double) time * v.getX()));
-        segment.setY2((int) (segment.getY2() + (double) time * v.getY()));
+        if (!flagIAmDied) {
+            segment.setX2((segment.getX2() + (double) time * v.getX()));
+            segment.setY2((segment.getY2() + (double) time * v.getY()));
+        }
+
+        return flagIAmDied;
     }
 
     public void updateCell(Labirint labirint, double newX, double newY) {
@@ -66,25 +72,64 @@ public class BaseBullet {
         j += dj;
     }
 
-    public void checkDied(Labirint labirint, long time, Graphics g) {
+    public boolean checkDied(Labirint labirint, long time, Graphics g) {
         //System.out.println(i + " " + j);
-        Segment jump = new Segment(segment.getX1(), segment.getY1(), segment.getX2() + (double) time * v.getX(), segment.getY2() + (double) time * v.getY());
-        MyPoint pointDied = new MyPoint(0.0, 0.0);
-        BaseSector sector = labirint.getSector(indexSector);
-        Segment wallp = new Segment(sector.parallelWalls.get(j).get(i+1));
-        if (jump.isIntersection(wallp)){
-            pointDied = jump.getIntersection(wallp);
-            pointDied.print(g);
-            while(true){
+        Segment jump = new Segment(segment.getX2(), segment.getY2(), segment.getX2() + (double) time * v.getX(), segment.getY2() + (double) time * v.getY());
+        MyPoint pointFirstDied = new MyPoint(0.0, 0.0);
+        MyPoint pointStart = new MyPoint(jump.getX1(), jump.getY1());
+        for (int indexSector1 = 0; indexSector1 < labirint.sectors.size(); ++indexSector1){
+            BaseSector sector = labirint.getSector(indexSector1);
+            for (int i = 0; i < sector.cells.size(); ++i){
+                for (int j = 0; j < sector.cells.get(0).size(); ++j){
+                    MyPoint pointDied = new MyPoint(0.0, 0.0);
+                    Segment wallp = new Segment(sector.parallelWalls.get(j).get(i+1));
+                    if (sector.parallelWalls.get(j).get(i+1).flag == true){
+                        if (jump.isIntersection(wallp)){
+                            pointDied = jump.getIntersection(wallp);
+//                        pointDied.print(g);
+                        }
+                    }
 
+                    wallp = new Segment(sector.parallelWalls.get(j+1).get(i+1));
+                    if (sector.parallelWalls.get(j+1).get(i+1).flag == true){
+                        if (jump.isIntersection(wallp)){
+                            pointDied = jump.getIntersection(wallp);
+//                        pointDied.print(g);
+                        }
+                    }
+
+
+                    Segment wallv = new Segment(sector.verticalWalls.get(i).get(j+1));
+                    if (sector.verticalWalls.get(i).get(j+1).flag == true){
+                        if (jump.isIntersection(wallv)){
+                            pointDied = jump.getIntersection(wallv);
+//                        pointDied.print(g);
+                        }
+                    }
+
+                    wallv = new Segment(sector.verticalWalls.get(i+1).get(j+1));
+                    if (sector.verticalWalls.get(i+1).get(j+1).flag == true){
+                        if (jump.isIntersection(wallv)){
+                            pointDied = jump.getIntersection(wallv);
+//                        pointDied.print(g);
+                        }
+                    }
+                    if (pointFirstDied.x == 0.0 && pointFirstDied.y == 0.0){
+                        pointFirstDied = new MyPoint(pointDied);
+                    }else if (pointStart.lenght(pointFirstDied) > pointStart.lenght(pointDied)){
+                        pointFirstDied = new MyPoint(pointDied);
+                    }
+                }
             }
         }
-        wallp = new Segment(sector.parallelWalls.get(j+1).get(i+1));
-        if (jump.isIntersection(wallp)){
-            pointDied = jump.getIntersection(wallp);
-            pointDied.print(g);
-            while(true){}
-        }
 
+        if (pointFirstDied.x != 0.0 && pointFirstDied.y != 0.0){
+            pointDiedBullet = new MyPoint(pointFirstDied);
+            segment.setX2(pointDiedBullet.x);
+            segment.setY2(pointDiedBullet.y);
+            return true;
+        }else{
+            return false;
+        }
     }
 }

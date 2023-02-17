@@ -20,7 +20,7 @@ public class Segment {
         this.x1 = wall.x;
         this.y1 = wall.y;
         this.x2 = wall.x;
-        this.y2 = wall.x + wall.l;
+        this.y2 = wall.y + wall.l;
     }
 
     public void setX1(double x1) {

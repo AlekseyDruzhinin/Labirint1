@@ -8,9 +8,18 @@ public class MyPoint {
         this.y = y;
     }
 
+    public MyPoint(MyPoint point){
+        this.x = point.x;;
+        this.y = point.y;
+    }
+
     public void print(Graphics g){
         g.setColor(Color.GREEN);
-        g.fillRect((int)x, (int)y, 10, 10);
+        g.fillRect((int)x, (int)y, 4, 4);
         g.setColor(Color.RED);
+    }
+
+    public double lenght(MyPoint point){
+        return Math.sqrt((point.x-this.x)*(point.x-this.x) + (point.y-this.y)*(point.y-this.y));
     }
 }

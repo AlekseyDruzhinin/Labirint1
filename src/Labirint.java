@@ -9,6 +9,7 @@ public class Labirint {
     //массив ботов
     ArrayList<BaseBot> bots = new ArrayList<>();
 
+    ArrayList<BaseBullet> diedBullets = new ArrayList<>();
     ArrayList<BaseBullet> bullets = new ArrayList<>();
 
     MyFrame panel;
@@ -42,6 +43,9 @@ public class Labirint {
         for (BaseBullet bullet : bullets){
             bullet.print(g, this);
         }
+        for (BaseBullet bullet : diedBullets){
+            bullet.print(g, this);
+        }
     }
 
     public BaseSector getSector(int i) {
@@ -56,6 +60,10 @@ public class Labirint {
             bot.x += v;
         }
         for (BaseBullet bullet : bullets){
+            bullet.segment.setX1(bullet.segment.getX1() + v);
+            bullet.segment.setX2(bullet.segment.getX2() + v);
+        }
+        for (BaseBullet bullet : diedBullets){
             bullet.segment.setX1(bullet.segment.getX1() + v);
             bullet.segment.setX2(bullet.segment.getX2() + v);
         }
@@ -90,9 +98,16 @@ public class Labirint {
         bullets.add(bullet);
     }
 
-    public  void goBullets(long time, Graphics g) {
+    public void goBullets(long time, Graphics g) {
+        ArrayList<BaseBullet> bulletDiedInThisStep = new ArrayList<>();
         for (BaseBullet bullet : bullets){
-            bullet.go(this, time, g);
+            if (bullet.go(this, time, g)){
+                bulletDiedInThisStep.add(bullet);
+            }
+        }
+        for (BaseBullet bullet : bulletDiedInThisStep){
+            bullets.remove(bullet);
+            diedBullets.add(bullet);
         }
     }
 }

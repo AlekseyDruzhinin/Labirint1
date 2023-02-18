@@ -55,10 +55,14 @@ public abstract class BaseBot{
         hp -= Constants.DAMAGE_USER_BULLET;
     }
 
-    public void update(Labirint labirint) {
+    public void update(Labirint labirint, Human userHuman) {
         BaseSector sector = labirint.sectors.get(labirint.indexDied);
         if (x - sector.x - Constants.R / 2 < sector.rightBound) {
             hp = 0.0;
         }
+
+        Vector vectorUp = new Vector(0.0, -1.0);
+        Vector vectorHuman = new Vector(this.x, this.y, userHuman.x, userHuman.y);
+        rotate(Math.atan2(vectorUp.vectorComposition(vectorHuman), vectorUp.scalarComposition(vectorHuman)));
     }
 }

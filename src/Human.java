@@ -64,7 +64,7 @@ public abstract class Human extends BaseHuman {
 //        System.out.println(i + " " + j + " " + indexSector);
     }
 
-    public void go(Labirint labirint, long time) {
+    public void go(Labirint labirint, long time) throws IOException {
         double v = (double) time * vHuman;
         if (indexSector >= labirint.sectors.size() - 1) {
             labirint.addSector();

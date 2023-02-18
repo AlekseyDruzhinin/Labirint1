@@ -83,7 +83,11 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
                 labirint.goBullets(mega_bufer, g);
             }
             if (userHuman != null){
-                userHuman.go(labirint, nowTime - timePriviosPrint);
+                try {
+                    userHuman.go(labirint, nowTime - timePriviosPrint);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 if (Constants.DEVELORER){
                     g.setColor(Color.GREEN);
                     g.fillRect((int)labirint.getCell(userHuman.indexSector, userHuman.i, userHuman.j).x, (int)labirint.getCell(userHuman.indexSector    , userHuman.i, userHuman.j).y, Constants.R, Constants.R);

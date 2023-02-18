@@ -19,8 +19,12 @@ public class Labirint {
     public Labirint(MyFrame panel) throws IOException {
         this.panel = panel;
         sectors.add(new StandardSector(Constants.SDVIG, Constants.SDVIG, panel));
-        RedBot redBot = new RedBot(getCell(0, 5, 5).x, getCell(0, 5, 5).y, 5, 5, 0);
-        bots.add(redBot);
+        for (int iter = 0; iter < 10; ++iter){
+            int j1 = random.nextInt(sectors.get(0).cells.size());
+            int k1 = random.nextInt(sectors.get(0).cells.get(0).size());
+            RedBot redBot = new RedBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0);
+            bots.add(redBot);
+        }
         addSector();
     }
 
@@ -69,7 +73,7 @@ public class Labirint {
         }
     }
 
-    public void addSector() {
+    public void addSector() throws IOException {
         sectors.add(new StandardSector(sectors.get(sectors.size() - 1).x + sectors.get(sectors.size() - 1).widthCnt * Constants.R * 2, Constants.SDVIG, panel));
         for (int i = 1; i < sectors.get(0).verticalWalls.get(0).size(); ++i) {
             if (random.nextInt(3) == 0) {
@@ -77,13 +81,19 @@ public class Labirint {
                 sectors.get(sectors.size() - 2).verticalWalls.get(sectors.get(sectors.size() - 2).verticalWalls.size() - 1).get(i).flag = false;
             }
         }
+        for (int iter = 0; iter < 10; ++iter){
+            int j1 = random.nextInt(sectors.get(0).cells.size());
+            int k1 = random.nextInt(sectors.get(0).cells.get(0).size());
+            RedBot redBot = new RedBot(getCell(sectors.size()-1, j1, k1).x, getCell(sectors.size()-1, j1, k1).y, j1, k1, sectors.size()-1);
+            bots.add(redBot);
+        }
     }
 
     public void update(long time, Human userHuman) {
         boolean itIsDied = sectors.get(indexDied).update((double) time * Constants.V_POLE);
 
         for (BaseBot bot : bots){
-            bot.update(this);
+            bot.update(this, userHuman);
         }
 
         if (itIsDied) {

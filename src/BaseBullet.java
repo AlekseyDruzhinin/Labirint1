@@ -33,18 +33,18 @@ public class BaseBullet {
     }
 
     public boolean go(Labirint labirint, long time, Graphics g) {
-        boolean flagIAmDied = this.checkDied(labirint, time, g);
+        boolean flagIAmDied1 = this.checkDied(labirint, time, g);
         this.updateCell(labirint, segment.getX2() + (double) time * v.getX(), segment.getY2() + (double) time * v.getY());
-        if (!flagIAmDied) {
-            segment.setX2((segment.getX2() + (double) time * v.getX()));
-            segment.setY2((segment.getY2() + (double) time * v.getY()));
-        }
-
+        boolean flagIAmDied = flagIAmDied1;
         for (BaseBot bot : labirint.bots){
-            if (iAmWin(labirint, bot)){
+            if (iAmWin(labirint, bot, time)){
                 flagIAmDied = true;
                 bot.hit();
             }
+        }
+        if (!flagIAmDied1) {
+            segment.setX2((segment.getX2() + (double) time * v.getX()));
+            segment.setY2((segment.getY2() + (double) time * v.getY()));
         }
 
         return flagIAmDied;
@@ -142,9 +142,9 @@ public class BaseBullet {
         }
     }
 
-    public boolean iAmWin(Labirint labirint, BaseBot bot) {
-        MyPoint A = new MyPoint(this.segment.getX1(), this.segment.getY1());
-        MyPoint B = new MyPoint(this.segment.getX2(), this.segment.getY2());
+    public boolean iAmWin(Labirint labirint, BaseBot bot, long time) {
+        MyPoint A = new MyPoint(this.segment.getX2(), this.segment.getY2());
+        MyPoint B = new MyPoint(this.segment.getX2() + (double)time * v.x, this.segment.getY2() + (double)time *v.y);
         MyPoint O = new MyPoint(bot.x, bot.y);
         Vector AB = new Vector(A, B);
         Vector BA = new Vector(B, A);

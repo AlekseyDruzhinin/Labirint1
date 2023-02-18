@@ -61,8 +61,29 @@ public abstract class BaseBot{
             hp = 0.0;
         }
 
-        Vector vectorUp = new Vector(0.0, -1.0);
-        Vector vectorHuman = new Vector(this.x, this.y, userHuman.x, userHuman.y);
-        rotate(Math.atan2(vectorUp.vectorComposition(vectorHuman), vectorUp.scalarComposition(vectorHuman)));
+        boolean visu = true;
+        Segment botHuman = new Segment(x, y, userHuman.x, userHuman.y);
+        for (BaseSector sector1 : labirint.sectors){
+            for (ArrayList<StandardParallelWall> wallps : sector1.parallelWalls){
+                for (StandardParallelWall wallp : wallps){
+                    if (botHuman.isIntersection(new Segment(wallp))){
+                        visu = false;
+                    }
+                }
+            }
+            for (ArrayList<StandardVerticalWall> wallvs : sector1.verticalWalls){
+                for (StandardVerticalWall wallv : wallvs){
+                    if (botHuman.isIntersection(new Segment(wallv))){
+                        visu = false;
+                    }
+                }
+            }
+        }
+
+        if (visu){
+            Vector vectorUp = new Vector(0.0, -1.0);
+            Vector vectorHuman = new Vector(this.x, this.y, userHuman.x, userHuman.y);
+            rotate(Math.atan2(vectorUp.vectorComposition(vectorHuman), vectorUp.scalarComposition(vectorHuman)));
+        }
     }
 }

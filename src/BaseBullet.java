@@ -9,6 +9,8 @@ public class BaseBullet {
 
     MyPoint pointDiedBullet = new MyPoint(0.0, 0.0);
 
+    long timeDied = 0;
+
     public BaseBullet(double bornX, double bornY, double mouseX, double mouseY, Human userHuman) {
         this.segment = new Segment(bornX, bornY, bornX, bornY);
         this.v = new Vector(mouseX - bornX, mouseY - bornY);
@@ -127,6 +129,7 @@ public class BaseBullet {
             pointDiedBullet = new MyPoint(pointFirstDied);
             segment.setX2(pointDiedBullet.x);
             segment.setY2(pointDiedBullet.y);
+            timeDied = System.currentTimeMillis();
             return true;
         }else{
             return false;

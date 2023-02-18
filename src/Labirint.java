@@ -92,6 +92,16 @@ public class Labirint {
                 }
             }
         }
+
+        ArrayList<BaseBullet> diedDiedBullets = new ArrayList<>();
+        for (BaseBullet bullet : diedBullets){
+            if (System.currentTimeMillis() - bullet.timeDied > Constants.TIME_LIFE_AFTER_DIED){
+                diedDiedBullets.add(bullet);
+            }
+        }
+        for (BaseBullet bullet : diedDiedBullets){
+            diedBullets.remove(bullet);
+        }
     }
 
     public void addBullet(BaseBullet bullet){

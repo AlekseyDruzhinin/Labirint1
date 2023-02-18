@@ -81,6 +81,11 @@ public class Labirint {
 
     public void update(long time, Human userHuman) {
         boolean itIsDied = sectors.get(indexDied).update((double) time * Constants.V_POLE);
+
+        for (BaseBot bot : bots){
+            bot.update(this);
+        }
+
         if (itIsDied) {
             if (indexDied == 0) {
                 indexDied = 1;

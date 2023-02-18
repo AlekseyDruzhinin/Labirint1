@@ -54,4 +54,11 @@ public abstract class BaseBot{
     public void hit(){
         hp -= Constants.DAMAGE_USER_BULLET;
     }
+
+    public void update(Labirint labirint) {
+        BaseSector sector = labirint.sectors.get(labirint.indexDied);
+        if (x - sector.x - Constants.R / 2 < sector.rightBound) {
+            hp = 0.0;
+        }
+    }
 }

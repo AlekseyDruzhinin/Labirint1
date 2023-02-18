@@ -20,6 +20,12 @@ public class Vector {
         this.length = Math.sqrt(x * x + y * y);
     }
 
+    public Vector(MyPoint pointStart, MyPoint pointEnd){
+        this.x = pointEnd.x - pointStart.x;
+        this.y = pointEnd.y - pointStart.y;
+        this.length = Math.sqrt(x * x + y * y);
+    }
+
     public void setLength(double lengthNew) {
         x = x / length * lengthNew;
         y = y / length * lengthNew;

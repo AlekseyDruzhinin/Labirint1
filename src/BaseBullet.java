@@ -35,10 +35,16 @@ public class BaseBullet {
     public boolean go(Labirint labirint, long time, Graphics g) {
         boolean flagIAmDied = this.checkDied(labirint, time, g);
         this.updateCell(labirint, segment.getX2() + (double) time * v.getX(), segment.getY2() + (double) time * v.getY());
-
         if (!flagIAmDied) {
             segment.setX2((segment.getX2() + (double) time * v.getX()));
             segment.setY2((segment.getY2() + (double) time * v.getY()));
+        }
+
+        for (BaseBot bot : labirint.bots){
+            if (iAmWin(labirint, bot)){
+                flagIAmDied = true;
+                bot.hit();
+            }
         }
 
         return flagIAmDied;
@@ -79,59 +85,87 @@ public class BaseBullet {
         Segment jump = new Segment(segment.getX2(), segment.getY2(), segment.getX2() + (double) time * v.getX(), segment.getY2() + (double) time * v.getY());
         MyPoint pointFirstDied = new MyPoint(0.0, 0.0);
         MyPoint pointStart = new MyPoint(jump.getX1(), jump.getY1());
-        for (int indexSector1 = 0; indexSector1 < labirint.sectors.size(); ++indexSector1){
+        for (int indexSector1 = 0; indexSector1 < labirint.sectors.size(); ++indexSector1) {
             BaseSector sector = labirint.getSector(indexSector1);
-            for (int i = 0; i < sector.cells.size(); ++i){
-                for (int j = 0; j < sector.cells.get(0).size(); ++j){
+            for (int i = 0; i < sector.cells.size(); ++i) {
+                for (int j = 0; j < sector.cells.get(0).size(); ++j) {
                     MyPoint pointDied = new MyPoint(0.0, 0.0);
-                    Segment wallp = new Segment(sector.parallelWalls.get(j).get(i+1));
-                    if (sector.parallelWalls.get(j).get(i+1).flag == true){
-                        if (jump.isIntersection(wallp)){
+                    Segment wallp = new Segment(sector.parallelWalls.get(j).get(i + 1));
+                    if (sector.parallelWalls.get(j).get(i + 1).flag == true) {
+                        if (jump.isIntersection(wallp)) {
                             pointDied = jump.getIntersection(wallp);
 //                        pointDied.print(g);
                         }
                     }
 
-                    wallp = new Segment(sector.parallelWalls.get(j+1).get(i+1));
-                    if (sector.parallelWalls.get(j+1).get(i+1).flag == true){
-                        if (jump.isIntersection(wallp)){
+                    wallp = new Segment(sector.parallelWalls.get(j + 1).get(i + 1));
+                    if (sector.parallelWalls.get(j + 1).get(i + 1).flag == true) {
+                        if (jump.isIntersection(wallp)) {
                             pointDied = jump.getIntersection(wallp);
 //                        pointDied.print(g);
                         }
                     }
 
 
-                    Segment wallv = new Segment(sector.verticalWalls.get(i).get(j+1));
-                    if (sector.verticalWalls.get(i).get(j+1).flag == true){
-                        if (jump.isIntersection(wallv)){
+                    Segment wallv = new Segment(sector.verticalWalls.get(i).get(j + 1));
+                    if (sector.verticalWalls.get(i).get(j + 1).flag == true) {
+                        if (jump.isIntersection(wallv)) {
                             pointDied = jump.getIntersection(wallv);
 //                        pointDied.print(g);
                         }
                     }
 
-                    wallv = new Segment(sector.verticalWalls.get(i+1).get(j+1));
-                    if (sector.verticalWalls.get(i+1).get(j+1).flag == true){
-                        if (jump.isIntersection(wallv)){
+                    wallv = new Segment(sector.verticalWalls.get(i + 1).get(j + 1));
+                    if (sector.verticalWalls.get(i + 1).get(j + 1).flag == true) {
+                        if (jump.isIntersection(wallv)) {
                             pointDied = jump.getIntersection(wallv);
 //                        pointDied.print(g);
                         }
                     }
-                    if (pointFirstDied.x == 0.0 && pointFirstDied.y == 0.0){
+                    if (pointFirstDied.x == 0.0 && pointFirstDied.y == 0.0) {
                         pointFirstDied = new MyPoint(pointDied);
-                    }else if (pointStart.lenght(pointFirstDied) > pointStart.lenght(pointDied)){
+                    } else if (pointStart.lenght(pointFirstDied) > pointStart.lenght(pointDied)) {
                         pointFirstDied = new MyPoint(pointDied);
                     }
                 }
             }
         }
 
-        if (pointFirstDied.x != 0.0 && pointFirstDied.y != 0.0){
+        if (pointFirstDied.x != 0.0 && pointFirstDied.y != 0.0) {
             pointDiedBullet = new MyPoint(pointFirstDied);
             segment.setX2(pointDiedBullet.x);
             segment.setY2(pointDiedBullet.y);
             timeDied = System.currentTimeMillis();
             return true;
-        }else{
+        } else {
+            return false;
+        }
+    }
+
+    public boolean iAmWin(Labirint labirint, BaseBot bot) {
+        MyPoint A = new MyPoint(this.segment.getX1(), this.segment.getY1());
+        MyPoint B = new MyPoint(this.segment.getX2(), this.segment.getY2());
+        MyPoint O = new MyPoint(bot.x, bot.y);
+        Vector AB = new Vector(A, B);
+        Vector BA = new Vector(B, A);
+        Vector AO = new Vector(A, O);
+        Vector BO = new Vector(B, O);
+
+        boolean ans = false;
+        if (A.lenght(O) < (double)Constants.R / 4.0) {
+            ans = true;
+        } else if (B.lenght(O) < (double)Constants.R / 4.0) {
+            ans = true;
+        } else if (AB.scalarComposition(AO) > 0.0 && BA.scalarComposition(BO) > 0.0) {
+            double cosA = (AB.length * AB.length + AO.length * AO.length - BO.length * BO.length) / (2.0 * AB.length * AO.length);
+            if (AO.length * Math.sqrt(1-cosA*cosA) < (double)Constants.R / 4.0) {
+                ans = true;
+            }
+        }
+        if (ans) {
+            timeDied = System.currentTimeMillis();
+            return true;
+        } else {
             return false;
         }
     }

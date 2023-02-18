@@ -19,7 +19,7 @@ public class Labirint {
     public Labirint(MyFrame panel) throws IOException {
         this.panel = panel;
         sectors.add(new StandardSector(Constants.SDVIG, Constants.SDVIG, panel));
-        RedBot redBot = new RedBot(getCell(0, 20, 10).x, getCell(0, 20, 10).y, 20, 10, 0);
+        RedBot redBot = new RedBot(getCell(0, 5, 5).x, getCell(0, 5, 5).y, 5, 5, 0);
         bots.add(redBot);
         addSector();
     }
@@ -91,6 +91,16 @@ public class Labirint {
                     bot.indexSector--;
                 }
             }
+        }
+
+        ArrayList<BaseBot> diedBots = new ArrayList<>();
+        for (BaseBot bot : bots){
+            if (bot.hp <= 0.0){
+                diedBots.add(bot);
+            }
+        }
+        for (BaseBot bot : diedBots){
+            bots.remove(bot);
         }
 
         ArrayList<BaseBullet> diedDiedBullets = new ArrayList<>();

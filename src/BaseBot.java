@@ -18,6 +18,9 @@ public abstract class BaseBot{
     BufferedImage image;
     AffineTransform tx;
     AffineTransformOp op;
+    boolean visu = false;
+
+    Color colorBullets;
 
     double angleInRadians = 0.0; // Угол поворота в градусах
     public BaseBot(double x, double y, int i, int j, int indexSector) throws IOException {
@@ -61,19 +64,19 @@ public abstract class BaseBot{
             hp = 0.0;
         }
 
-        boolean visu = true;
+        visu = true;
         Segment botHuman = new Segment(x, y, userHuman.x, userHuman.y);
         for (BaseSector sector1 : labirint.sectors){
             for (ArrayList<StandardParallelWall> wallps : sector1.parallelWalls){
                 for (StandardParallelWall wallp : wallps){
-                    if (botHuman.isIntersection(new Segment(wallp))){
+                    if (wallp.flag && botHuman.isIntersection(new Segment(wallp))){
                         visu = false;
                     }
                 }
             }
             for (ArrayList<StandardVerticalWall> wallvs : sector1.verticalWalls){
                 for (StandardVerticalWall wallv : wallvs){
-                    if (botHuman.isIntersection(new Segment(wallv))){
+                    if (wallv.flag && botHuman.isIntersection(new Segment(wallv))){
                         visu = false;
                     }
                 }

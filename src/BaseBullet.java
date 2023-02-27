@@ -11,7 +11,13 @@ public class BaseBullet {
 
     long timeDied = 0;
 
-    public BaseBullet(double bornX, double bornY, double mouseX, double mouseY, Human userHuman) {
+    public BaseBullet(double bornX, double bornY, double mouseX, double mouseY) {
+        this.segment = new Segment(bornX, bornY, bornX, bornY);
+        this.v = new Vector(mouseX - bornX, mouseY - bornY);
+        this.v.setLength(4.0 * Constants.V_NORMAL);
+    }
+
+    public BaseBullet(double bornX, double bornY, double mouseX, double mouseY, Human userHuman){
         this.segment = new Segment(bornX, bornY, bornX, bornY);
         this.v = new Vector(mouseX - bornX, mouseY - bornY);
         this.v.setLength(4.0 * Constants.V_NORMAL);
@@ -20,8 +26,11 @@ public class BaseBullet {
         this.j = userHuman.j;
     }
 
-    public void print(Graphics g, Labirint labirint) {
-        g.setColor(new Color(144, 43, 187));
+    public void print(Graphics g, Labirint labirint){
+        print(g, labirint, new Color(144, 43, 187));
+    }
+    public void print(Graphics g, Labirint labirint, Color color) {
+        g.setColor(color);
         g.drawLine((int) segment.getX1(), (int) segment.getY1(), (int) segment.getX2(), (int) segment.getY2());
 
         if (Constants.DEVELORER) {

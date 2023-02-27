@@ -11,6 +11,8 @@ public class Labirint {
 
     ArrayList<BaseBullet> diedBullets = new ArrayList<>();
     ArrayList<BaseBullet> bullets = new ArrayList<>();
+    ArrayList<BotsBaseBullet> diedBotsBullets = new ArrayList<>();
+    ArrayList<BotsBaseBullet> botsBullets = new ArrayList<>();
 
     MyFrame panel;
     Random random = new Random();
@@ -50,6 +52,12 @@ public class Labirint {
         for (BaseBullet bullet : diedBullets){
             bullet.print(g, this);
         }
+        for (BotsBaseBullet bullet : botsBullets){
+            bullet.print(g, this);
+        }
+        for (BotsBaseBullet bullet : diedBotsBullets){
+            bullet.print(g, this);
+        }
     }
 
     public BaseSector getSector(int i) {
@@ -68,6 +76,14 @@ public class Labirint {
             bullet.segment.setX2(bullet.segment.getX2() + v);
         }
         for (BaseBullet bullet : diedBullets){
+            bullet.segment.setX1(bullet.segment.getX1() + v);
+            bullet.segment.setX2(bullet.segment.getX2() + v);
+        }
+        for (BotsBaseBullet bullet : botsBullets){
+            bullet.segment.setX1(bullet.segment.getX1() + v);
+            bullet.segment.setX2(bullet.segment.getX2() + v);
+        }
+        for (BotsBaseBullet bullet : diedBotsBullets){
             bullet.segment.setX1(bullet.segment.getX1() + v);
             bullet.segment.setX2(bullet.segment.getX2() + v);
         }
@@ -127,10 +143,29 @@ public class Labirint {
         for (BaseBullet bullet : diedDiedBullets){
             diedBullets.remove(bullet);
         }
+        ArrayList<BotsBaseBullet> diedDiedBotsBullets = new ArrayList<>();
+        for (BotsBaseBullet bullet : diedBotsBullets){
+            if (System.currentTimeMillis() - bullet.timeDied > Constants.TIME_LIFE_AFTER_DIED){
+                diedDiedBotsBullets.add(bullet);
+            }
+        }
+        for (BotsBaseBullet bullet : diedDiedBotsBullets){
+            diedBotsBullets.remove(bullet);
+        }
+
+        for (BaseBot bot : bots){
+            if (bot.visu){
+                BotsBaseBullet bullet = new BotsBaseBullet(bot.x, bot.y, userHuman.x, userHuman.y, bot);
+                this.addBotsBullet(bullet);
+            }
+        }
     }
 
     public void addBullet(BaseBullet bullet){
         bullets.add(bullet);
+    }
+    public void addBotsBullet(BotsBaseBullet bullet){
+        botsBullets.add(bullet);
     }
 
     public void goBullets(long time, Graphics g) {
@@ -143,6 +178,16 @@ public class Labirint {
         for (BaseBullet bullet : bulletDiedInThisStep){
             bullets.remove(bullet);
             diedBullets.add(bullet);
+        }
+        ArrayList<BotsBaseBullet> botsBulletDiedInThisStep = new ArrayList<>();
+        for (BotsBaseBullet bullet : botsBullets){
+            if (bullet.go(this, time, g)){
+                botsBulletDiedInThisStep.add(bullet);
+            }
+        }
+        for (BotsBaseBullet bullet : botsBulletDiedInThisStep){
+            botsBullets.remove(bullet);
+            diedBotsBullets.add(bullet);
         }
     }
 }

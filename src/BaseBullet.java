@@ -31,7 +31,18 @@ public class BaseBullet {
     }
     public void print(Graphics g, Labirint labirint, Color color) {
         g.setColor(color);
-        g.drawLine((int) segment.getX1(), (int) segment.getY1(), (int) segment.getX2(), (int) segment.getY2());
+        int x1, y1;
+        if (segment.getX1() < segment.getX2()){
+            x1 = (int)(segment.getX2() - (double)Constants.SIZE_BULLET * (v.x/Math.sqrt((v.x*v.x + v.y*v.y))));
+        }else{
+            x1 = (int)(segment.getX2() - (double)Constants.SIZE_BULLET * (v.x/Math.sqrt((v.x*v.x + v.y*v.y))));
+        }
+        if (segment.getY1() < segment.getY2()){
+            y1 = (int)(segment.getY2() - (double)Constants.SIZE_BULLET * (v.y/Math.sqrt((v.x*v.x + v.y*v.y))));
+        }else{
+            y1 = (int)(segment.getY2() - (double)Constants.SIZE_BULLET * (v.y/Math.sqrt((v.x*v.x + v.y*v.y))));
+        }
+        g.drawLine(x1, y1, (int) segment.getX2(), (int) segment.getY2());
 
         if (Constants.DEVELORER) {
             g.setColor(Color.BLUE);

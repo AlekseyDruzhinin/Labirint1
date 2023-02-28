@@ -24,8 +24,14 @@ public class Labirint {
         for (int iter = 0; iter < 10; ++iter){
             int j1 = random.nextInt(sectors.get(0).cells.size());
             int k1 = random.nextInt(sectors.get(0).cells.get(0).size());
-            RedBot redBot = new RedBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0);
-            bots.add(redBot);
+            int type = random.nextInt() % 2;
+            if (type == 0){
+                RedBot redBot = new RedBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0);
+                bots.add(redBot);
+            }else{
+                OrangeBot orangeBot = new OrangeBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0);
+                bots.add(orangeBot);
+            }
         }
         addSector();
     }
@@ -159,6 +165,10 @@ public class Labirint {
                 bot.timeLastShot = System.currentTimeMillis();
                 this.addBotsBullet(bullet);
             }
+        }
+
+        for (BaseBot bot : bots){
+            bot.go(userHuman, time, this);
         }
     }
 

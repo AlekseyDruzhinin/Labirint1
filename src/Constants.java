@@ -24,7 +24,8 @@ public class Constants {
     // скорость заполнения квадратиком
 
     //10.0
-    public static  double V_POLE_1 = 10000000.0;
+    public static  double V_POLE_1 = 10.0;
+    public static boolean FLAG_CHIT_BULLET = false;
 
     //время запуска программы
     public  static long TIME_START_PROGRAM;
@@ -40,6 +41,7 @@ public class Constants {
 
     public static int FRAME_WIGHT;
     public static int FRAME_HEIGHT;
+    public static int SIZE_BULLET;
 
     public static boolean DEVELORER = false;
 }

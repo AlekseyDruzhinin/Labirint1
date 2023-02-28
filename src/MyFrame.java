@@ -42,6 +42,8 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
         Constants.FRAME_WIGHT = getWidth();
         Constants.FRAME_HEIGHT = getHeight();
+
+        Constants.SIZE_BULLET = getHeight() / 100;
     }
 
     @Override
@@ -112,7 +114,10 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
         // p - 80
         // r - 82
         if (e.getID() == KeyEvent.KEY_PRESSED){
-            //System.out.println(e.getKeyCode());
+//            System.out.println(e.getKeyCode());
+            if (Constants.DEVELORER && e.getKeyCode() == 66){
+                Constants.FLAG_CHIT_BULLET = !Constants.FLAG_CHIT_BULLET;
+            }
             if (e.getKeyCode() == 82){
                 if (Constants.DEVELORER == false){
                     Constants.DEVELORER = true;

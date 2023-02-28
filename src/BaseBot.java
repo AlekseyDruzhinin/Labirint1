@@ -6,9 +6,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class BaseBot{
-
     double x, y; // координаты центра
     int i, j; // координаты ячейки
     int indexSector = 0; // номер сектора
@@ -23,6 +23,7 @@ public abstract class BaseBot{
     AffineTransformOp op;
     boolean visu = false;
 
+    Random random;
     Color colorBullets;
 
     double angleInRadians = 0.0; // Угол поворота в градусах
@@ -36,6 +37,7 @@ public abstract class BaseBot{
     }
 
     public void paint(Graphics g) {
+        random = new Random();
         g.setColor(new Color(0xF911F31D, true));
         //g.fillOval((int)x-Constants.R/2, (int)y-Constants.R/2, Constants.R, Constants.R);
         //g.drawImage(image, (int)x-Constants.R/2, (int)y-Constants.R/2, Constants.R, Constants.R, null);

@@ -25,7 +25,7 @@ public class OrangeBot extends BaseBot{
     public void go(Human userHuman, long time, Labirint labirint){
         if (visu){
             Vector v = new Vector(userHuman.x - x, userHuman.y - y);
-            v.setLength(0.5 * Constants.V_NORMAL * (double)time);
+            v.setLength(Constants.V_BOTS * (double)time);
             x += v.x;
             y += v.y;
 

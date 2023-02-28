@@ -44,6 +44,8 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
         Constants.FRAME_HEIGHT = getHeight();
 
         Constants.SIZE_BULLET = getHeight() / 100;
+
+        Constants.V_BOTS = 0.5 * Constants.V_NORMAL;
     }
 
     @Override

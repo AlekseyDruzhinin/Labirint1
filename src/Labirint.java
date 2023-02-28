@@ -24,13 +24,16 @@ public class Labirint {
         for (int iter = 0; iter < 10; ++iter){
             int j1 = random.nextInt(sectors.get(0).cells.size());
             int k1 = random.nextInt(sectors.get(0).cells.get(0).size());
-            int type = random.nextInt() % 2;
+            int type = random.nextInt() % 3;
             if (type == 0){
                 RedBot redBot = new RedBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0);
                 bots.add(redBot);
-            }else{
+            }else if (type == 1){
                 OrangeBot orangeBot = new OrangeBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0);
                 bots.add(orangeBot);
+            }else{
+                GreenBot greenBot = new GreenBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0);
+                bots.add(greenBot);
             }
         }
         addSector();

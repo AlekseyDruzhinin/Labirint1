@@ -15,6 +15,9 @@ public abstract class BaseBot{
 
     double hp = 1.0; // hp - число от 0 до 1 (доля закрышенного прямоугольника)
 
+    long timeDelay = 500;
+    long timeLastShot;
+
     BufferedImage image;
     AffineTransform tx;
     AffineTransformOp op;
@@ -29,6 +32,7 @@ public abstract class BaseBot{
         this.i = i;
         this.j = j;
         this.indexSector = indexSector;
+        timeLastShot = System.currentTimeMillis();
     }
 
     public void paint(Graphics g) {
@@ -57,6 +61,7 @@ public abstract class BaseBot{
     public void hit(){
         hp -= Constants.DAMAGE_USER_BULLET;
     }
+
 
     public void update(Labirint labirint, Human userHuman) {
         BaseSector sector = labirint.sectors.get(labirint.indexDied);

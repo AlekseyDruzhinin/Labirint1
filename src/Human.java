@@ -21,6 +21,7 @@ public abstract class Human extends BaseHuman {
 
     boolean flagChit = false;
 
+    double hp = 1.0; // hp - число от 0 до 1 (доля закрышенного прямоугольника)
     AffineTransform tx;
     AffineTransformOp op;
 
@@ -60,10 +61,19 @@ public abstract class Human extends BaseHuman {
                 g.setColor(Color.RED);
             }
         }
-
-//        System.out.println(i + " " + j + " " + indexSector);
+        g.setColor(Color.RED);
+        g.fillRect(Constants.SDVIG/2, Constants.SDVIG/2, (int)(((double)Constants.R*15.0) * hp), Constants.R/2);
+        g.setColor(Color.BLACK);
+        g.drawRect(Constants.SDVIG/2, Constants.SDVIG/2, (int)(((double)Constants.R*15.0)), Constants.R/2);
+        g.setColor(Color.RED);
     }
 
+    public void hit(){
+        hp -= Constants.DAMAGE_BOT_BULLET;
+        if (hp <= 0.0){
+            Constants.USER_DIED = true;
+        }
+    }
     public void go(Labirint labirint, long time) throws IOException {
         double v = (double) time * vHuman;
         if (indexSector >= labirint.sectors.size() - 1) {

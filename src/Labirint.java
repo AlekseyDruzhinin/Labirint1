@@ -154,8 +154,9 @@ public class Labirint {
         }
 
         for (BaseBot bot : bots){
-            if (bot.visu){
+            if (bot.visu && System.currentTimeMillis() - bot.timeLastShot > bot.timeDelay){
                 BotsBaseBullet bullet = new BotsBaseBullet(bot.x, bot.y, userHuman.x, userHuman.y, bot);
+                bot.timeLastShot = System.currentTimeMillis();
                 this.addBotsBullet(bullet);
             }
         }
@@ -168,7 +169,7 @@ public class Labirint {
         botsBullets.add(bullet);
     }
 
-    public void goBullets(long time, Graphics g) {
+    public void goBullets(long time, Graphics g, Human userHuman) {
         ArrayList<BaseBullet> bulletDiedInThisStep = new ArrayList<>();
         for (BaseBullet bullet : bullets){
             if (bullet.go(this, time, g)){
@@ -181,7 +182,7 @@ public class Labirint {
         }
         ArrayList<BotsBaseBullet> botsBulletDiedInThisStep = new ArrayList<>();
         for (BotsBaseBullet bullet : botsBullets){
-            if (bullet.go(this, time, g)){
+            if (bullet.go(this, time, g, userHuman)){
                 botsBulletDiedInThisStep.add(bullet);
             }
         }

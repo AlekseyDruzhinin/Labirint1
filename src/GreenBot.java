@@ -61,11 +61,21 @@ public class GreenBot extends BaseBot {
             if (x < labirint.getCell(indexSector, i, j).x - Constants.R) {
                 i -= (-x + labirint.getCell(indexSector, i, j).x - Constants.R) / (2 * Constants.R);
             }
+            if (i < 0) {
+                i = labirint.getSector(indexSector).cells.size() - 1;
+                --indexSector;
+                sector = labirint.sectors.get(indexSector);
+            }
         }
         if (variantOrientation == 3) {
             x += v;
             if (x > labirint.getCell(indexSector, i, j).x + Constants.R) {
                 i += (x - labirint.getCell(indexSector, i, j).x + Constants.R) / (2 * Constants.R);
+            }
+            if (i >= labirint.getSector(indexSector).cells.size()) {
+                i = 0;
+                ++indexSector;
+                sector = labirint.sectors.get(indexSector);
             }
         }
 

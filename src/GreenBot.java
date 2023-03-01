@@ -38,7 +38,7 @@ public class GreenBot extends BaseBot {
         }*/
 
         double v = (double) time * Constants.V_BOTS;
-        if (indexSector >= labirint.sectors.size() - 1) {
+        if (indexSector >= labirint.sectors.size()) {
             labirint.addSector();
         }
         BaseSector sector = labirint.getSector(indexSector);

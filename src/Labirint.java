@@ -28,13 +28,13 @@ public class Labirint {
             if (type == 0) {
                 RedBot redBot = new RedBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0);
                 bots.add(redBot);
-            } else if (type == 1) {
+            }/*else if (type == 1) {
                 OrangeBot orangeBot = new OrangeBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0);
                 bots.add(orangeBot);
             } else {
                 GreenBot greenBot = new GreenBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0);
                 bots.add(greenBot);
-            }
+            }*/
         }
         addSector();
     }
@@ -116,7 +116,7 @@ public class Labirint {
             int k1 = random.nextInt(sectors.get(0).cells.get(0).size());
             int type = random.nextInt() % 3;
             if (type == 0) {
-                RedBot redBot = new RedBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, sectors.size()-1);
+                RedBot redBot = new RedBot(getCell(sectors.size()-1, j1, k1).x, getCell(sectors.size()-1, j1, k1).y, j1, k1, sectors.size()-1);
                 bots.add(redBot);
             } /*else if (type == 1) {
                 OrangeBot orangeBot = new OrangeBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, sectors.size()-1);

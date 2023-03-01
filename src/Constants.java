@@ -1,7 +1,7 @@
 public class Constants {
 
     public static int i = 0;
-    public static double DAMAGE_USER_BULLET = 0.1;
+    public static double DAMAGE_USER_BULLET = 0.3;
     public static double DAMAGE_BOT_BULLET = 0.05;
 
     public static long TIME_LIFE_AFTER_DIED = 3000; // время существование следа после смерти пульки

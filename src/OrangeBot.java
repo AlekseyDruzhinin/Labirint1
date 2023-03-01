@@ -7,8 +7,8 @@ import java.io.IOException;
 
 public class OrangeBot extends BaseBot{
 
-    public OrangeBot(double x, double y, int i, int j, int indexSector) throws IOException {
-        super(x, y, i, j, indexSector);
+    public OrangeBot(double x, double y, int i, int j, int indexSector, Labirint labirint) throws IOException {
+        super(x, y, i, j, indexSector, labirint);
         type = 2;
 
         colorBullets = new Color(236, 98, 11, 255);

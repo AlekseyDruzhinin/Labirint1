@@ -30,7 +30,7 @@ public abstract class BaseBot{
     Color colorBullets;
 
     double angleInRadians = 0.0; // Угол поворота в градусах
-    public BaseBot(double x, double y, int i, int j, int indexSector) throws IOException {
+    public BaseBot(double x, double y, int i, int j, int indexSector, Labirint labirint) throws IOException {
         this.x = x;
         this.y = y;
         this.i = i;

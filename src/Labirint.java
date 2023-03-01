@@ -21,17 +21,17 @@ public class Labirint {
     public Labirint(MyFrame panel) throws IOException {
         this.panel = panel;
         sectors.add(new StandardSector(Constants.SDVIG, Constants.SDVIG, panel));
-        for (int iter = 0; iter < 10; ++iter){
+        for (int iter = 0; iter < 10; ++iter) {
             int j1 = random.nextInt(sectors.get(0).cells.size());
             int k1 = random.nextInt(sectors.get(0).cells.get(0).size());
             int type = random.nextInt() % 3;
-            if (type == 0){
+            if (type == 0) {
                 RedBot redBot = new RedBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0);
                 bots.add(redBot);
-            }else if (type == 1){
+            } else if (type == 1) {
                 OrangeBot orangeBot = new OrangeBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0);
                 bots.add(orangeBot);
-            }else{
+            } else {
                 GreenBot greenBot = new GreenBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0);
                 bots.add(greenBot);
             }
@@ -52,19 +52,24 @@ public class Labirint {
                 g.setColor(new Color(239, 124, 124, 255));
                 g.fillRect((int) getCell(bot.indexSector, bot.i, bot.j).x, (int) getCell(bot.indexSector, bot.i, bot.j).y, Constants.R, Constants.R);
                 g.setColor(Color.RED);
+                if (bot.type == 3) {
+                    g.setColor(Color.BLACK);
+                    g.drawString(Integer.toString(bot.variantOrientation), (int) getCell(bot.indexSector, bot.i, bot.j).x + Constants.R / 2, (int) getCell(bot.indexSector, bot.i, bot.j).y + Constants.R / 2);
+                    g.setColor(Color.RED);
+                }
             }
             bot.paint(g);
         }
-        for (BaseBullet bullet : bullets){
+        for (BaseBullet bullet : bullets) {
             bullet.print(g, this);
         }
-        for (BaseBullet bullet : diedBullets){
+        for (BaseBullet bullet : diedBullets) {
             bullet.print(g, this);
         }
-        for (BotsBaseBullet bullet : botsBullets){
+        for (BotsBaseBullet bullet : botsBullets) {
             bullet.print(g, this);
         }
-        for (BotsBaseBullet bullet : diedBotsBullets){
+        for (BotsBaseBullet bullet : diedBotsBullets) {
             bullet.print(g, this);
         }
     }
@@ -80,19 +85,19 @@ public class Labirint {
         for (BaseBot bot : bots) {
             bot.x += v;
         }
-        for (BaseBullet bullet : bullets){
+        for (BaseBullet bullet : bullets) {
             bullet.segment.setX1(bullet.segment.getX1() + v);
             bullet.segment.setX2(bullet.segment.getX2() + v);
         }
-        for (BaseBullet bullet : diedBullets){
+        for (BaseBullet bullet : diedBullets) {
             bullet.segment.setX1(bullet.segment.getX1() + v);
             bullet.segment.setX2(bullet.segment.getX2() + v);
         }
-        for (BotsBaseBullet bullet : botsBullets){
+        for (BotsBaseBullet bullet : botsBullets) {
             bullet.segment.setX1(bullet.segment.getX1() + v);
             bullet.segment.setX2(bullet.segment.getX2() + v);
         }
-        for (BotsBaseBullet bullet : diedBotsBullets){
+        for (BotsBaseBullet bullet : diedBotsBullets) {
             bullet.segment.setX1(bullet.segment.getX1() + v);
             bullet.segment.setX2(bullet.segment.getX2() + v);
         }
@@ -106,18 +111,27 @@ public class Labirint {
                 sectors.get(sectors.size() - 2).verticalWalls.get(sectors.get(sectors.size() - 2).verticalWalls.size() - 1).get(i).flag = false;
             }
         }
-        for (int iter = 0; iter < 10; ++iter){
+        for (int iter = 0; iter < 10; ++iter) {
             int j1 = random.nextInt(sectors.get(0).cells.size());
             int k1 = random.nextInt(sectors.get(0).cells.get(0).size());
-            RedBot redBot = new RedBot(getCell(sectors.size()-1, j1, k1).x, getCell(sectors.size()-1, j1, k1).y, j1, k1, sectors.size()-1);
-            bots.add(redBot);
+            int type = random.nextInt() % 3;
+            if (type == 0) {
+                RedBot redBot = new RedBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, sectors.size()-1);
+                bots.add(redBot);
+            } /*else if (type == 1) {
+                OrangeBot orangeBot = new OrangeBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, sectors.size()-1);
+                bots.add(orangeBot);
+            } else {
+                GreenBot greenBot = new GreenBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, sectors.size()-1);
+                bots.add(greenBot);
+            }*/
         }
     }
 
-    public void update(long time, Human userHuman) {
+    public void update(long time, Human userHuman) throws IOException {
         boolean itIsDied = sectors.get(indexDied).update((double) time * Constants.V_POLE);
 
-        for (BaseBot bot : bots){
+        for (BaseBot bot : bots) {
             bot.update(this, userHuman);
         }
 
@@ -127,79 +141,80 @@ public class Labirint {
             } else {
                 sectors.remove(0);
                 userHuman.indexSector--;
-                for (BaseBot bot : bots){
+                for (BaseBot bot : bots) {
                     bot.indexSector--;
                 }
             }
         }
 
         ArrayList<BaseBot> diedBots = new ArrayList<>();
-        for (BaseBot bot : bots){
-            if (bot.hp <= 0.0){
+        for (BaseBot bot : bots) {
+            if (bot.hp <= 0.0) {
                 diedBots.add(bot);
             }
         }
-        for (BaseBot bot : diedBots){
+        for (BaseBot bot : diedBots) {
             bots.remove(bot);
         }
 
         ArrayList<BaseBullet> diedDiedBullets = new ArrayList<>();
-        for (BaseBullet bullet : diedBullets){
-            if (System.currentTimeMillis() - bullet.timeDied > Constants.TIME_LIFE_AFTER_DIED){
+        for (BaseBullet bullet : diedBullets) {
+            if (System.currentTimeMillis() - bullet.timeDied > Constants.TIME_LIFE_AFTER_DIED) {
                 diedDiedBullets.add(bullet);
             }
         }
-        for (BaseBullet bullet : diedDiedBullets){
+        for (BaseBullet bullet : diedDiedBullets) {
             diedBullets.remove(bullet);
         }
         ArrayList<BotsBaseBullet> diedDiedBotsBullets = new ArrayList<>();
-        for (BotsBaseBullet bullet : diedBotsBullets){
-            if (System.currentTimeMillis() - bullet.timeDied > Constants.TIME_LIFE_AFTER_DIED){
+        for (BotsBaseBullet bullet : diedBotsBullets) {
+            if (System.currentTimeMillis() - bullet.timeDied > Constants.TIME_LIFE_AFTER_DIED) {
                 diedDiedBotsBullets.add(bullet);
             }
         }
-        for (BotsBaseBullet bullet : diedDiedBotsBullets){
+        for (BotsBaseBullet bullet : diedDiedBotsBullets) {
             diedBotsBullets.remove(bullet);
         }
 
-        for (BaseBot bot : bots){
-            if (bot.visu && System.currentTimeMillis() - bot.timeLastShot > bot.timeDelay){
+        for (BaseBot bot : bots) {
+            if (bot.visu && System.currentTimeMillis() - bot.timeLastShot > bot.timeDelay) {
                 BotsBaseBullet bullet = new BotsBaseBullet(bot.x, bot.y, userHuman.x, userHuman.y, bot);
                 bot.timeLastShot = System.currentTimeMillis();
                 this.addBotsBullet(bullet);
             }
         }
 
-        for (BaseBot bot : bots){
+        for (BaseBot bot : bots) {
             bot.go(userHuman, time, this);
         }
     }
 
-    public void addBullet(BaseBullet bullet){
+    public void addBullet(BaseBullet bullet) {
         bullets.add(bullet);
     }
-    public void addBotsBullet(BotsBaseBullet bullet){
+
+    public void addBotsBullet(BotsBaseBullet bullet) {
         botsBullets.add(bullet);
     }
 
     public void goBullets(long time, Graphics g, Human userHuman) {
         ArrayList<BaseBullet> bulletDiedInThisStep = new ArrayList<>();
-        for (BaseBullet bullet : bullets){
-            if (bullet.go(this, time, g)){
+        for (BaseBullet bullet : bullets) {
+            if (bullet.go(this, time, g)) {
                 bulletDiedInThisStep.add(bullet);
             }
         }
-        for (BaseBullet bullet : bulletDiedInThisStep){
+        for (BaseBullet bullet : bulletDiedInThisStep) {
             bullets.remove(bullet);
             diedBullets.add(bullet);
         }
         ArrayList<BotsBaseBullet> botsBulletDiedInThisStep = new ArrayList<>();
-        for (BotsBaseBullet bullet : botsBullets){
-            if (bullet.go(this, time, g, userHuman)){
+        for (BotsBaseBullet bullet : botsBullets) {
+            if (bullet.go(this, time, g, userHuman)) {
                 botsBulletDiedInThisStep.add(bullet);
             }
         }
-        for (BotsBaseBullet bullet : botsBulletDiedInThisStep){
+        for (BotsBaseBullet bullet : botsBulletDiedInThisStep) {
             botsBullets.remove(bullet);
             diedBotsBullets.add(bullet);
         }

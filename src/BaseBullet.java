@@ -44,12 +44,12 @@ public class BaseBullet {
         }
         g.drawLine(x1, y1, (int) segment.getX2(), (int) segment.getY2());
 
-        if (Constants.DEVELORER) {
+        /*if (Constants.DEVELORER) {
             g.setColor(Color.BLUE);
             BaseCell cell = labirint.getCell(indexSector, i, j);
             g.fillRect((int) cell.x, (int) cell.y, Constants.R, Constants.R);
             g.setColor(Color.RED);
-        }
+        }*/
     }
 
     public boolean go(Labirint labirint, long time, Graphics g) {

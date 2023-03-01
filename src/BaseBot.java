@@ -21,9 +21,12 @@ public abstract class BaseBot{
     BufferedImage image;
     AffineTransform tx;
     AffineTransformOp op;
+
+    int type = 1;
     boolean visu = false;
 
-    Random random;
+    int variantOrientation;
+    Random random = new Random();
     Color colorBullets;
 
     double angleInRadians = 0.0; // Угол поворота в градусах
@@ -97,5 +100,5 @@ public abstract class BaseBot{
         }
     }
 
-    public void go(Human userHuman, long time, Labirint labirint){}
+    public void go(Human userHuman, long time, Labirint labirint) throws IOException {}
 }

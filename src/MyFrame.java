@@ -67,7 +67,11 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
         }else{
             if (nowTime - Constants.TIME_START_PROGRAM > Constants.TIME_TO_DIED_LABIRINT){
-                labirint.update(nowTime - timePriviosPrint, userHuman);
+                try {
+                    labirint.update(nowTime - timePriviosPrint, userHuman);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             if (userHuman != null){

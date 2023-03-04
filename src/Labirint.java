@@ -43,6 +43,9 @@ public class Labirint {
     }
 
     public BaseCell getCell(int i, int j, int k) {
+        if (i >= sectors.size() || j >= sectors.get(i).cells.size() || k >=sectors.get(i).cells.get(j).size()){
+            int z = 1;
+        }
         return sectors.get(i).cells.get(j).get(k);
     }
 

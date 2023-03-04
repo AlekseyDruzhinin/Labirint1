@@ -12,6 +12,7 @@ public abstract class Human extends BaseHuman {
     int indexSector = 0; // номер сектора
 
     BufferedImage image;
+    Aim aim = new Aim();
 
     boolean flagGoSector = false;
 
@@ -66,6 +67,8 @@ public abstract class Human extends BaseHuman {
         g.setColor(Color.BLACK);
         g.drawRect(Constants.SDVIG/2, Constants.SDVIG/2, (int)(((double)Constants.R*15.0)), Constants.R/2);
         g.setColor(Color.RED);
+
+        aim.print(g);
     }
 
     public void hit(){
@@ -269,6 +272,21 @@ public abstract class Human extends BaseHuman {
         double locationY = image.getHeight() / 2;
         tx = AffineTransform.getRotateInstance(angleInRadians, locationX, locationY);
         op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+    }
+
+    public void rotateToAim(Point gMP){
+        if (aim.flagPrint ){
+            Vector vectorAim = new Vector(-(double)aim.bot.x+this.x, -(double)aim.bot.y + this.y);
+            Vector vectorUp = new Vector(0.0, 1.0);
+            this.rotate(Math.atan2(vectorUp.vectorComposition(vectorAim), vectorUp.scalarComposition(vectorAim)));
+        }else{
+            if (gMP != null){
+                Vector vectorMouse = new Vector(-(double)gMP.x+this.x, -(double)gMP.y + this.y);
+                Vector vectorUp = new Vector(0.0, 1.0);
+                this.rotate(Math.atan2(vectorUp.vectorComposition(vectorMouse), vectorUp.scalarComposition(vectorMouse)));
+                //System.out.println(vectorMouse.x + " " + vectorMouse.y);
+            }
+        }
     }
 
     public void update(Labirint labirint) {

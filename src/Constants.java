@@ -1,11 +1,13 @@
 public class Constants {
 
     public static int i = 0;
+    public static double SQRT_LEN_AIM = 0.0;
     public static double DAMAGE_USER_BULLET = 0.3;
     public static double DAMAGE_BOT_BULLET = 0.05;
 
     public static long TIME_LIFE_AFTER_DIED = 3000; // время существование следа после смерти пульки
     public static int R = 20;
+
     public static int COUNT_CELL_DOWN = 13;
     public static int SDVIG = 80;
 

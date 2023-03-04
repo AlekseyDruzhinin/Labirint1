@@ -46,6 +46,8 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
         Constants.SIZE_BULLET = getHeight() / 100;
 
         Constants.V_BOTS = 0.5 * Constants.V_NORMAL;
+
+        Constants.SQRT_LEN_AIM = (double)(Constants.R * Constants.R);
     }
 
     @Override
@@ -77,12 +79,13 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
             if (userHuman != null){
                 userHuman.update(labirint);
                 Point gMP = getMousePosition();
-                if (gMP != null){
+                /*if (gMP != null){
                     Vector vectorMouse = new Vector(-(double)gMP.x+userHuman.x, -(double)gMP.y + userHuman.y);
                     Vector vectorUp = new Vector(0.0, 1.0);
                     userHuman.rotate(Math.atan2(vectorUp.vectorComposition(vectorMouse), vectorUp.scalarComposition(vectorMouse)));
                     //System.out.println(vectorMouse.x + " " + vectorMouse.y);
-                }
+                }*/
+                userHuman.rotateToAim(gMP);
             }
 
             if (labirint != null){
@@ -191,8 +194,30 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
     @Override
     public void mousePressed(MouseEvent e) {
-        BaseBullet bullet = new BaseBullet(userHuman.x, userHuman.y, e.getX(), e.getY(), userHuman);
-        labirint.addBullet(bullet);
+        // 1024 - правая
+        // 4096 - левая
+        int ModifiersEx = e.getModifiersEx();
+        double x = e.getX();
+        double y = e.getY();
+        if (ModifiersEx == 1024){
+            BaseBullet bullet;
+            if (!userHuman.aim.flagPrint){
+                bullet = new BaseBullet(userHuman.x, userHuman.y, e.getX(), e.getY(), userHuman);
+            }else{
+                bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
+            }
+            labirint.addBullet(bullet);
+        }else{
+            for (BaseBot bot : labirint.bots){
+                if ((x-bot.x)*(x-bot.x) + (y-bot.y)*(y-bot.y) < Constants.SQRT_LEN_AIM){
+                    try {
+                        userHuman.aim = new Aim(bot);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }
+        }
     }
 
     @Override

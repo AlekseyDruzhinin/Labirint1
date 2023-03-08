@@ -71,7 +71,7 @@ public class BaseBullet {
     }
 
     public void updateCell(Labirint labirint, double newX, double newY) {
-        BaseCell cell = labirint.getCell(indexSector, i, j);
+        /*BaseCell cell = labirint.getCell(indexSector, i, j);
         int di = 0;
         if (newX > cell.x + Constants.R) {
             di = ((int) newX - ((int) cell.x + Constants.R)) / Constants.R;
@@ -98,6 +98,8 @@ public class BaseBullet {
         }
 
         j += dj;
+        */
+
     }
 
     public boolean checkDied(Labirint labirint, long time, Graphics g) {

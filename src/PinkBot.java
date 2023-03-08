@@ -4,15 +4,22 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 public class PinkBot extends BaseBot{
     boolean flagVertical = false;
+
+    int StartI;
+    int StartJ;
+    int StartSector;
+
     public PinkBot(double x, double y, int i, int j, int indexSector, Labirint labirint) throws IOException {
         super(x, y, i, j, indexSector, labirint);
         type = 3;
         colorBullets = new Color(236, 98, 11, 255);
 
-        variantOrientation = random.nextInt(4);
+        variantOrientation = Math.abs(random.nextInt()) % 4;
+//        System.out.println(random.nextInt());
 
         this.image = ImageIO.read(new File("data\\Bot4.png"));
 
@@ -22,6 +29,9 @@ public class PinkBot extends BaseBot{
         image = op.filter(image, null);
 
         this.rotate(0.0);
+        StartI = i;
+        StartJ = j;
+        StartSector = indexSector;
     }
 
     @Override
@@ -44,36 +54,52 @@ public class PinkBot extends BaseBot{
         //переход по ячейкам
         if (variantOrientation == 1) {
             y += v;
-            if (y > labirint.getCell(indexSector, i, j).y + Constants.R) {
-                j += (y - labirint.getCell(indexSector, i, j).y + Constants.R) / (2 * Constants.R);
+            if (y > labirint.getCell(indexSector, i, labirint.sectors.get(indexSector).cells.get(i).size()-1).y + Constants.R){
+                y -= v;
+                variantOrientation = 0;
+            }
+            while (y > labirint.getCell(indexSector, i, j).y + Constants.R) {
+                ++j;
             }
         }
         if (variantOrientation == 0) {
             y -= v;
-            if (y < labirint.getCell(indexSector, i, j).y - Constants.R) {
-                j -= (-y + labirint.getCell(indexSector, i, j).y - Constants.R) / (2 * Constants.R);
+            if (y < labirint.getCell(indexSector, i, 0).y - Constants.R){
+                y += v;
+                variantOrientation = 1;
+            }
+            while (y < labirint.getCell(indexSector, i, j).y - Constants.R) {
+                --j;
             }
         }
         if (variantOrientation == 2) {
             x -= v;
-            if (x < labirint.getCell(indexSector, i, j).x - Constants.R) {
-                i -= (-x + labirint.getCell(indexSector, i, j).x - Constants.R) / (2 * Constants.R);
+            if (x < labirint.getCell(0, 0, j).x - Constants.R){
+                x += v;
+                variantOrientation = 3;
             }
-            if (i < 0) {
-                i = labirint.getSector(indexSector).cells.size() - 1;
-                --indexSector;
-                sector = labirint.sectors.get(indexSector);
+            while (x < labirint.getCell(indexSector, i, j).x - Constants.R) {
+                --i;
+                if (i < 0) {
+                    i = labirint.getSector(indexSector).cells.size() - 1;
+                    --indexSector;
+                    sector = labirint.sectors.get(indexSector);
+                }
             }
         }
         if (variantOrientation == 3) {
             x += v;
-            if (x > labirint.getCell(indexSector, i, j).x + Constants.R) {
-                i += (x - labirint.getCell(indexSector, i, j).x + Constants.R) / (2 * Constants.R);
+            if (x > labirint.getCell(labirint.sectors.size()-1, labirint.sectors.get(labirint.sectors.size()-1).cells.size()-1, j).x + Constants.R){
+                x -= v;
+                variantOrientation = 2;
             }
-            if (i >= labirint.getSector(indexSector).cells.size()) {
-                i = 0;
-                ++indexSector;
-                sector = labirint.sectors.get(indexSector);
+            if (x > labirint.getCell(indexSector, i, j).x + Constants.R) {
+                ++i;
+                if (i >= labirint.getSector(indexSector).cells.size()) {
+                    i = 0;
+                    ++indexSector;
+                    sector = labirint.sectors.get(indexSector);
+                }
             }
         }
 

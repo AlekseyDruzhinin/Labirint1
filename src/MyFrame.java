@@ -49,8 +49,6 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
 
         Constants.SQRT_LEN_AIM = (double)(Constants.R * Constants.R);
 
-        userHuman.flagRight = true;
-        Constants.V_NORMAL = Constants.V_POLE;
     }
 
     @Override

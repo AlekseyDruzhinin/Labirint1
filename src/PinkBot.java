@@ -18,7 +18,7 @@ public class PinkBot extends BaseBot{
         type = 3;
         colorBullets = new Color(236, 98, 11, 255);
 
-        variantOrientation = Math.abs(random.nextInt()) % 4;
+        variantOrientation = random.nextInt(4);
 //        System.out.println(random.nextInt());
 
         this.image = ImageIO.read(new File("data\\Bot4.png"));

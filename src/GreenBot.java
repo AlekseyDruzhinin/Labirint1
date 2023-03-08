@@ -43,18 +43,30 @@ public class GreenBot extends BaseBot {
         //переход по ячейкам
         if (variantOrientation == 1) {
             y += v;
+            if (y > labirint.getCell(indexSector, i, labirint.sectors.get(indexSector).cells.get(i).size()-1).y + Constants.R){
+                y -= v;
+                variantOrientation = random.nextInt(4);
+            }
             if (y > labirint.getCell(indexSector, i, j).y + Constants.R) {
                 j += (y - labirint.getCell(indexSector, i, j).y + Constants.R) / (2 * Constants.R);
             }
         }
         if (variantOrientation == 0) {
             y -= v;
+            if (y < labirint.getCell(indexSector, i, 0).y - Constants.R){
+                y += v;
+                variantOrientation = random.nextInt(4);
+            }
             if (y < labirint.getCell(indexSector, i, j).y - Constants.R) {
                 j -= (-y + labirint.getCell(indexSector, i, j).y - Constants.R) / (2 * Constants.R);
             }
         }
         if (variantOrientation == 2) {
             x -= v;
+            if (x < labirint.getCell(0, 0, j).x - Constants.R){
+                x += v;
+                variantOrientation = random.nextInt(4);
+            }
             if (x < labirint.getCell(indexSector, i, j).x - Constants.R) {
                 i -= (-x + labirint.getCell(indexSector, i, j).x - Constants.R) / (2 * Constants.R);
             }
@@ -66,6 +78,10 @@ public class GreenBot extends BaseBot {
         }
         if (variantOrientation == 3) {
             x += v;
+            if (x > labirint.getCell(labirint.sectors.size()-1, labirint.sectors.get(labirint.sectors.size()-1).cells.size()-1, j).x + Constants.R){
+                x -= v;
+                variantOrientation = random.nextInt(4);
+            }
             if (x > labirint.getCell(indexSector, i, j).x + Constants.R) {
                 i += (x - labirint.getCell(indexSector, i, j).x + Constants.R) / (2 * Constants.R);
             }

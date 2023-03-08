@@ -25,8 +25,19 @@ public class Labirint {
             int j1 = random.nextInt(sectors.get(0).cells.size());
             int k1 = random.nextInt(sectors.get(0).cells.get(0).size());
             int type = random.nextInt() % 4 + 1;
-            PinkBot pinkBot = new PinkBot(getCell(0, j1, k1).x, getCell(0, j1, k1).y, j1, k1, 0, this);
-            bots.add(pinkBot);
+            if (type == 1) {
+                RedBot redBot = new RedBot(getCell(sectors.size() - 1, j1, k1).x, getCell(sectors.size() - 1, j1, k1).y, j1, k1, sectors.size() - 1, this);
+                bots.add(redBot);
+            } else if (type == 2) {
+                OrangeBot orangeBot = new OrangeBot(getCell(sectors.size() - 1, j1, k1).x, getCell(sectors.size() - 1, j1, k1).y, j1, k1, sectors.size() - 1, this);
+                bots.add(orangeBot);
+            } else if (type == 3) {
+                GreenBot greenBot = new GreenBot(getCell(sectors.size() - 1, j1, k1).x, getCell(sectors.size() - 1, j1, k1).y, j1, k1, sectors.size()-1, this);
+                bots.add(greenBot);
+            } else {
+                PinkBot pinkBot = new PinkBot(getCell(sectors.size()-1, j1, k1).x, getCell(sectors.size()-1, j1, k1).y, j1, k1, sectors.size()-1, this);
+                bots.add(pinkBot);
+            }
         }
         addSector();
     }
@@ -113,7 +124,7 @@ public class Labirint {
             int j1 = random.nextInt(sectors.get(0).cells.size());
             int k1 = random.nextInt(sectors.get(0).cells.get(0).size());
             int type = random.nextInt() % 4 + 1;
-            /*if (type == 1) {
+            if (type == 1) {
                 RedBot redBot = new RedBot(getCell(sectors.size() - 1, j1, k1).x, getCell(sectors.size() - 1, j1, k1).y, j1, k1, sectors.size() - 1, this);
                 bots.add(redBot);
             } else if (type == 2) {
@@ -125,9 +136,7 @@ public class Labirint {
             } else {
                 PinkBot pinkBot = new PinkBot(getCell(sectors.size()-1, j1, k1).x, getCell(sectors.size()-1, j1, k1).y, j1, k1, sectors.size()-1, this);
                 bots.add(pinkBot);
-            }*/
-            PinkBot pinkBot = new PinkBot(getCell(sectors.size()-1, j1, k1).x, getCell(sectors.size()-1, j1, k1).y, j1, k1, sectors.size()-1, this);
-            bots.add(pinkBot);
+            }
         }
     }
 

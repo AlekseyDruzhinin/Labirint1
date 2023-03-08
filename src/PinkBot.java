@@ -15,7 +15,7 @@ public class PinkBot extends BaseBot{
 
     public PinkBot(double x, double y, int i, int j, int indexSector, Labirint labirint) throws IOException {
         super(x, y, i, j, indexSector, labirint);
-        type = 3;
+        type = 4;
         colorBullets = new Color(236, 98, 11, 255);
 
         variantOrientation = random.nextInt(4);

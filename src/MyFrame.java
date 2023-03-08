@@ -48,6 +48,7 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
         Constants.V_BOTS = 0.5 * Constants.V_NORMAL;
 
         Constants.SQRT_LEN_AIM = (double)(Constants.R * Constants.R);
+        Constants.V_BULLET = 4.0 * Constants.V_NORMAL;
 
     }
 
@@ -197,13 +198,56 @@ public class MyFrame extends JFrame implements  KeyEventDispatcher, MouseListene
     public void mousePressed(MouseEvent e) {
         // 1024 - правая
         // 4096 - левая
+        // 2048 - колёсико
         int ModifiersEx = e.getModifiersEx();
+//        System.out.println(ModifiersEx);
         double x = e.getX();
         double y = e.getY();
-        if (ModifiersEx == 1024){
+        if (ModifiersEx == 2048){
+            userHuman.aim.flagPrint = false;
+        }
+        else if (ModifiersEx == 1024){
             BaseBullet bullet;
+            BaseBot aimBot = userHuman.aim.bot;
             if (!userHuman.aim.flagPrint){
                 bullet = new BaseBullet(userHuman.x, userHuman.y, e.getX(), e.getY(), userHuman);
+            }else if (aimBot.type == 0 || aimBot.type == 1){
+                bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
+            }else if (aimBot.variantOrientation == 2 || aimBot.variantOrientation == 3){
+                 double xb = aimBot.x - userHuman.x;
+                 double yb = aimBot.y - userHuman.y;
+                 double vp = Constants.V_BULLET;
+                 double vb;
+                 if (aimBot.variantOrientation == 2){
+                     vb = -Constants.V_BOTS;
+                 }else {
+                     vb = Constants.V_BOTS;
+                 }
+                 double D = 2.0 * Math.pow(vb, 2.0) * Math.pow(yb, 4.0) + Math.pow(vb, 2.0) * Math.pow(xb, 2.0) * Math.pow(yb, 2.0)
+                         - Math.pow(xb, 4.0) * Math.pow(vp, 2.0) - Math.pow(vp, 2.0)*xb*yb;
+                 if (D < 0)
+                     bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
+                 else if (D == 0){
+                     double vx = vb * yb * yb /(xb*xb+yb*yb);
+                     if (vx < 0 || vx > vp)
+                         bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
+                     else{
+                         double vy = Math.sqrt(vp*vp-vx*vx);
+                         bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vx, vy), userHuman);
+                     }
+                 } else {
+                     double vx1 = (vb * yb * yb - Math.sqrt(D)) /(xb*xb+yb*yb);
+                     double vx2 = (vb * yb * yb + Math.sqrt(D)) /(xb*xb+yb*yb);
+                     if (vx1 >= 0 && vx1 <= vp){
+                         double vy = Math.sqrt(vp*vp-vx1*vx1);
+                         bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vx1, vy), userHuman);
+                     } else if (vx2 >= 0 && vx2 <= vp){
+                         double vy = Math.sqrt(vp*vp-vx2*vx2);
+                         bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vx2, vy), userHuman);
+                     }else{
+                         bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
+                     }
+                 }
             }else{
                 bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
             }

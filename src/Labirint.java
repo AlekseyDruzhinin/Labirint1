@@ -162,6 +162,9 @@ public class Labirint {
         ArrayList<BaseBot> diedBots = new ArrayList<>();
         for (BaseBot bot : bots) {
             if (bot.hp <= 0.0) {
+                if (userHuman.aim.bot == bot){
+                    userHuman.aim.flagPrint = false;
+                }
                 diedBots.add(bot);
             }
         }

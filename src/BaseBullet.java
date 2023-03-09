@@ -14,13 +14,22 @@ public class BaseBullet {
     public BaseBullet(double bornX, double bornY, double mouseX, double mouseY) {
         this.segment = new Segment(bornX, bornY, bornX, bornY);
         this.v = new Vector(mouseX - bornX, mouseY - bornY);
-        this.v.setLength(4.0 * Constants.V_NORMAL);
+        this.v.setLength(Constants.V_BULLET);
     }
 
     public BaseBullet(double bornX, double bornY, double mouseX, double mouseY, Human userHuman){
         this.segment = new Segment(bornX, bornY, bornX, bornY);
         this.v = new Vector(mouseX - bornX, mouseY - bornY);
-        this.v.setLength(4.0 * Constants.V_NORMAL);
+        this.v.setLength(Constants.V_BULLET);
+        this.indexSector = userHuman.indexSector;
+        this.i = userHuman.i;
+        this.j = userHuman.j;
+    }
+
+    public BaseBullet(double bornX, double bornY, Vector v, Human userHuman){
+        this.segment = new Segment(bornX, bornY, bornX, bornY);
+        this.v = v;
+        this.v.setLength(Constants.V_BULLET);
         this.indexSector = userHuman.indexSector;
         this.i = userHuman.i;
         this.j = userHuman.j;

@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -18,7 +19,7 @@ public abstract class BaseSector {
     ArrayList<ArrayList<StandardParallelWall>> parallelWalls = new ArrayList<>();
     double rightBound = 0.0;
 
-    public BaseSector(double x, double y, MyFrame frame) {
+    public BaseSector(double x, double y, MyFrame frame) throws IOException {
         this.x = x;
         this.y = y;
         this.width = frame.getWidth();

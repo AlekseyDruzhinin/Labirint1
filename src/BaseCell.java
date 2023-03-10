@@ -15,7 +15,7 @@ public abstract class BaseCell {
         this.x = x+r;
         this.y = y+r;
         this.r = r;
-        this.image = ImageIO.read(new File("data\\Pesok.jpg"));
+//        this.image = ImageIO.read(new File("data\\Pesok.jpg"));
     }
 
     public BaseCell (BaseCell cell){
@@ -24,7 +24,7 @@ public abstract class BaseCell {
     }
 
     public void paint(Graphics g){
-//        g.drawRect((int)x-r, (int)y-r, 2*r, 2*r);
-        g.drawImage(image, (int)x-r, (int)y-r, 2*r, 2*r, null);
+        g.drawRect((int)x-r, (int)y-r, 2*r, 2*r);
+//        g.drawImage(image, (int)x-r, (int)y-r, 2*r, 2*r, null);
     }
 }

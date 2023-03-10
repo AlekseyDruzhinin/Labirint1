@@ -124,8 +124,16 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         // d - 68
         // p - 80
         // r - 82
+        // q - 81
         if (e.getID() == KeyEvent.KEY_PRESSED) {
 //            System.out.println(e.getKeyCode());
+            if (e.getKeyCode() == 81 && !labirint.boom.flag){
+                try {
+                    labirint.addBoom(userHuman);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
             if (Constants.DEVELORER && e.getKeyCode() == 66) {
                 Constants.FLAG_CHIT_BULLET = !Constants.FLAG_CHIT_BULLET;
             }

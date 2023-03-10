@@ -73,4 +73,8 @@ public class Segment {
         Line line2 = new Line(segment1);
         return line1.getIntersection(line2);
     }
+
+    public double length(){
+        return Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
+    }
 }

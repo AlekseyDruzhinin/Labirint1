@@ -5,6 +5,7 @@ import java.util.Random;
 
 public class Labirint {
     ArrayList<BaseSector> sectors = new ArrayList<>();
+    Boom boom = new Boom();
 
     //массив ботов
     ArrayList<BaseBot> bots = new ArrayList<>();
@@ -32,10 +33,10 @@ public class Labirint {
                 OrangeBot orangeBot = new OrangeBot(getCell(sectors.size() - 1, j1, k1).x, getCell(sectors.size() - 1, j1, k1).y, j1, k1, sectors.size() - 1, this);
                 bots.add(orangeBot);
             } else if (type == 3) {
-                GreenBot greenBot = new GreenBot(getCell(sectors.size() - 1, j1, k1).x, getCell(sectors.size() - 1, j1, k1).y, j1, k1, sectors.size()-1, this);
+                GreenBot greenBot = new GreenBot(getCell(sectors.size() - 1, j1, k1).x, getCell(sectors.size() - 1, j1, k1).y, j1, k1, sectors.size() - 1, this);
                 bots.add(greenBot);
             } else {
-                PinkBot pinkBot = new PinkBot(getCell(sectors.size()-1, j1, k1).x, getCell(sectors.size()-1, j1, k1).y, j1, k1, sectors.size()-1, this);
+                PinkBot pinkBot = new PinkBot(getCell(sectors.size() - 1, j1, k1).x, getCell(sectors.size() - 1, j1, k1).y, j1, k1, sectors.size() - 1, this);
                 bots.add(pinkBot);
             }
         }
@@ -43,11 +44,12 @@ public class Labirint {
     }
 
     public BaseCell getCell(int i, int j, int k) {
-        if (i >= sectors.size() || j >= sectors.get(i).cells.size() || k >=sectors.get(i).cells.get(j).size()){
-            int z = 1;
+        if (i >= sectors.size() || j >= sectors.get(i).cells.size() || k >= sectors.get(i).cells.get(j).size()) {
+            return null;
         }
         return sectors.get(i).cells.get(j).get(k);
     }
+
 
     public void paint(Graphics g) {
         for (BaseSector sector : sectors) {
@@ -78,10 +80,13 @@ public class Labirint {
         for (BotsBaseBullet bullet : diedBotsBullets) {
             bullet.print(g, this);
         }
+        if (boom != null && boom.flag) {
+            boom.paint(g, this);
+        }
     }
 
     public BaseSector getSector(int i) {
-        if (i >= sectors.size()){
+        if (i >= sectors.size()) {
             int z = 1;
         }
         return sectors.get(i);
@@ -113,7 +118,8 @@ public class Labirint {
     }
 
     public void addSector() throws IOException {
-        sectors.add(new StandardSector(sectors.get(sectors.size() - 1).x + sectors.get(sectors.size() - 1).widthCnt * Constants.R * 2, Constants.SDVIG, panel));
+        sectors.add(new BaseSector(sectors.get(sectors.size() - 1).x + sectors.get(sectors.size() - 1).widthCnt * Constants.R * 2, Constants.SDVIG, panel) {
+        });
         for (int i = 1; i < sectors.get(0).verticalWalls.get(0).size(); ++i) {
             if (random.nextInt(3) == 0) {
                 sectors.get(sectors.size() - 1).verticalWalls.get(0).get(i).flag = false;
@@ -131,16 +137,17 @@ public class Labirint {
                 OrangeBot orangeBot = new OrangeBot(getCell(sectors.size() - 1, j1, k1).x, getCell(sectors.size() - 1, j1, k1).y, j1, k1, sectors.size() - 1, this);
                 bots.add(orangeBot);
             } else if (type == 3) {
-                GreenBot greenBot = new GreenBot(getCell(sectors.size() - 1, j1, k1).x, getCell(sectors.size() - 1, j1, k1).y, j1, k1, sectors.size()-1, this);
+                GreenBot greenBot = new GreenBot(getCell(sectors.size() - 1, j1, k1).x, getCell(sectors.size() - 1, j1, k1).y, j1, k1, sectors.size() - 1, this);
                 bots.add(greenBot);
             } else {
-                PinkBot pinkBot = new PinkBot(getCell(sectors.size()-1, j1, k1).x, getCell(sectors.size()-1, j1, k1).y, j1, k1, sectors.size()-1, this);
+                PinkBot pinkBot = new PinkBot(getCell(sectors.size() - 1, j1, k1).x, getCell(sectors.size() - 1, j1, k1).y, j1, k1, sectors.size() - 1, this);
                 bots.add(pinkBot);
             }
         }
     }
 
     public void update(long time, Human userHuman) throws IOException {
+        boom.buuxx(this);
         boolean itIsDied = sectors.get(indexDied).update((double) time * Constants.V_POLE);
 
         for (BaseBot bot : bots) {
@@ -162,7 +169,7 @@ public class Labirint {
         ArrayList<BaseBot> diedBots = new ArrayList<>();
         for (BaseBot bot : bots) {
             if (bot.hp <= 0.0) {
-                if (userHuman.aim.bot == bot){
+                if (userHuman.aim.bot == bot) {
                     userHuman.aim.flagPrint = false;
                 }
                 diedBots.add(bot);
@@ -234,4 +241,10 @@ public class Labirint {
             diedBotsBullets.add(bullet);
         }
     }
+
+    public void addBoom(Human userHuman) throws IOException {
+        boom = new Boom(userHuman);
+    }
+
+
 }

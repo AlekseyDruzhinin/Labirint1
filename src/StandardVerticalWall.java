@@ -7,7 +7,8 @@ public class StandardVerticalWall extends BaseWall{
 
     @Override
     public void paint(Graphics g){
-        g.setColor(Color.RED);
+        g.setColor(new Color(103, 80, 26, 255));
         g.fillRect((int)x-2, (int)y, 4, l);
+        g.setColor(Color.RED);
     }
 }

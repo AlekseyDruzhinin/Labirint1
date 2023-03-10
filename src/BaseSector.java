@@ -1,4 +1,7 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -12,6 +15,8 @@ public abstract class BaseSector {
     int widthCnt;
     int heightCnt;
 
+    BufferedImage image;
+
     boolean iAmDied = false;
     Random random = new Random();
     ArrayList<ArrayList<BaseCell>> cells = new ArrayList<>();
@@ -20,6 +25,8 @@ public abstract class BaseSector {
     double rightBound = 0.0;
 
     public BaseSector(double x, double y, MyFrame frame) throws IOException {
+        image = ImageIO.read(new File("data\\Sand1.jpg"));
+
         this.x = x;
         this.y = y;
         this.width = frame.getWidth();
@@ -152,6 +159,8 @@ public abstract class BaseSector {
     }
 
     public void paint(Graphics g){
+
+        g.drawImage(image, (int)x, (int)y, width, height, null);
 
         for (ArrayList<BaseCell> partCells : cells){
             for (BaseCell cell : partCells){

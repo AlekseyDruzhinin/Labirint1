@@ -74,6 +74,14 @@ public class Boom {
                     }
                 }
 
+                ArrayList<ArrayList<StandardParallelWall>> parallelWalls = sector.parallelWalls;
+                for (int j = 1; j < parallelWalls.get(0).size(); ++j){
+                    parallelWalls.get(0).get(j).flag = true;
+                }
+
+                for (int j = 1; j < parallelWalls.get(parallelWalls.size()-1).size(); ++j) {
+                    parallelWalls.get(parallelWalls.size() - 1).get(j).flag = true;
+                }
             }
         }
     }

@@ -24,7 +24,7 @@ public abstract class BaseCell {
     }
 
     public void paint(Graphics g){
-        g.drawRect((int)x-r, (int)y-r, 2*r, 2*r);
+//        g.drawRect((int)x-r, (int)y-r, 2*r, 2*r);
 //        g.drawImage(image, (int)x-r, (int)y-r, 2*r, 2*r, null);
     }
 }

@@ -218,6 +218,8 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
             BaseBot aimBot = userHuman.aim.bot;
             if (!userHuman.aim.flagPrint) {
                 bullet = new BaseBullet(userHuman.x, userHuman.y, e.getX(), e.getY(), userHuman);
+            }else if (aimBot.type == 1 || aimBot.type == 2){
+                bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
             } else if (aimBot.variantOrientation == 2 || aimBot.variantOrientation == 3) {
                 if (aimBot.y > userHuman.y) {
                     double xb = aimBot.x - userHuman.x;

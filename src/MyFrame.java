@@ -72,7 +72,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
 
 
         if (Constants.USER_DIED) {
-
+            Sound.playSound("data\\music\\Game_over.wav").join();
             g.drawImage(image, this.getWidth() / 2 - this.getHeight() / 2, 0, this.getHeight(), this.getHeight(), null);
 
         } else {

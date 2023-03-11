@@ -53,6 +53,11 @@ public class Boom {
 //
 //                }
 //            }
+
+            Sound buux = new Sound(new File("data\\music\\buxx.wav"));
+            buux.setVolume((float)0.5);
+            buux.play();
+
             BaseCell cell = labirint.getCell(indexSector, i, j);
             for (BaseSector sector : labirint.sectors){
                 for (ArrayList<StandardParallelWall> walls : sector.parallelWalls){

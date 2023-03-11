@@ -17,7 +17,11 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
     long timePriviosPrint;
     BufferedImage image;
 
+    BufferedImage imageBackGround;
+
     public MyFrame() throws IOException {
+        imageBackGround = ImageIO.read(new File("data\\Sky.jpg"));
+
         addMouseListener(this);
         addMouseMotionListener(this);
 
@@ -63,6 +67,8 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         }
         g = bufferStrategy.getDrawGraphics();
         g.clearRect(0, 0, getWidth(), getHeight());
+
+        g.drawImage(imageBackGround, 0, 0, this.getWidth(), this.getHeight(), null);
 
 
         if (Constants.USER_DIED) {

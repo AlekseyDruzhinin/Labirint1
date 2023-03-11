@@ -1,4 +1,7 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -6,6 +9,10 @@ import java.util.Random;
 public class Labirint {
     ArrayList<BaseSector> sectors = new ArrayList<>();
     Boom boom = new Boom();
+
+    BufferedImage imagePesok;
+    BufferedImage imageParallelWall;
+    BufferedImage imageVerticalWall;
 
     //массив ботов
     ArrayList<BaseBot> bots = new ArrayList<>();
@@ -20,6 +27,10 @@ public class Labirint {
     int indexDied = 0;
 
     public Labirint(MyFrame panel) throws IOException {
+        imagePesok = ImageIO.read(new File("data\\Pesok.jpg"));
+        imageParallelWall = ImageIO.read(new File("data\\ParallelWall2.png"));
+        imageVerticalWall = ImageIO.read(new File("data\\VerticalWall2.png"));
+
         this.panel = panel;
         sectors.add(new StandardSector(Constants.SDVIG, Constants.SDVIG, panel));
         for (int iter = 0; iter < 10; ++iter) {
@@ -53,7 +64,7 @@ public class Labirint {
 
     public void paint(Graphics g) {
         for (BaseSector sector : sectors) {
-            sector.paint(g);
+            sector.paint(g, imagePesok, imageParallelWall, imageVerticalWall);
         }
         for (BaseBot bot : bots) {
             if (Constants.DEVELORER) {

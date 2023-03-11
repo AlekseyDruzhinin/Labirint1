@@ -15,5 +15,5 @@ public abstract class BaseWall {
     }
 
 
-    public void paint(Graphics g){};
+    public void paint(Graphics g, BufferedImage image){};
 }

@@ -12,10 +12,12 @@ public class StandardParallelWall extends BaseWall{
     }
 
     @Override
-    public void paint(Graphics g){
-        g.setColor(new Color(103, 80, 26, 255));
-        g.fillRect((int)x, (int)y-2, l, 4);
-        g.setColor(Color.RED);
+    public void paint(Graphics g, BufferedImage image){
+        g.drawImage(image, (int)x, (int)y-2, l, 8, null);
+
+//        g.setColor(new Color(103, 80, 26, 255));
+//        g.fillRect((int)x, (int)y-2, l, 4);
+//        g.setColor(Color.RED);
         //g.drawImage(image, (int)x, (int)y-2, l, 4, null);
     }
 }

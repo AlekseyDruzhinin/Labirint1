@@ -25,7 +25,7 @@ public abstract class BaseSector {
     double rightBound = 0.0;
 
     public BaseSector(double x, double y, MyFrame frame) throws IOException {
-        image = ImageIO.read(new File("data\\Sand1.jpg"));
+//        image = ImageIO.read(new File("data\\Sand1.jpg"));
 
         this.x = x;
         this.y = y;
@@ -158,20 +158,20 @@ public abstract class BaseSector {
         randomGenerate(ix, iy, height-(iy-y), width-(ix-x));
     }
 
-    public void paint(Graphics g){
+    public void paint(Graphics g, BufferedImage imagePesok, BufferedImage imageParallelWall, BufferedImage imageVerticalWall){
 
-        g.drawImage(image, (int)x, (int)y, width, height, null);
+//        g.drawImage(image, (int)x, (int)y, width, height, null);
 
         for (ArrayList<BaseCell> partCells : cells){
             for (BaseCell cell : partCells){
-                cell.paint(g);
+                cell.paint(g, imagePesok);
             }
         }
 
         for (ArrayList<StandardVerticalWall> partVerticalWalls : verticalWalls){
             for (StandardVerticalWall verticalWall : partVerticalWalls){
                 if (verticalWall.flag){
-                    verticalWall.paint(g);
+                    verticalWall.paint(g, imageVerticalWall);
                 }
             }
         }
@@ -179,7 +179,7 @@ public abstract class BaseSector {
         for (ArrayList<StandardParallelWall> partParallelWalls : parallelWalls){
             for (StandardParallelWall parallelWall : partParallelWalls){
                 if (parallelWall.flag){
-                    parallelWall.paint(g);
+                    parallelWall.paint(g, imageParallelWall);
                 }
             }
         }

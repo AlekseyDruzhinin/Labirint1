@@ -8,7 +8,7 @@ public class Main {
         while (true){
             frame.repaint();
 
-            //Thread.sleep(10000);
+            Thread.sleep(1);
         }
     }
 }

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 public abstract class Human extends BaseHuman {
+
     double x, y; // координаты центра
     int i, j; // координаты ячейки
     int indexSector = 0; // номер сектора
@@ -71,7 +72,8 @@ public abstract class Human extends BaseHuman {
         aim.print(g);
     }
 
-    public void hit(){
+    public void hit(Graphics g, MyFrame frame){
+        Constants.TIME_HIT = System.currentTimeMillis();
         hp -= Constants.DAMAGE_BOT_BULLET;
         if (hp <= 0.0){
             Constants.USER_DIED = true;

@@ -9,10 +9,16 @@ public class Constants {
     public static int GAME_OVER = 0;
     public static int MUSIC_GAME = 0;
 
+    public static long TIME_HIT = 0;
+    public static long TIME_LIFE_BACKGROUND_BLOOD = 1000;
+
     public static long TIME_LIFE_AFTER_DIED = 3000; // время существование следа после смерти пульки
     public static int R = 20;
 
     public static int COUNT_CELL_DOWN = 13;
+
+    public static double V_POVOROT_PESOK = 0.001;
+    public static long TIME_LAST_POVOROT_PESOK = 0;
     public static int SDVIG = 80;
 
     public static int LEFT_END = 3000;

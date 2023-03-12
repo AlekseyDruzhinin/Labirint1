@@ -15,11 +15,14 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
     Labirint labirint;
     UserHuman userHuman;
     long timePriviosPrint;
+    BufferedImage imageBloodBackground;
+
     BufferedImage image;
 
     BufferedImage imageBackGround;
 
     public MyFrame() throws IOException {
+        this.imageBloodBackground = ImageIO.read(new File("data\\blood_background.png"));
         imageBackGround = ImageIO.read(new File("data\\Sky.jpg"));
 
         addMouseListener(this);
@@ -69,69 +72,71 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         g.clearRect(0, 0, getWidth(), getHeight());
 
         g.drawImage(imageBackGround, 0, 0, this.getWidth(), this.getHeight(), null);
+        if (System.currentTimeMillis() - Constants.TIME_HIT <= Constants.TIME_LIFE_BACKGROUND_BLOOD){
+            g.drawImage(imageBloodBackground, 0, 0, this.getWidth(), this.getHeight(), null);
+        }
 
-
-        if (Constants.USER_DIED) {
-            if (Constants.GAME_OVER == 0){
-                new Thread(() -> {
-                    Sound.playSound("data\\music\\Game_over.wav").join();
-                }).start();
-                Constants.GAME_OVER++;
-            }
-            g.drawImage(image, this.getWidth() / 2 - this.getHeight() / 2, 0, this.getHeight(), this.getHeight(), null);
-
-        } else {
-            if (Constants.MUSIC_GAME == 0){
-                Constants.MUSIC_GAME = 1;
-                new Thread(() -> {
-                    Sound sound = new Sound(new File("data\\music\\Music.wav"));
-                    sound.setVolume((float) 0.65);
-                    sound.play();
-                    sound.join();
-                    Constants.MUSIC_GAME = 0;
-                }).start();
-            }
-            if (nowTime - Constants.TIME_START_PROGRAM > Constants.TIME_TO_DIED_LABIRINT) {
-                try {
-                    labirint.update(nowTime - timePriviosPrint, userHuman);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+            if (Constants.USER_DIED) {
+                if (Constants.GAME_OVER == 0) {
+                    new Thread(() -> {
+                        Sound.playSound("data\\music\\Game_over.wav").join();
+                    }).start();
+                    Constants.GAME_OVER++;
                 }
-            }
+                g.drawImage(image, this.getWidth() / 2 - this.getHeight() / 2, 0, this.getHeight(), this.getHeight(), null);
 
-            if (userHuman != null) {
-                userHuman.update(labirint);
-                Point gMP = getMousePosition();
+            } else {
+                if (Constants.MUSIC_GAME == 0) {
+                    Constants.MUSIC_GAME = 1;
+                    new Thread(() -> {
+                        Sound sound = new Sound(new File("data\\music\\Music.wav"));
+                        sound.setVolume((float) 0.65);
+                        sound.play();
+                        sound.join();
+                        Constants.MUSIC_GAME = 0;
+                    }).start();
+                }
+                if (nowTime - Constants.TIME_START_PROGRAM > Constants.TIME_TO_DIED_LABIRINT) {
+                    try {
+                        labirint.update(nowTime - timePriviosPrint, userHuman);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                if (userHuman != null) {
+                    userHuman.update(labirint);
+                    Point gMP = getMousePosition();
                 /*if (gMP != null){
                     Vector vectorMouse = new Vector(-(double)gMP.x+userHuman.x, -(double)gMP.y + userHuman.y);
                     Vector vectorUp = new Vector(0.0, 1.0);
                     userHuman.rotate(Math.atan2(vectorUp.vectorComposition(vectorMouse), vectorUp.scalarComposition(vectorMouse)));
                     //System.out.println(vectorMouse.x + " " + vectorMouse.y);
                 }*/
-                userHuman.rotateToAim(gMP);
-            }
-
-            if (labirint != null) {
-                labirint.paint(g);
-                long mega_bufer = nowTime - timePriviosPrint;
-                labirint.goBullets(mega_bufer, g, userHuman);
-            }
-            if (userHuman != null) {
-                try {
-                    userHuman.go(labirint, nowTime - timePriviosPrint);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    userHuman.rotateToAim(gMP);
                 }
-                if (Constants.DEVELORER) {
-                    g.setColor(Color.GREEN);
-                    g.fillRect((int) labirint.getCell(userHuman.indexSector, userHuman.i, userHuman.j).x, (int) labirint.getCell(userHuman.indexSector, userHuman.i, userHuman.j).y, Constants.R, Constants.R);
-                    g.setColor(Color.RED);
-                }
-                userHuman.paint(g);
-            }
 
-            timePriviosPrint = nowTime;
-        }
+                if (labirint != null) {
+                    labirint.paint(g);
+                    long mega_bufer = nowTime - timePriviosPrint;
+                    labirint.goBullets(mega_bufer, g, userHuman);
+                }
+                if (userHuman != null) {
+                    try {
+                        userHuman.go(labirint, nowTime - timePriviosPrint);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if (Constants.DEVELORER) {
+                        g.setColor(Color.GREEN);
+                        g.fillRect((int) labirint.getCell(userHuman.indexSector, userHuman.i, userHuman.j).x, (int) labirint.getCell(userHuman.indexSector, userHuman.i, userHuman.j).y, Constants.R, Constants.R);
+                        g.setColor(Color.RED);
+                    }
+                    userHuman.paint(g);
+                }
+
+                timePriviosPrint = nowTime;
+            }
 
         g.dispose();
         bufferStrategy.show();
@@ -148,7 +153,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         // q - 81
         if (e.getID() == KeyEvent.KEY_PRESSED) {
 //            System.out.println(e.getKeyCode());
-            if (e.getKeyCode() == 81 && !labirint.boom.flag){
+            if (e.getKeyCode() == 81 && !labirint.boom.flag) {
                 try {
                     labirint.addBoom(userHuman);
                 } catch (IOException ex) {
@@ -239,7 +244,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
             BaseBot aimBot = userHuman.aim.bot;
             if (!userHuman.aim.flagPrint) {
                 bullet = new BaseBullet(userHuman.x, userHuman.y, e.getX(), e.getY(), userHuman);
-            }else if (aimBot.type == 1 || aimBot.type == 2){
+            } else if (aimBot.type == 1 || aimBot.type == 2) {
                 bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
             } else if (aimBot.variantOrientation == 2 || aimBot.variantOrientation == 3) {
                 if (aimBot.y > userHuman.y) {

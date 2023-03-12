@@ -82,15 +82,15 @@ public class Labirint {
         for (BaseBullet bullet : bullets) {
             bullet.print(g, this);
         }
-        for (BaseBullet bullet : diedBullets) {
-            bullet.print(g, this);
-        }
+//        for (BaseBullet bullet : diedBullets) {
+//            bullet.print(g, this);
+//        }
         for (BotsBaseBullet bullet : botsBullets) {
             bullet.print(g, this);
         }
-        for (BotsBaseBullet bullet : diedBotsBullets) {
-            bullet.print(g, this);
-        }
+//        for (BotsBaseBullet bullet : diedBotsBullets) {
+//            bullet.print(g, this);
+//        }
         if (boom != null && boom.flag) {
             boom.paint(g, this);
         }
@@ -243,7 +243,7 @@ public class Labirint {
         }
         ArrayList<BotsBaseBullet> botsBulletDiedInThisStep = new ArrayList<>();
         for (BotsBaseBullet bullet : botsBullets) {
-            if (bullet.go(this, time, g, userHuman)) {
+            if (bullet.go(this, time, g, userHuman, panel)) {
                 botsBulletDiedInThisStep.add(bullet);
             }
         }

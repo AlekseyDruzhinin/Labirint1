@@ -8,6 +8,8 @@ public abstract class BaseCell {
     protected double x, y; // координаты центра
     protected int r = Constants.R; // радиус клетки
 
+    boolean iAmDied = false;
+
     // на вход координаты левого верхнего угла
     public BaseCell(double x, double y) throws IOException {
         this.x = x+r;
@@ -22,6 +24,8 @@ public abstract class BaseCell {
 
     public void paint(Graphics g, BufferedImage image){
 //        g.drawRect((int)x-r, (int)y-r, 2*r, 2*r);
-        g.drawImage(image, (int)x-r, (int)y-r, 2*r, 2*r, null);
+        if (!iAmDied){
+            g.drawImage(image, (int)x-r, (int)y-r, 2*r, 2*r, null);
+        }
     }
 }

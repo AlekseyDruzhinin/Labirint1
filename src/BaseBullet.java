@@ -135,6 +135,15 @@ public class BaseBullet {
 
     public boolean checkDied(Labirint labirint, long time, Graphics g) {
         //System.out.println(i + " " + j);
+        if (segment.getX2() <= labirint.sectors.get(0).cells.get(0).get(0).x){
+            return true;
+        }
+        if (segment.getY2() <= labirint.sectors.get(0).cells.get(0).get(0).y){
+            return true;
+        }
+        if (segment.getY2() >= labirint.sectors.get(0).cells.get(0).get(labirint.sectors.get(0).cells.get(0).size()-1).y){
+            return true;
+        }
         Segment jump = new Segment(segment.getX2(), segment.getY2(), segment.getX2() + (double) time * v.getX(), segment.getY2() + (double) time * v.getY());
         MyPoint pointFirstDied = new MyPoint(0.0, 0.0);
         MyPoint pointStart = new MyPoint(jump.getX1(), jump.getY1());

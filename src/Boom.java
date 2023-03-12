@@ -34,7 +34,7 @@ public class Boom {
     }
 
     public void buuxx(Labirint labirint){
-        if (System.currentTimeMillis() - timeBorn >= Constants.TIME_DIED_BOOM){
+        if (this.flag && System.currentTimeMillis() - timeBorn >= Constants.TIME_DIED_BOOM){
             this.flag = false;
 //            ArrayList<BaseCell> cells = new ArrayList<>();
 //            for (int i1 = i-2; i1 <= i+2; i1++){
@@ -54,9 +54,12 @@ public class Boom {
 //                }
 //            }
 
-            Sound buux = new Sound(new File("data\\music\\buxx.wav"));
-            buux.setVolume((float)0.5);
-            buux.play();
+            new Thread(() -> {
+                Sound sound = new Sound(new File("data\\music\\buxx.wav"));
+                sound.setVolume((float) 0.75);
+                sound.play();
+                sound.join();
+            }).start();
 
             BaseCell cell = labirint.getCell(indexSector, i, j);
             for (BaseSector sector : labirint.sectors){

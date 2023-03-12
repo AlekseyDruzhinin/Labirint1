@@ -72,10 +72,25 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
 
 
         if (Constants.USER_DIED) {
-            Sound.playSound("data\\music\\Game_over.wav").join();
+            if (Constants.GAME_OVER == 0){
+                new Thread(() -> {
+                    Sound.playSound("data\\music\\Game_over.wav").join();
+                }).start();
+                Constants.GAME_OVER++;
+            }
             g.drawImage(image, this.getWidth() / 2 - this.getHeight() / 2, 0, this.getHeight(), this.getHeight(), null);
 
         } else {
+            if (Constants.MUSIC_GAME == 0){
+                Constants.MUSIC_GAME = 1;
+                new Thread(() -> {
+                    Sound sound = new Sound(new File("data\\music\\Music.wav"));
+                    sound.setVolume((float) 0.65);
+                    sound.play();
+                    sound.join();
+                    Constants.MUSIC_GAME = 0;
+                }).start();
+            }
             if (nowTime - Constants.TIME_START_PROGRAM > Constants.TIME_TO_DIED_LABIRINT) {
                 try {
                     labirint.update(nowTime - timePriviosPrint, userHuman);

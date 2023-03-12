@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.io.File;
 
 public class BaseBullet {
     Segment segment;
@@ -11,13 +12,33 @@ public class BaseBullet {
 
     long timeDied = 0;
 
+    boolean flagDoneGun = false;
+
     public BaseBullet(double bornX, double bornY, double mouseX, double mouseY) {
+        if (!flagDoneGun){
+            new Thread(() -> {
+                Sound sound = new Sound(new File("data\\music\\gun.wav"));
+                sound.setVolume((float) 0.6);
+                sound.play();
+                sound.join();
+                flagDoneGun = true;
+            }).start();
+        }
         this.segment = new Segment(bornX, bornY, bornX, bornY);
         this.v = new Vector(mouseX - bornX, mouseY - bornY);
         this.v.setLength(Constants.V_BULLET);
     }
 
     public BaseBullet(double bornX, double bornY, double mouseX, double mouseY, Human userHuman){
+        if (!flagDoneGun){
+            new Thread(() -> {
+                Sound sound = new Sound(new File("data\\music\\gun.wav"));
+                sound.setVolume((float) 0.6);
+                sound.play();
+                sound.join();
+                flagDoneGun = true;
+            }).start();
+        }
         this.segment = new Segment(bornX, bornY, bornX, bornY);
         this.v = new Vector(mouseX - bornX, mouseY - bornY);
         this.v.setLength(Constants.V_BULLET);
@@ -51,7 +72,8 @@ public class BaseBullet {
         }else{
             y1 = (int)(segment.getY2() - (double)Constants.SIZE_BULLET * (v.y/Math.sqrt((v.x*v.x + v.y*v.y))));
         }
-        g.drawLine(x1, y1, (int) segment.getX2(), (int) segment.getY2());
+//        g.drawRect(x1, y1, (int) segment.getX2(), (int) segment.getY2());
+        g.fillOval(x1, y1, 8, 8);
 
         /*if (Constants.DEVELORER) {
             g.setColor(Color.BLUE);

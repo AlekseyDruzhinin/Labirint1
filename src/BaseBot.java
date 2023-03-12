@@ -64,6 +64,12 @@ public abstract class BaseBot{
     }
 
     public void hit(){
+        new Thread(() -> {
+            Sound sound = new Sound(new File("data\\music\\damage.wav"));
+            sound.setVolume((float) 0.8);
+            sound.play();
+            sound.join();
+        }).start();
         hp -= Constants.DAMAGE_USER_BULLET;
     }
 

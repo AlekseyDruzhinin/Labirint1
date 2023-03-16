@@ -168,16 +168,20 @@ public abstract class BaseSector {
         randomGenerate(ix, iy, height - (iy - y), width - (ix - x));
     }
 
-    public void paint(Graphics g, BufferedImage imagePesok, BufferedImage imageParallelWall, BufferedImage imageVerticalWall) {
+    public void paint(Graphics g, BufferedImage imagePesok, BufferedImage imageDiedPesok, BufferedImage imageParallelWall, BufferedImage imageVerticalWall) {
 
 //        g.drawImage(image, (int)x, (int)y, width, height, null);
 
         for (ArrayList<BaseCell> partCells : cells) {
             for (BaseCell cell : partCells) {
-                if (cell.x + 2 * Constants.R <= this.x + this.rightBound){
+                if (cell.x - Constants.R <= this.x + this.rightBound - Constants.R){
                     cell.iAmDied = true;
                 }
-                cell.paint(g, imagePesok);
+                if (cell.x - Constants.R <= this.x + this.rightBound - Constants.R && cell.x + Constants.R >= this.x + this.rightBound - Constants.R){
+                    cell.paint(g, imagePesok, imageDiedPesok, (this.x + this.rightBound-cell.x)/(2*Constants.R));
+                }else{
+                    cell.paint(g, imagePesok, imageDiedPesok, 1.0);
+                }
             }
         }
 

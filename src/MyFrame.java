@@ -79,26 +79,39 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
             if (Constants.USER_DIED) {
                 if (Constants.GAME_OVER == 0) {
                     new Thread(() -> {
-                        Sound.playSound("data\\music\\Game_over.wav").join();
+//                        Sound.playSound("data\\music\\Game_over.wav");
+                        Sound sound = new Sound(new File("data\\music\\Game_over.wav"));
+                        sound.play();
                     }).start();
                     Constants.GAME_OVER++;
                 }
                 g.drawImage(image, this.getWidth() / 2 - this.getHeight() / 2, 0, this.getHeight(), this.getHeight(), null);
-
+                g.drawImage(imageBloodBackground, 0, 0, this.getWidth(), this.getHeight(), null);
             } else {
                 if (Constants.MUSIC_GAME == 0) {
                     Constants.MUSIC_GAME = 1;
                     new Thread(() -> {
-                        Sound sound = new Sound(new File("data\\music\\Music.wav"));
-                        sound.setVolume((float) 0.65);
-                        sound.play();
-                        sound.join();
-                        Constants.MUSIC_GAME = 0;
+                        Sound soundGame = new Sound(new File("data\\music\\Music.wav"));
+                        soundGame.setVolume((float) 0.65);
+                        Sound soundDied = new Sound(new File("data\\music\\End.wav"));
+                        soundDied.setVolume((float) 0.65);
+                        while (true) {
+                            if (!soundGame.isPlaying() && !Constants.USER_DIED) {
+                                soundGame.play();
+                                soundDied.stop();
+                            }
+                            if (Constants.USER_DIED) {
+                                soundGame.stop();
+                            }
+                            if (Constants.USER_DIED && !soundDied.playing){
+                                soundDied.play();
+                            }
+                        }
                     }).start();
                 }
                 if (nowTime - Constants.TIME_START_PROGRAM > Constants.TIME_TO_DIED_LABIRINT) {
                     try {
-                        labirint.update(nowTime - timePriviosPrint, userHuman);
+                        labirint.update(nowTime - timePriviosPrint, userHuman, g);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

@@ -15,7 +15,7 @@ public class Sound implements AutoCloseable {
     private AudioInputStream stream = null;
     private Clip clip = null;
     private FloatControl volumeControl = null;
-    private boolean playing = false;
+    boolean playing = false;
 
     public Sound(File f) {
         try {

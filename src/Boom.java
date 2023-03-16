@@ -33,9 +33,12 @@ public class Boom {
         g.setColor(Color.RED);
     }
 
-    public void buuxx(Labirint labirint){
+    public void buuxx(Labirint labirint, Graphics g){
         if (this.flag && System.currentTimeMillis() - timeBorn >= Constants.TIME_DIED_BOOM){
             this.flag = false;
+            BaseCell cell = labirint.getCell(indexSector, i, j);
+            g.setColor(Color.RED);
+            g.fillOval((int)(cell.x - 6*Constants.R), (int)(cell.y - 6*Constants.R), 12*Constants.R, 12*Constants.R);
 //            ArrayList<BaseCell> cells = new ArrayList<>();
 //            for (int i1 = i-2; i1 <= i+2; i1++){
 //                cells.add(labirint.getCell(indexSector, i1, j-1));
@@ -61,7 +64,7 @@ public class Boom {
                 sound.join();
             }).start();
 
-            BaseCell cell = labirint.getCell(indexSector, i, j);
+            cell = labirint.getCell(indexSector, i, j);
             for (BaseSector sector : labirint.sectors){
                 for (ArrayList<StandardParallelWall> walls : sector.parallelWalls){
                     for (StandardParallelWall wallp : walls){

@@ -12,7 +12,7 @@ public class RedBot extends BaseBot {
 
         colorBullets = new Color(58, 14, 14, 255);
 
-        this.image = ImageIO.read(new File("data\\Bot1.png"));
+        this.image = ImageIO.read(new File("data\\Bot2.png"));
 
         double k = 2.0 * (double) Constants.R / (double) image.getHeight();
         tx = AffineTransform.getScaleInstance(k, k);

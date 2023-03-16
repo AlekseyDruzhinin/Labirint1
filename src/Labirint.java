@@ -11,6 +11,7 @@ public class Labirint {
     Boom boom = new Boom();
 
     BufferedImage imagePesok;
+    BufferedImage imageDiedPesok;
     BufferedImage imageParallelWall;
     BufferedImage imageVerticalWall;
 
@@ -28,6 +29,7 @@ public class Labirint {
 
     public Labirint(MyFrame panel) throws IOException {
         imagePesok = ImageIO.read(new File("data\\Pesok.jpg"));
+        imageDiedPesok = ImageIO.read(new File("data\\diedGround.png"));
         imageParallelWall = ImageIO.read(new File("data\\ParallelWall2.png"));
         imageVerticalWall = ImageIO.read(new File("data\\VerticalWall2.png"));
 
@@ -64,7 +66,7 @@ public class Labirint {
 
     public void paint(Graphics g) {
         for (BaseSector sector : sectors) {
-            sector.paint(g, imagePesok, imageParallelWall, imageVerticalWall);
+            sector.paint(g, imagePesok, imageDiedPesok, imageParallelWall, imageVerticalWall);
         }
         for (BaseBot bot : bots) {
             if (Constants.DEVELORER) {
@@ -157,8 +159,8 @@ public class Labirint {
         }
     }
 
-    public void update(long time, Human userHuman) throws IOException {
-        boom.buuxx(this);
+    public void update(long time, Human userHuman, Graphics g) throws IOException {
+        boom.buuxx(this, g);
         boolean itIsDied = sectors.get(indexDied).update((double) time * Constants.V_POLE);
 
         for (BaseBot bot : bots) {

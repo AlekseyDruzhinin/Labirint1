@@ -13,7 +13,7 @@ public class GreenBot extends BaseBot {
         variantOrientation = random.nextInt(4);
         colorBullets = new Color(236, 98, 11, 255);
 
-        this.image = ImageIO.read(new File("data\\Bot3.png"));
+        this.image = ImageIO.read(new File("data\\Bot2.png"));
 
         double k = 2.0 * (double) Constants.R / (double) image.getHeight();
         tx = AffineTransform.getScaleInstance(k, k);

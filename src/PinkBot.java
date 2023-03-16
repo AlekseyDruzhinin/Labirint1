@@ -21,7 +21,7 @@ public class PinkBot extends BaseBot{
         variantOrientation = random.nextInt(4);
 //        System.out.println(random.nextInt());
 
-        this.image = ImageIO.read(new File("data\\Bot4.png"));
+        this.image = ImageIO.read(new File("data\\Bot2.png"));
 
         double k = 2.0 * (double) Constants.R / (double) image.getHeight();
         tx = AffineTransform.getScaleInstance(k, k);

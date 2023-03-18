@@ -172,18 +172,28 @@ public abstract class BaseSector {
 
 //        g.drawImage(image, (int)x, (int)y, width, height, null);
 
-        for (ArrayList<BaseCell> partCells : cells) {
-            for (BaseCell cell : partCells) {
-                if (cell.x - Constants.R <= this.x + this.rightBound - Constants.R){
-                    cell.iAmDied = true;
-                }
-                if (cell.x - Constants.R <= this.x + this.rightBound - Constants.R && cell.x + Constants.R >= this.x + this.rightBound - Constants.R){
-                    cell.paint(g, imagePesok, imageDiedPesok, (this.x + this.rightBound-cell.x)/(2*Constants.R));
-                }else{
+
+        if (this.rightBound >= cells.size() * Constants.R * 2) {
+            for (ArrayList<BaseCell> partCells : cells) {
+                for (BaseCell cell : partCells) {
                     cell.paint(g, imagePesok, imageDiedPesok, 1.0);
                 }
             }
+        } else {
+            for (ArrayList<BaseCell> partCells : cells) {
+                for (BaseCell cell : partCells) {
+                    if (cell.x - Constants.R <= this.x + this.rightBound - Constants.R) {
+                        cell.iAmDied = true;
+                    }
+                    if (cell.x - Constants.R <= this.x + this.rightBound - Constants.R && cell.x + Constants.R >= this.x + this.rightBound - Constants.R) {
+                        cell.paint(g, imagePesok, imageDiedPesok, (this.x + this.rightBound - cell.x) / (2 * Constants.R));
+                    } else {
+                        cell.paint(g, imagePesok, imageDiedPesok, 1.0);
+                    }
+                }
+            }
         }
+
 
         for (ArrayList<StandardVerticalWall> partVerticalWalls : verticalWalls) {
             for (StandardVerticalWall verticalWall : partVerticalWalls) {
@@ -212,14 +222,17 @@ public abstract class BaseSector {
 //        g.setColor(new Color(5, 5, 5));
 //        g.fillRect((int)this.x, (int)this.y, (int)this.rightBound, cells.get(0).size()*Constants.R*2);
 //        g.setColor(Color.RED);
-        if (this.rightBound > 0.0) {
-            rotate((System.currentTimeMillis() - Constants.TIME_START_PROGRAM) * Constants.V_POVOROT_PESOK);
-            BufferedImage newImage = op.filter(image, null);
-            for (int ind = 0; ind < cells.get(0).size(); ind++) {
-                g.drawImage(newImage, (int) (this.x + this.rightBound - 2 * Constants.R), (int) (cells.get(0).get(ind).y - Constants.R), null);
+        if (this.rightBound < cells.size() * Constants.R * 2) {
+            if (this.rightBound > 0.0) {
+                rotate((System.currentTimeMillis() - Constants.TIME_START_PROGRAM) * Constants.V_POVOROT_PESOK);
+                BufferedImage newImage = op.filter(image, null);
+                for (int ind = 0; ind < cells.get(0).size(); ind++) {
+                    g.drawImage(newImage, (int) (this.x + this.rightBound - 2 * Constants.R), (int) (cells.get(0).get(ind).y - Constants.R), null);
 
+                }
             }
         }
+
 
     }
 

@@ -19,8 +19,10 @@ public abstract class BaseBot{
     long timeLastShot;
 
     BufferedImage image;
+    BufferedImage imageAfterDied;
     AffineTransform tx;
     AffineTransformOp op;
+    long timeDied;
 
     int type = 1;
     boolean visu = false;
@@ -37,6 +39,7 @@ public abstract class BaseBot{
         this.j = j;
         this.indexSector = indexSector;
         timeLastShot = System.currentTimeMillis();
+        imageAfterDied = ImageIO.read(new File("data\\diedBot1.png"));
     }
 
     public void paint(Graphics g) {
@@ -54,6 +57,17 @@ public abstract class BaseBot{
 //        System.out.println(i + " " + j + " " + indexSector);
         g.setColor(Color.BLACK);
         g.fillRect((int)(x)-Constants.R, (int)y - Constants.R/2, (int)(((double)Constants.R*2) * hp), Constants.R/10);
+    }
+    public void paintAfterDied(Graphics g, MyFrame frame) {
+        random = new Random();
+        g.setColor(new Color(0xF911F31D, true));
+        Graphics2D g2d = (Graphics2D) g;
+        float alpha = 1.0f - (float)(System.currentTimeMillis()-this.timeDied)/Constants.TIME_LIVE_BOT_AFTER_DIED;
+        if (alpha > 0.0f && alpha <= 1.0f){
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+            g2d.drawImage(imageAfterDied, (int) x - Constants.R, (int) y - Constants.R, 2*Constants.R, 2*Constants.R, null);
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+        }
     }
 
     public void rotate(double angleInRadians) {

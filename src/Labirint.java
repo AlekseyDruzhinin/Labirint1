@@ -17,6 +17,7 @@ public class Labirint {
 
     //массив ботов
     ArrayList<BaseBot> bots = new ArrayList<>();
+    ArrayList<BaseBot> diedBots = new ArrayList<>();
 
     ArrayList<BaseBullet> diedBullets = new ArrayList<>();
     ArrayList<BaseBullet> bullets = new ArrayList<>();
@@ -96,6 +97,10 @@ public class Labirint {
         if (boom != null && boom.flag) {
             boom.paint(g, this);
         }
+        for (BaseBot diedBot : diedBots){
+            diedBot.paintAfterDied(g, panel);
+        }
+        boom.paintDied(g, this);
     }
 
     public BaseSector getSector(int i) {
@@ -111,6 +116,9 @@ public class Labirint {
         }
         for (BaseBot bot : bots) {
             bot.x += v;
+        }
+        for (BaseBot diedBot : diedBots) {
+            diedBot.x += v;
         }
         for (BaseBullet bullet : bullets) {
             bullet.segment.setX1(bullet.segment.getX1() + v);
@@ -160,7 +168,7 @@ public class Labirint {
     }
 
     public void update(long time, Human userHuman, Graphics g) throws IOException {
-        boom.buuxx(this, g);
+        boom.buuxx(this, g, userHuman);
         boolean itIsDied = sectors.get(indexDied).update((double) time * Constants.V_POLE);
 
         for (BaseBot bot : bots) {
@@ -179,17 +187,27 @@ public class Labirint {
             }
         }
 
-        ArrayList<BaseBot> diedBots = new ArrayList<>();
         for (BaseBot bot : bots) {
             if (bot.hp <= 0.0) {
                 if (userHuman.aim.bot == bot) {
                     userHuman.aim.flagPrint = false;
                 }
+                bot.timeDied = System.currentTimeMillis();
                 diedBots.add(bot);
             }
         }
         for (BaseBot bot : diedBots) {
             bots.remove(bot);
+        }
+
+        ArrayList<BaseBot> diedDiedBots = new ArrayList<>();
+        for (BaseBot diedBot : diedBots){
+            if (System.currentTimeMillis() - diedBot.timeDied >= Constants.TIME_LIVE_BOT_AFTER_DIED){
+                diedDiedBots.add(diedBot);
+            }
+        }
+        for (BaseBot diedBot : diedDiedBots){
+            diedBots.remove(diedBot);
         }
 
         ArrayList<BaseBullet> diedDiedBullets = new ArrayList<>();

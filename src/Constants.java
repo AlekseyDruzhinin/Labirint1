@@ -20,6 +20,7 @@ public class Constants {
     public static double V_POVOROT_PESOK = 0.001;
     public static long TIME_LAST_POVOROT_PESOK = 0;
     public static int SDVIG = 80;
+    public static long TIME_LIVE_BOT_AFTER_DIED = 5000;
 
     public static int LEFT_END = 3000;
     public static int DOWN_END = 810;

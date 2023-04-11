@@ -181,6 +181,7 @@ public class Labirint {
             } else {
                 sectors.remove(0);
                 userHuman.indexSector--;
+                userHuman.maxIndex--;
                 for (BaseBot bot : bots) {
                     bot.indexSector--;
                 }

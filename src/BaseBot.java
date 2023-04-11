@@ -55,7 +55,7 @@ public abstract class BaseBot{
         g.fillOval((int) x - 1, (int) y - 1, 2, 2);
         g.setColor(Color.RED);
 //        System.out.println(i + " " + j + " " + indexSector);
-        g.setColor(Color.BLACK);
+        g.setColor(Color.RED);
         g.fillRect((int)(x)-Constants.R, (int)y - Constants.R/2, (int)(((double)Constants.R*2) * hp), Constants.R/10);
     }
     public void paintAfterDied(Graphics g, MyFrame frame) {
@@ -85,6 +85,9 @@ public abstract class BaseBot{
             sound.join();
         }).start();
         hp -= Constants.DAMAGE_USER_BULLET;
+        if (hp <= 0.0){
+            Constants.CNT_DIED_BOTS.update();
+        }
     }
 
 

@@ -1,6 +1,7 @@
 public class Constants {
 
     public static int i = 0;
+    public static boolean START_GAME = false;
     public static double SQRT_LEN_AIM = 0.0;
     public static double V_BULLET;
     public static long TIME_DIED_BOOM = 3000;
@@ -21,6 +22,8 @@ public class Constants {
     public static long TIME_LAST_POVOROT_PESOK = 0;
     public static int SDVIG = 80;
     public static long TIME_LIVE_BOT_AFTER_DIED = 5000;
+    public static MyString CNT_DIED_BOTS;
+    public static MyString CNT_WAY;
 
     public static int LEFT_END = 3000;
     public static int DOWN_END = 810;

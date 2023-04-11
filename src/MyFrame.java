@@ -5,6 +5,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -18,17 +20,31 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
     BufferedImage imageBloodBackground;
 
     BufferedImage image;
+    BufferedImage imageClock;
+    BufferedImage imageCntBots;
+    BufferedImage imageCntWay;
 
     BufferedImage imageBackGround;
+    BufferedImage imageBackGround1;
+    BufferedImage imageEnterBackGround;
+    Buttom buttom;
+
+    AffineTransform tx;
+    AffineTransformOp op;
 
     public MyFrame() throws IOException {
         this.imageBloodBackground = ImageIO.read(new File("data\\blood_background.png"));
         imageBackGround = ImageIO.read(new File("data\\Sky.jpg"));
+        imageBackGround1 = ImageIO.read(new File("data\\Sand1.jpg"));
+        imageEnterBackGround = ImageIO.read(new File("data\\ImageBackGround2.jpg"));
 
         addMouseListener(this);
         addMouseMotionListener(this);
 
         image = ImageIO.read(new File("data\\GameOver.png"));
+        imageClock = ImageIO.read(new File("data\\clock.png"));
+        imageCntBots = ImageIO.read(new File("data\\BotForCnt.png"));
+        imageCntWay = ImageIO.read(new File("data\\ForCntWay.png"));
         timePriviosPrint = System.currentTimeMillis();
         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         manager.addKeyEventDispatcher(this);
@@ -37,7 +53,6 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
         setExtendedState(MAXIMIZED_BOTH);
-
         Constants.R = this.getHeight() / Constants.COUNT_CELL_DOWN / 2;
         Constants.V_NORMAL = (double) getHeight() / (double) Constants.V_NORMAL_1;
         //System.out.println(this.getHeight() + " " + Constants.R);
@@ -57,6 +72,11 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         Constants.SQRT_LEN_AIM = (double) (Constants.R * Constants.R);
         Constants.V_BULLET = 4.0 * Constants.V_NORMAL;
 
+        Constants.CNT_DIED_BOTS = new MyString(0);
+        Constants.CNT_WAY = new MyString(0);
+
+        buttom = new Buttom(getWidth()/28.0, getWidth()/2, getHeight()/2);
+
     }
 
     @Override
@@ -71,11 +91,35 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         g = bufferStrategy.getDrawGraphics();
         g.clearRect(0, 0, getWidth(), getHeight());
 
-        g.drawImage(imageBackGround, 0, 0, this.getWidth(), this.getHeight(), null);
-        if (System.currentTimeMillis() - Constants.TIME_HIT <= Constants.TIME_LIFE_BACKGROUND_BLOOD){
-            g.drawImage(imageBloodBackground, 0, 0, this.getWidth(), this.getHeight(), null);
-        }
 
+        if (!Constants.START_GAME){
+            if (Constants.MUSIC_GAME == 0){
+                Constants.MUSIC_GAME = 1;
+                new Thread(() -> {
+                    Sound soundMenu = new Sound(new File("data\\music\\Giornos_Theme.wav"));
+                    soundMenu.setVolume((float) 0.65);
+//                    soundMenu.play();
+                    while (!Constants.START_GAME) {
+                        if (!soundMenu.isPlaying()) {
+                            System.out.println("..");
+                            soundMenu.play();
+                        }
+                    }
+                    Constants.MUSIC_GAME = 0;
+                    Constants.TIME_START_PROGRAM = System.currentTimeMillis();
+                    soundMenu.stop();
+                }).start();
+            }
+            g.drawImage(imageEnterBackGround, 0, 0, this.getWidth(), this.getHeight(), null);
+            if (buttom != null){
+                buttom.paint(g, getMousePosition());
+            }
+
+        }else{
+            g.drawImage(imageBackGround, 0, 0, this.getWidth(), this.getHeight(), null);
+            if (System.currentTimeMillis() - Constants.TIME_HIT <= Constants.TIME_LIFE_BACKGROUND_BLOOD){
+                g.drawImage(imageBloodBackground, 0, 0, this.getWidth(), this.getHeight(), null);
+            }
             if (Constants.USER_DIED) {
                 if (Constants.GAME_OVER == 0) {
                     new Thread(() -> {
@@ -148,8 +192,16 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     userHuman.paint(g);
                 }
 
+                g.drawImage(imageClock, this.getWidth()-150 - Constants.R*5/4, Constants.SDVIG/15*7-Constants.R/8, Constants.R*5/4, Constants.R*5/4, null);
+                g.drawString(Time.timeToString(), this.getWidth()-150, Constants.SDVIG/8*5 + Constants.R/2);
+                g.drawImage(imageCntBots, this.getWidth()-150 - Constants.R*6 - Constants.R*5/4, Constants.SDVIG/15*7-Constants.R/8, Constants.R*5/4, Constants.R*5/4, null);
+                g.drawString(Constants.CNT_DIED_BOTS.getString(), this.getWidth()-150 - Constants.R*6, Constants.SDVIG/8*5+Constants.R/2);
+                g.drawImage(imageCntWay, this.getWidth()-150 - Constants.R*12 - Constants.R*5/4, Constants.SDVIG/15*7-Constants.R/8, Constants.R*5/4, Constants.R*5/4, null);
+                g.drawString(Constants.CNT_WAY.getString(), this.getWidth()-150 - Constants.R*12, Constants.SDVIG/8*5+Constants.R/2);
+
                 timePriviosPrint = nowTime;
             }
+        }
 
         g.dispose();
         bufferStrategy.show();
@@ -164,9 +216,11 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         // p - 80
         // r - 82
         // q - 81
+        // ' ' - 32
+//        System.out.println(e.getKeyCode());
         if (e.getID() == KeyEvent.KEY_PRESSED) {
 //            System.out.println(e.getKeyCode());
-            if (e.getKeyCode() == 81 && !labirint.boom.flag) {
+            if (e.getKeyCode() == 32 && !labirint.boom.flag) {
                 try {
                     labirint.addBoom(userHuman);
                 } catch (IOException ex) {
@@ -250,94 +304,102 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
 //        System.out.println(ModifiersEx);
         double x = e.getX();
         double y = e.getY();
-        if (ModifiersEx == 2048) {
-            userHuman.aim.flagPrint = false;
-        } else if (ModifiersEx == 1024) {
-            BaseBullet bullet;
-            BaseBot aimBot = userHuman.aim.bot;
-            if (!userHuman.aim.flagPrint) {
-                bullet = new BaseBullet(userHuman.x, userHuman.y, e.getX(), e.getY(), userHuman);
-            } else if (aimBot.type == 1 || aimBot.type == 2) {
-                bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
-            } else if (aimBot.variantOrientation == 2 || aimBot.variantOrientation == 3) {
-                if (aimBot.y > userHuman.y) {
-                    double xb = aimBot.x - userHuman.x;
-                    double yb = aimBot.y - userHuman.y;
-                    double vp = Constants.V_BULLET;
-                    double vb;
-                    if (aimBot.variantOrientation == 2) {
-                        vb = -Constants.V_BOTS;
+        if (Constants.START_GAME){
+            if (ModifiersEx == 2048) {
+                userHuman.aim.flagPrint = false;
+            } else if (ModifiersEx == 1024) {
+                BaseBullet bullet;
+                BaseBot aimBot = userHuman.aim.bot;
+                if (!userHuman.aim.flagPrint) {
+                    bullet = new BaseBullet(userHuman.x, userHuman.y, e.getX(), e.getY(), userHuman);
+                } else if (aimBot.type == 1 || aimBot.type == 2) {
+                    bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
+                } else if (aimBot.variantOrientation == 2 || aimBot.variantOrientation == 3) {
+                    if (aimBot.y > userHuman.y) {
+                        double xb = aimBot.x - userHuman.x;
+                        double yb = aimBot.y - userHuman.y;
+                        double vp = Constants.V_BULLET;
+                        double vb;
+                        if (aimBot.variantOrientation == 2) {
+                            vb = -Constants.V_BOTS;
+                        } else {
+                            vb = Constants.V_BOTS;
+                        }
+                        double l = vb / vp;
+                        double cosDelta = 1 / (xb * xb + yb * yb) * (l * yb * yb + xb * Math.sqrt(xb * xb + (1 - l * l) * yb * yb));
+                        double vpx = vp * cosDelta;
+                        double vpy = Math.sqrt(vp * vp - vpx * vpx);
+                        bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vpx, vpy), userHuman);
                     } else {
-                        vb = Constants.V_BOTS;
+                        double xb = aimBot.x - userHuman.x;
+                        double yb = -(aimBot.y - userHuman.y);
+                        double vp = Constants.V_BULLET;
+                        double vb;
+                        if (aimBot.variantOrientation == 2) {
+                            vb = -Constants.V_BOTS;
+                        } else {
+                            vb = Constants.V_BOTS;
+                        }
+                        double l = vb / vp;
+                        double cosDelta = 1 / (xb * xb + yb * yb) * (l * yb * yb + xb * Math.sqrt(xb * xb + (1 - l * l) * yb * yb));
+                        double vpx = vp * cosDelta;
+                        double vpy = Math.sqrt(vp * vp - vpx * vpx);
+                        bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vpx, -vpy), userHuman);
                     }
-                    double l = vb / vp;
-                    double cosDelta = 1 / (xb * xb + yb * yb) * (l * yb * yb + xb * Math.sqrt(xb * xb + (1 - l * l) * yb * yb));
-                    double vpx = vp * cosDelta;
-                    double vpy = Math.sqrt(vp * vp - vpx * vpx);
-                    bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vpx, vpy), userHuman);
+                } else if (aimBot.variantOrientation == 0 || aimBot.variantOrientation == 1) {
+                    if (aimBot.x > userHuman.x) {
+                        double yb = aimBot.y - userHuman.y;
+                        double xb = aimBot.x - userHuman.x;
+                        double vp = Constants.V_BULLET;
+                        double vb;
+                        if (aimBot.variantOrientation == 0) {
+                            vb = -Constants.V_BOTS;
+                        } else {
+                            vb = Constants.V_BOTS;
+                        }
+                        double l = vb / vp;
+                        double cosDelta = 1 / (yb * yb + xb * xb) * (l * xb * xb + yb * Math.sqrt(yb * yb + (1 - l * l) * xb * xb));
+                        double vpy = vp * cosDelta;
+                        double vpx = Math.sqrt(vp * vp - vpy * vpy);
+                        bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vpx, vpy), userHuman);
+                    } else {
+                        double yb = aimBot.y - userHuman.y;
+                        double xb = -(aimBot.x - userHuman.x);
+                        double vp = Constants.V_BULLET;
+                        double vb;
+                        if (aimBot.variantOrientation == 0) {
+                            vb = -Constants.V_BOTS;
+                        } else {
+                            vb = Constants.V_BOTS;
+                        }
+                        double l = vb / vp;
+                        double cosDelta = 1 / (yb * yb + xb * xb) * (l * xb * xb + yb * Math.sqrt(yb * yb + (1 - l * l) * xb * xb));
+                        double vpy = vp * cosDelta;
+                        double vpx = Math.sqrt(vp * vp - vpy * vpy);
+                        bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(-vpx, vpy), userHuman);
+                    }
                 } else {
-                    double xb = aimBot.x - userHuman.x;
-                    double yb = -(aimBot.y - userHuman.y);
-                    double vp = Constants.V_BULLET;
-                    double vb;
-                    if (aimBot.variantOrientation == 2) {
-                        vb = -Constants.V_BOTS;
-                    } else {
-                        vb = Constants.V_BOTS;
-                    }
-                    double l = vb / vp;
-                    double cosDelta = 1 / (xb * xb + yb * yb) * (l * yb * yb + xb * Math.sqrt(xb * xb + (1 - l * l) * yb * yb));
-                    double vpx = vp * cosDelta;
-                    double vpy = Math.sqrt(vp * vp - vpx * vpx);
-                    bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vpx, -vpy), userHuman);
+                    bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
                 }
-            } else if (aimBot.variantOrientation == 0 || aimBot.variantOrientation == 1) {
-                if (aimBot.x > userHuman.x) {
-                    double yb = aimBot.y - userHuman.y;
-                    double xb = aimBot.x - userHuman.x;
-                    double vp = Constants.V_BULLET;
-                    double vb;
-                    if (aimBot.variantOrientation == 0) {
-                        vb = -Constants.V_BOTS;
-                    } else {
-                        vb = Constants.V_BOTS;
-                    }
-                    double l = vb / vp;
-                    double cosDelta = 1 / (yb * yb + xb * xb) * (l * xb * xb + yb * Math.sqrt(yb * yb + (1 - l * l) * xb * xb));
-                    double vpy = vp * cosDelta;
-                    double vpx = Math.sqrt(vp * vp - vpy * vpy);
-                    bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vpx, vpy), userHuman);
-                } else {
-                    double yb = aimBot.y - userHuman.y;
-                    double xb = -(aimBot.x - userHuman.x);
-                    double vp = Constants.V_BULLET;
-                    double vb;
-                    if (aimBot.variantOrientation == 0) {
-                        vb = -Constants.V_BOTS;
-                    } else {
-                        vb = Constants.V_BOTS;
-                    }
-                    double l = vb / vp;
-                    double cosDelta = 1 / (yb * yb + xb * xb) * (l * xb * xb + yb * Math.sqrt(yb * yb + (1 - l * l) * xb * xb));
-                    double vpy = vp * cosDelta;
-                    double vpx = Math.sqrt(vp * vp - vpy * vpy);
-                    bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(-vpx, vpy), userHuman);
-                }
+                labirint.addBullet(bullet);
             } else {
-                bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
-            }
-            labirint.addBullet(bullet);
-        } else {
-            for (BaseBot bot : labirint.bots) {
-                if ((x - bot.x) * (x - bot.x) + (y - bot.y) * (y - bot.y) < Constants.SQRT_LEN_AIM) {
-                    try {
-                        userHuman.aim = new Aim(bot);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
+                for (BaseBot bot : labirint.bots) {
+                    if ((x - bot.x) * (x - bot.x) + (y - bot.y) * (y - bot.y) < Constants.SQRT_LEN_AIM) {
+                        try {
+                            userHuman.aim = new Aim(bot);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 }
+            }
+        }else{
+//            System.out.println(buttom.isPush(getMousePosition()));
+            if (ModifiersEx == 1024 && buttom.isPush(getMousePosition())){
+                Constants.START_GAME = true;
             }
         }
+
     }
 
     @Override

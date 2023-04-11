@@ -9,6 +9,7 @@ public class Boom {
 
     boolean flag = false;
     BufferedImage image;
+    BufferedImage imageBoom;
     int i, j, indexSector;
 
     long timeBorn = 0;
@@ -18,6 +19,7 @@ public class Boom {
 
     public Boom(Human userHuman) throws IOException {
         this.image = ImageIO.read(new File("data\\boom.gif"));
+        this.imageBoom = ImageIO.read(new File("data\\bum.png"));
         this.i = userHuman.i;
         this.flag = true;
         this.j = userHuman.j;
@@ -40,7 +42,8 @@ public class Boom {
     public void paintDied(Graphics g, Labirint labirint){
         if (flagDied){
             g.setColor(Color.RED);
-            g.fillOval((int)(cellDied.x - 6*Constants.R), (int)(cellDied.y - 6*Constants.R), 12*Constants.R, 12*Constants.R);
+//            g.fillOval((int)(cellDied.x - 6*Constants.R), (int)(cellDied.y - 6*Constants.R), 12*Constants.R, 12*Constants.R);
+            g.drawImage(imageBoom, (int)(cellDied.x - 6*Constants.R), (int)(cellDied.y - 6*Constants.R), 12*Constants.R, 12*Constants.R, null);
             if (System.currentTimeMillis() - timeDied >= 1000){
                 flagDied = false;
             }
@@ -118,6 +121,7 @@ public class Boom {
                     parallelWalls.get(parallelWalls.size() - 1).get(j).flag = true;
                 }
             }
+            timeDied = System.currentTimeMillis();
         }
     }
 }

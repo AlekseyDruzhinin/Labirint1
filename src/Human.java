@@ -12,6 +12,10 @@ public abstract class Human extends BaseHuman {
     int i, j; // координаты ячейки
     int indexSector = 0; // номер сектора
 
+    int maxIndex = 0; // максимальный индекс сектора где мы уже были
+    int maxI = 0; // максимвальные координаты ячейки, где мы уже были
+    int maxY = 0;
+
     BufferedImage image;
     Aim aim = new Aim();
 
@@ -67,8 +71,10 @@ public abstract class Human extends BaseHuman {
         g.fillRect(Constants.SDVIG/2, Constants.SDVIG/2, (int)(((double)Constants.R*15.0) * hp), Constants.R/2);
         g.setColor(Color.BLACK);
         g.drawRect(Constants.SDVIG/2, Constants.SDVIG/2, (int)(((double)Constants.R*15.0)), Constants.R/2);
-        g.setColor(Color.RED);
-
+        g.setColor(Color.BLACK);
+        Integer itos = (int)(hp*100.0);
+        g.setFont(new Font("TimesRoman",Font.BOLD + Font.ITALIC,45));
+        g.drawString(itos.toString() + "%", Constants.SDVIG*3/4 + (int)((double)Constants.R*15.0), Constants.SDVIG/8*5 + Constants.R/2);
         aim.print(g);
     }
 
@@ -298,6 +304,14 @@ public abstract class Human extends BaseHuman {
     }
 
     public void update(Labirint labirint) {
+        if (indexSector > maxIndex){
+            maxI = i;
+            maxIndex = indexSector;
+            Constants.CNT_WAY.update();
+        }else if (i > maxI){
+            maxI = i;
+            Constants.CNT_WAY.update();
+        }
         BaseSector sector = labirint.sectors.get(labirint.indexDied);
         if (x - sector.x - Constants.R / 2 < sector.rightBound) {
             Constants.USER_DIED = true;

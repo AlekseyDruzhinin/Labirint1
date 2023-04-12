@@ -15,7 +15,7 @@ public class BaseBullet {
     boolean flagDoneGun = false;
 
     public BaseBullet(double bornX, double bornY, double mouseX, double mouseY) {
-        if (!flagDoneGun){
+        if (!flagDoneGun && Constants.MUST_PLAY_SOUND){
             new Thread(() -> {
                 Sound sound = new Sound(new File("data\\music\\gun.wav"));
                 sound.setVolume((float) 0.6);
@@ -30,7 +30,7 @@ public class BaseBullet {
     }
 
     public BaseBullet(double bornX, double bornY, double mouseX, double mouseY, Human userHuman){
-        if (!flagDoneGun){
+        if (!flagDoneGun && Constants.MUST_PLAY_SOUND){
             new Thread(() -> {
                 Sound sound = new Sound(new File("data\\music\\gun.wav"));
                 sound.setVolume((float) 0.6);

@@ -75,12 +75,14 @@ public class Boom {
 //                }
 //            }
 
-            new Thread(() -> {
-                Sound sound = new Sound(new File("data\\music\\buxx.wav"));
-                sound.setVolume((float) 0.75);
-                sound.play();
-                sound.join();
-            }).start();
+            if (Constants.MUST_PLAY_SOUND){
+                new Thread(() -> {
+                    Sound sound = new Sound(new File("data\\music\\buxx.wav"));
+                    sound.setVolume((float) 0.75);
+                    sound.play();
+                    sound.join();
+                }).start();
+            }
 
             if (Math.sqrt((userHuman.x-cell.x)*(userHuman.x-cell.x) + (userHuman.y-cell.y)*(userHuman.y-cell.y))< 6*Constants.R){
                 Constants.USER_DIED = true;

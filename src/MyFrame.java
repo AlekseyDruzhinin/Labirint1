@@ -11,6 +11,7 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener, MouseMotionListener {
@@ -27,7 +28,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
     BufferedImage imageBackGround;
     BufferedImage imageBackGround1;
     BufferedImage imageEnterBackGround;
-    Buttom buttom;
+    ArrayList<Buttom> buttoms = new ArrayList<>();
 
     AffineTransform tx;
     AffineTransformOp op;
@@ -75,7 +76,10 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         Constants.CNT_DIED_BOTS = new MyString(0);
         Constants.CNT_WAY = new MyString(0);
 
-        buttom = new Buttom(getWidth()/28.0, getWidth()/2, getHeight()/2);
+        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomStart.png"));
+        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomRecords.png"));
+        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomSetting.png"));
+        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 3.0 * 5 / 4, "data\\ButtomInfo.png"));
 
     }
 
@@ -92,17 +96,21 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         g.clearRect(0, 0, getWidth(), getHeight());
 
 
-        if (!Constants.START_GAME){
-            if (Constants.MUSIC_GAME == 0){
+        if (!Constants.START_GAME) {
+            if (Constants.MUSIC_GAME == 0) {
                 Constants.MUSIC_GAME = 1;
                 new Thread(() -> {
                     Sound soundMenu = new Sound(new File("data\\music\\Giornos_Theme.wav"));
-                    soundMenu.setVolume((float) 0.65);
+                    soundMenu.setVolume((float) 0.75);
 //                    soundMenu.play();
                     while (!Constants.START_GAME) {
-                        if (!soundMenu.isPlaying()) {
-                            System.out.println("..");
-                            soundMenu.play();
+                        if (Constants.MUST_PLAY_MUSIC){
+                            if (!soundMenu.isPlaying()) {
+                                System.out.println("..");
+                                soundMenu.play();
+                            }
+                        }else{
+                            soundMenu.stop();
                         }
                     }
                     Constants.MUSIC_GAME = 0;
@@ -111,22 +119,26 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                 }).start();
             }
             g.drawImage(imageEnterBackGround, 0, 0, this.getWidth(), this.getHeight(), null);
-            if (buttom != null){
-                buttom.paint(g, getMousePosition());
+            for (Buttom buttom : buttoms) {
+                if (buttom != null) {
+                    buttom.paint(g, getMousePosition());
+                }
             }
 
-        }else{
+        } else {
             g.drawImage(imageBackGround, 0, 0, this.getWidth(), this.getHeight(), null);
-            if (System.currentTimeMillis() - Constants.TIME_HIT <= Constants.TIME_LIFE_BACKGROUND_BLOOD){
+            if (System.currentTimeMillis() - Constants.TIME_HIT <= Constants.TIME_LIFE_BACKGROUND_BLOOD) {
                 g.drawImage(imageBloodBackground, 0, 0, this.getWidth(), this.getHeight(), null);
             }
             if (Constants.USER_DIED) {
                 if (Constants.GAME_OVER == 0) {
-                    new Thread(() -> {
+                    if (Constants.MUST_PLAY_SOUND){
+                        new Thread(() -> {
 //                        Sound.playSound("data\\music\\Game_over.wav");
-                        Sound sound = new Sound(new File("data\\music\\Game_over.wav"));
-                        sound.play();
-                    }).start();
+                            Sound sound = new Sound(new File("data\\music\\Game_over.wav"));
+                            sound.play();
+                        }).start();
+                    }
                     Constants.GAME_OVER++;
                 }
                 g.drawImage(image, this.getWidth() / 2 - this.getHeight() / 2, 0, this.getHeight(), this.getHeight(), null);
@@ -140,15 +152,19 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                         Sound soundDied = new Sound(new File("data\\music\\End.wav"));
                         soundDied.setVolume((float) 0.65);
                         while (true) {
-                            if (!soundGame.isPlaying() && !Constants.USER_DIED) {
+                            if (!soundGame.isPlaying() && !Constants.USER_DIED && Constants.MUST_PLAY_MUSIC) {
                                 soundGame.play();
                                 soundDied.stop();
                             }
-                            if (Constants.USER_DIED) {
+                            if (Constants.USER_DIED && Constants.MUST_PLAY_MUSIC) {
                                 soundGame.stop();
                             }
-                            if (Constants.USER_DIED && !soundDied.playing){
+                            if (Constants.USER_DIED && !soundDied.playing && Constants.MUST_PLAY_MUSIC) {
                                 soundDied.play();
+                            }
+                            if (!Constants.MUST_PLAY_MUSIC){
+                                soundGame.stop();
+                                soundDied.stop();
                             }
                         }
                     }).start();
@@ -192,12 +208,12 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     userHuman.paint(g);
                 }
 
-                g.drawImage(imageClock, this.getWidth()-150 - Constants.R*5/4, Constants.SDVIG/15*7-Constants.R/8, Constants.R*5/4, Constants.R*5/4, null);
-                g.drawString(Time.timeToString(), this.getWidth()-150, Constants.SDVIG/8*5 + Constants.R/2);
-                g.drawImage(imageCntBots, this.getWidth()-150 - Constants.R*6 - Constants.R*5/4, Constants.SDVIG/15*7-Constants.R/8, Constants.R*5/4, Constants.R*5/4, null);
-                g.drawString(Constants.CNT_DIED_BOTS.getString(), this.getWidth()-150 - Constants.R*6, Constants.SDVIG/8*5+Constants.R/2);
-                g.drawImage(imageCntWay, this.getWidth()-150 - Constants.R*12 - Constants.R*5/4, Constants.SDVIG/15*7-Constants.R/8, Constants.R*5/4, Constants.R*5/4, null);
-                g.drawString(Constants.CNT_WAY.getString(), this.getWidth()-150 - Constants.R*12, Constants.SDVIG/8*5+Constants.R/2);
+                g.drawImage(imageClock, this.getWidth() - 150 - Constants.R * 5 / 4, Constants.SDVIG / 15 * 7 - Constants.R / 8, Constants.R * 5 / 4, Constants.R * 5 / 4, null);
+                g.drawString(Time.timeToString(), this.getWidth() - 150, Constants.SDVIG / 8 * 5 + Constants.R / 2);
+                g.drawImage(imageCntBots, this.getWidth() - 150 - Constants.R * 6 - Constants.R * 5 / 4, Constants.SDVIG / 15 * 7 - Constants.R / 8, Constants.R * 5 / 4, Constants.R * 5 / 4, null);
+                g.drawString(Constants.CNT_DIED_BOTS.getString(), this.getWidth() - 150 - Constants.R * 6, Constants.SDVIG / 8 * 5 + Constants.R / 2);
+                g.drawImage(imageCntWay, this.getWidth() - 150 - Constants.R * 12 - Constants.R * 5 / 4, Constants.SDVIG / 15 * 7 - Constants.R / 8, Constants.R * 5 / 4, Constants.R * 5 / 4, null);
+                g.drawString(Constants.CNT_WAY.getString(), this.getWidth() - 150 - Constants.R * 12, Constants.SDVIG / 8 * 5 + Constants.R / 2);
 
                 timePriviosPrint = nowTime;
             }
@@ -304,7 +320,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
 //        System.out.println(ModifiersEx);
         double x = e.getX();
         double y = e.getY();
-        if (Constants.START_GAME){
+        if (Constants.START_GAME) {
             if (ModifiersEx == 2048) {
                 userHuman.aim.flagPrint = false;
             } else if (ModifiersEx == 1024) {
@@ -393,10 +409,104 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     }
                 }
             }
-        }else{
+        } else {
 //            System.out.println(buttom.isPush(getMousePosition()));
-            if (ModifiersEx == 1024 && buttom.isPush(getMousePosition())){
-                Constants.START_GAME = true;
+            if (!Constants.IN_MENU) {
+                if (ModifiersEx == 1024 && buttoms.get(0).isPush(getMousePosition())) {
+                    Constants.START_GAME = true;
+                }
+                if (ModifiersEx == 1024 && buttoms.get(2).isPush(getMousePosition())) {
+                    Constants.IN_MENU = true;
+                    buttoms = new ArrayList<>();
+                    if (Constants.MUST_PLAY_MUSIC){
+                        try {
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomMusicOn.png"));
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }else{
+                        try {
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomMusicOff.png"));
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                    if (Constants.MUST_PLAY_SOUND){
+                        try {
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomSoundOn.png"));
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }else{
+                        try {
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomSoundOff.png"));
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+
+                    try {
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomBack.png"));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            } else {
+                if (ModifiersEx == 1024 && buttoms.get(2).isPush(getMousePosition())) {
+                    Constants.IN_MENU = false;
+                    buttoms = new ArrayList<>();
+                    try {
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomStart.png"));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    try {
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomRecords.png"));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    try {
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomSetting.png"));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    try {
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 3.0 * 5 / 4, "data\\ButtomInfo.png"));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+
+                } else if (ModifiersEx == 1024 && buttoms.get(0).isPush(getMousePosition())){
+                    Constants.MUST_PLAY_MUSIC = !Constants.MUST_PLAY_MUSIC;
+                    if (Constants.MUST_PLAY_MUSIC){
+                        try {
+                            buttoms.get(0).setImage("data\\ButtomMusicOn.png");
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    } else {
+                        try {
+                            buttoms.get(0).setImage("data\\ButtomMusicOff.png");
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                } else if (ModifiersEx == 1024 && buttoms.get(1).isPush(getMousePosition())){
+                    Constants.MUST_PLAY_SOUND = !Constants.MUST_PLAY_SOUND;
+                    if (Constants.MUST_PLAY_SOUND){
+                        try {
+                            buttoms.get(1).setImage("data\\ButtomSoundOn.png");
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    } else {
+                        try {
+                            buttoms.get(1).setImage("data\\ButtomSoundOff.png");
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                }
             }
         }
 

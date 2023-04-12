@@ -84,12 +84,15 @@ public abstract class Human extends BaseHuman {
         if (hp <= 0.0){
             Constants.USER_DIED = true;
         }
-        new Thread(() -> {
-            Sound sound = new Sound(new File("data\\music\\damage.wav"));
-            sound.setVolume((float) 0.8);
-            sound.play();
-            sound.join();
-        }).start();
+        if (Constants.MUST_PLAY_SOUND){
+            new Thread(() -> {
+
+                Sound sound = new Sound(new File("data\\music\\damage.wav"));
+                sound.setVolume((float) 0.8);
+                sound.play();
+                sound.join();
+            }).start();
+        }
     }
     public void go(Labirint labirint, long time) throws IOException {
         double v = (double) time * vHuman;

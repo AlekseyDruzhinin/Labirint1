@@ -2,6 +2,9 @@ public class Constants {
 
     public static int i = 0;
     public static boolean START_GAME = false;
+    public static boolean IN_MENU = false;
+    public static boolean MUST_PLAY_MUSIC = true;
+    public static boolean MUST_PLAY_SOUND = true;
     public static double SQRT_LEN_AIM = 0.0;
     public static double V_BULLET;
     public static long TIME_DIED_BOOM = 3000;

@@ -6,6 +6,8 @@ public class Constants {
     public static int i = 0;
     public static boolean START_GAME = false;
     public static boolean IN_SETTING = false;
+    public static boolean IN_RECORDS = false;
+    public static int TYPE_OF_RECORDS = 0;
     public static boolean MUST_PLAY_MUSIC = true;
     public static boolean MUST_PLAY_SOUND = true;
     public static double SQRT_LEN_AIM = 0.0;

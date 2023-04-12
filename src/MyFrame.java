@@ -10,6 +10,8 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -81,6 +83,12 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomSetting.png"));
         buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 3.0 * 5 / 4, "data\\ButtomInfo.png"));
 
+        {
+            FileReader reader = new FileReader("files\\Constants.txt");
+            Constants.MUST_PLAY_MUSIC = (reader.read() == '1');
+            Constants.MUST_PLAY_SOUND = (reader.read() == '1');
+        }
+        Constants.writeConstants();
     }
 
     @Override
@@ -411,12 +419,12 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
             }
         } else {
 //            System.out.println(buttom.isPush(getMousePosition()));
-            if (!Constants.IN_MENU) {
+            if (!Constants.IN_SETTING) {
                 if (ModifiersEx == 1024 && buttoms.get(0).isPush(getMousePosition())) {
                     Constants.START_GAME = true;
                 }
                 if (ModifiersEx == 1024 && buttoms.get(2).isPush(getMousePosition())) {
-                    Constants.IN_MENU = true;
+                    Constants.IN_SETTING = true;
                     buttoms = new ArrayList<>();
                     if (Constants.MUST_PLAY_MUSIC){
                         try {
@@ -453,7 +461,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                 }
             } else {
                 if (ModifiersEx == 1024 && buttoms.get(2).isPush(getMousePosition())) {
-                    Constants.IN_MENU = false;
+                    Constants.IN_SETTING = false;
                     buttoms = new ArrayList<>();
                     try {
                         buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomStart.png"));
@@ -478,6 +486,11 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
 
                 } else if (ModifiersEx == 1024 && buttoms.get(0).isPush(getMousePosition())){
                     Constants.MUST_PLAY_MUSIC = !Constants.MUST_PLAY_MUSIC;
+                    try {
+                        Constants.writeConstants();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     if (Constants.MUST_PLAY_MUSIC){
                         try {
                             buttoms.get(0).setImage("data\\ButtomMusicOn.png");
@@ -493,6 +506,11 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     }
                 } else if (ModifiersEx == 1024 && buttoms.get(1).isPush(getMousePosition())){
                     Constants.MUST_PLAY_SOUND = !Constants.MUST_PLAY_SOUND;
+                    try {
+                        Constants.writeConstants();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     if (Constants.MUST_PLAY_SOUND){
                         try {
                             buttoms.get(1).setImage("data\\ButtomSoundOn.png");

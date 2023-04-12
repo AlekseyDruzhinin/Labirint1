@@ -1,8 +1,11 @@
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Constants {
 
     public static int i = 0;
     public static boolean START_GAME = false;
-    public static boolean IN_MENU = false;
+    public static boolean IN_SETTING = false;
     public static boolean MUST_PLAY_MUSIC = true;
     public static boolean MUST_PLAY_SOUND = true;
     public static double SQRT_LEN_AIM = 0.0;
@@ -36,19 +39,19 @@ public class Constants {
     public static double V_NORMAL;
     public static double V_NORMAL_1 = 3000;
 
-    public static int NUM_GEN_PARALLEL = 20 ;
+    public static int NUM_GEN_PARALLEL = 20;
     public static int NUM_GEN_VERTICAL = 20;
 
     public static double V_POLE;
     // скорость заполнения квадратиком
 
     //10.0
-    public static  double V_POLE_1 = 10.0;
+    public static double V_POLE_1 = 10.0;
     public static boolean FLAG_CHIT_BULLET = false;
     public static double V_BOTS;
 
     //время запуска программы
-    public  static long TIME_START_PROGRAM;
+    public static long TIME_START_PROGRAM;
 
     //время до начала разрушения лабиринта 5000
     public static long TIME_TO_DIED_LABIRINT = 5000;
@@ -57,11 +60,27 @@ public class Constants {
     public static boolean USER_DIED = false;
 
     //скорость поворота
-    public static double V_ANGLE =0.1;
+    public static double V_ANGLE = 0.1;
 
     public static int FRAME_WIGHT;
     public static int FRAME_HEIGHT;
     public static int SIZE_BULLET;
 
     public static boolean DEVELORER = false;
+
+    public static void writeConstants() throws IOException {
+        FileWriter writer = new FileWriter("files\\Constants.txt", false);
+        if (Constants.MUST_PLAY_MUSIC) {
+            writer.write("1");
+        } else {
+            writer.write("0");
+        }
+
+        if (Constants.MUST_PLAY_SOUND) {
+            writer.write("1");
+        } else {
+            writer.write("0");
+        }
+        writer.flush();
+    }
 }

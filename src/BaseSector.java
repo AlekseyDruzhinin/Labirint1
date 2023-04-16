@@ -5,6 +5,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.security.cert.CertPath;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -20,17 +21,23 @@ public abstract class BaseSector {
     int widthCnt;
     int heightCnt;
 
+    int iKid, jKid;
+    boolean yesKid = false;
+
     BufferedImage image;
+    BufferedImage imageKid;
 
     boolean iAmDied = false;
     Random random = new Random();
     ArrayList<ArrayList<BaseCell>> cells = new ArrayList<>();
     ArrayList<ArrayList<StandardVerticalWall>> verticalWalls = new ArrayList<>(); // нумерация второго ряда с 1
     ArrayList<ArrayList<StandardParallelWall>> parallelWalls = new ArrayList<>();
+
     double rightBound = 0.0;
 
     public BaseSector(double x, double y, MyFrame frame) throws IOException {
         image = ImageIO.read(new File("data\\pesok.png"));
+        imageKid = ImageIO.read(new File("data\\Aid.png"));
 
         tx = AffineTransform.getScaleInstance((double) Constants.R * 2 / (double) image.getHeight(), (double) Constants.R * 2 / (double) image.getHeight());
         op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
@@ -105,6 +112,13 @@ public abstract class BaseSector {
             verticalWalls.get(verticalWalls.size() - 1).get(j).y = y + (j - 1) * 2 * Constants.R;
             verticalWalls.get(verticalWalls.size() - 1).get(j).l = Constants.R * 2;
         }
+
+        if (!Constants.YES_KID_ON_PRIVIOS_SECTOR) {
+            iKid = random.nextInt(cells.size());
+            jKid = random.nextInt(cells.get(0).size());
+            yesKid = true;
+        }
+        Constants.YES_KID_ON_PRIVIOS_SECTOR = !Constants.YES_KID_ON_PRIVIOS_SECTOR;
     }
 
     public void randomGenerate(int x, int y, int height, int width) {
@@ -233,7 +247,10 @@ public abstract class BaseSector {
             }
         }
 
-
+        if (yesKid) {
+            BaseCell cell = cells.get(iKid).get(jKid);
+            g.drawImage(imageKid, (int) cell.x - Constants.R / 2, (int) cell.y - Constants.R / 2, Constants.R, Constants.R, null);
+        }
     }
 
     public void go(double v) {

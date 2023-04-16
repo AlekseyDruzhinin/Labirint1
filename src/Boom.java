@@ -30,13 +30,12 @@ public class Boom {
     public Boom(){}
 
 
-    public void paint(Graphics g, Labirint labirint){
+    public void paint(Graphics g, Labirint labirint, MyFrame frame){
         BaseCell cell = labirint.getCell(indexSector, i, j);
         g.drawImage(image, (int)cell.x-Constants.R/2, (int)cell.y-Constants.R/2, Constants.R, Constants.R, null);
         g.setColor(new Color(255, 0, 0, 199));
         g.drawOval((int)cell.x - 6*Constants.R, (int)cell.y - 6*Constants.R, 12*Constants.R, 12*Constants.R);
         g.setColor(Color.RED);
-
     }
 
     public void paintDied(Graphics g, Labirint labirint){
@@ -77,12 +76,14 @@ public class Boom {
 
             if (Constants.MUST_PLAY_SOUND){
                 new Thread(() -> {
-                    Sound sound = new Sound(new File("data\\music\\buxx.wav"));
+                    Sound sound = new Sound(SoundFiles.buxx);
                     sound.setVolume((float) 0.75);
                     sound.play();
                     sound.join();
                 }).start();
             }
+
+            Constants.BOOM_IS_READY = false;
 
             if (Math.sqrt((userHuman.x-cell.x)*(userHuman.x-cell.x) + (userHuman.y-cell.y)*(userHuman.y-cell.y))< 6*Constants.R){
                 Constants.USER_DIED = true;
@@ -124,6 +125,7 @@ public class Boom {
                 }
             }
             timeDied = System.currentTimeMillis();
+            Constants.TIME_LAST_BUM = timeDied;
         }
     }
 }

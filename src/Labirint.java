@@ -95,7 +95,7 @@ public class Labirint {
 //            bullet.print(g, this);
 //        }
         if (boom != null && boom.flag) {
-            boom.paint(g, this);
+            boom.paint(g, this, panel);
         }
         for (BaseBot diedBot : diedBots){
             diedBot.paintAfterDied(g, panel);
@@ -240,6 +240,18 @@ public class Labirint {
 
         for (BaseBot bot : bots) {
             bot.go(userHuman, time, this);
+        }
+
+        BaseSector sector = sectors.get(userHuman.indexSector);
+        if (sector.yesKid && sector.iKid == userHuman.i && sector.jKid == userHuman.j){
+            sector.yesKid = false;
+            userHuman.hill();
+            new Thread(() -> {
+                Sound sound = new Sound(SoundFiles.upgrade);
+                sound.setVolume((float) 1.0);
+                sound.play();
+                sound.join();
+            }).start();
         }
     }
 

@@ -80,7 +80,7 @@ public abstract class BaseBot{
     public void hit(){
         if (Constants.MUST_PLAY_SOUND){
             new Thread(() -> {
-                Sound sound = new Sound(new File("data\\music\\damage.wav"));
+                Sound sound = new Sound(SoundFiles.damage);
                 sound.setVolume((float) 0.8);
                 sound.play();
                 sound.join();

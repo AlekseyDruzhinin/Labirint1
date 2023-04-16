@@ -5,6 +5,8 @@ public class Constants {
 
     public static int i = 0;
     public static boolean START_GAME = false;
+    public static long TIME_LAST_BUM;
+    public static long TIME_UPGRADE_BOOM = 30000;
     public static boolean IN_SETTING = false;
     public static boolean IN_RECORDS = false;
     public static int TYPE_OF_RECORDS = 0;
@@ -39,10 +41,13 @@ public class Constants {
     public static int SEED = 5254;
 
     public static double V_NORMAL;
+    public static long TIME_STOP = 0;
     public static double V_NORMAL_1 = 3000;
 
     public static int NUM_GEN_PARALLEL = 20;
     public static int NUM_GEN_VERTICAL = 20;
+    public static boolean YES_KID_ON_PRIVIOS_SECTOR = true;
+    public static boolean PAUSE_MENU = false;
 
     public static double V_POLE;
     // скорость заполнения квадратиком
@@ -54,6 +59,7 @@ public class Constants {
 
     //время запуска программы
     public static long TIME_START_PROGRAM;
+    public static boolean BOOM_IS_READY = true;
 
     //время до начала разрушения лабиринта 5000
     public static long TIME_TO_DIED_LABIRINT = 5000;

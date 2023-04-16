@@ -25,6 +25,8 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
 
     BufferedImage image;
     BufferedImage imageClock;
+    BufferedImage imageBoom;
+    BufferedImage imageCheckMark;
     BufferedImage imageCntBots;
     BufferedImage imageCntWay;
 
@@ -36,17 +38,22 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
     AffineTransform tx;
     AffineTransformOp op;
 
+    Buttom pauseButtom;
+    Buttom startButtom;
+
     public MyFrame() throws IOException {
         this.imageBloodBackground = ImageIO.read(new File("data\\blood_background.png"));
         imageBackGround = ImageIO.read(new File("data\\Sky.jpg"));
         imageBackGround1 = ImageIO.read(new File("data\\Sand1.jpg"));
         imageEnterBackGround = ImageIO.read(new File("data\\ImageBackGround2.jpg"));
+        imageCheckMark = ImageIO.read(new File("data\\CheckMark.png"));
 
         addMouseListener(this);
         addMouseMotionListener(this);
 
         image = ImageIO.read(new File("data\\GameOver.png"));
-        imageClock = ImageIO.read(new File("data\\clock.png"));
+        imageClock = ImageIO.read(new File("data\\clock1.png"));
+        imageBoom = ImageIO.read(new File("data\\boom.gif"));
         imageCntBots = ImageIO.read(new File("data\\BotForCnt.png"));
         imageCntWay = ImageIO.read(new File("data\\ForCntWay.png"));
         timePriviosPrint = System.currentTimeMillis();
@@ -90,6 +97,11 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
             Constants.MUST_PLAY_SOUND = (reader.read() == '1');
         }
         Constants.writeConstants();
+
+        Constants.TIME_LAST_BUM = 0;
+
+        pauseButtom = new Buttom(getWidth() / 40, getWidth() / 2 + (int)(2.25*(double)Constants.R), Constants.SDVIG / 2, "data\\pause.png");
+        startButtom = new Buttom(getWidth() / 4, getWidth() / 2, getHeight() / 4, "data\\start.png");
     }
 
     @Override
@@ -108,16 +120,16 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
             if (Constants.MUSIC_GAME == 0) {
                 Constants.MUSIC_GAME = 1;
                 new Thread(() -> {
-                    Sound soundMenu = new Sound(new File("data\\music\\Giornos_Theme.wav"));
+                    Sound soundMenu = new Sound(SoundFiles.Giornos_Theme);
                     soundMenu.setVolume((float) 0.75);
 //                    soundMenu.play();
                     while (!Constants.START_GAME) {
-                        if (Constants.MUST_PLAY_MUSIC){
+                        if (Constants.MUST_PLAY_MUSIC) {
                             if (!soundMenu.isPlaying()) {
 //                                System.out.println("..");
                                 soundMenu.play();
                             }
-                        }else{
+                        } else {
                             soundMenu.stop();
                         }
                     }
@@ -127,17 +139,17 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                 }).start();
             }
             g.drawImage(imageEnterBackGround, 0, 0, this.getWidth(), this.getHeight(), null);
-            if (!Constants.IN_RECORDS || (Constants.IN_RECORDS && Constants.TYPE_OF_RECORDS == 0)){
+            if (!Constants.IN_RECORDS || (Constants.IN_RECORDS && Constants.TYPE_OF_RECORDS == 0)) {
                 for (Buttom buttom : buttoms) {
                     if (buttom != null) {
                         buttom.paint(g, getMousePosition());
                     }
                 }
             } else {
-                if (buttoms != null && buttoms.get(buttoms.size()-1) != null){
-                    buttoms.get(buttoms.size()-1).paint(g, getMousePosition());
+                if (buttoms != null && buttoms.get(buttoms.size() - 1) != null) {
+                    buttoms.get(buttoms.size() - 1).paint(g, getMousePosition());
                 }
-                if (scoreboard != null){
+                if (scoreboard != null) {
                     scoreboard.paint(g);
                 }
             }
@@ -149,10 +161,10 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
             }
             if (Constants.USER_DIED) {
                 if (Constants.GAME_OVER == 0) {
-                    if (Constants.MUST_PLAY_SOUND){
+                    if (Constants.MUST_PLAY_SOUND) {
                         new Thread(() -> {
 //                        Sound.playSound("data\\music\\Game_over.wav");
-                            Sound sound = new Sound(new File("data\\music\\Game_over.wav"));
+                            Sound sound = new Sound(SoundFiles.Game_over);
                             sound.play();
                         }).start();
                     }
@@ -161,79 +173,117 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                 g.drawImage(image, this.getWidth() / 2 - this.getHeight() / 2, 0, this.getHeight(), this.getHeight(), null);
                 g.drawImage(imageBloodBackground, 0, 0, this.getWidth(), this.getHeight(), null);
             } else {
-                if (Constants.MUSIC_GAME == 0) {
-                    Constants.MUSIC_GAME = 1;
-                    new Thread(() -> {
-                        Sound soundGame = new Sound(new File("data\\music\\Music.wav"));
-                        soundGame.setVolume((float) 0.65);
-                        Sound soundDied = new Sound(new File("data\\music\\End.wav"));
-                        soundDied.setVolume((float) 0.65);
-                        while (true) {
-                            if (!soundGame.isPlaying() && !Constants.USER_DIED && Constants.MUST_PLAY_MUSIC) {
-                                soundGame.play();
-                                soundDied.stop();
+                if (!Constants.PAUSE_MENU) {
+                    if (Constants.MUSIC_GAME == 0) {
+                        Constants.MUSIC_GAME = 1;
+                        new Thread(() -> {
+                            Sound soundGame = new Sound(SoundFiles.Music);
+                            soundGame.setVolume((float) 0.65);
+                            Sound soundDied = new Sound(SoundFiles.End);
+                            soundDied.setVolume((float) 0.65);
+                            while (true) {
+                                if (!soundGame.isPlaying() && !Constants.USER_DIED && Constants.MUST_PLAY_MUSIC) {
+                                    soundGame.play();
+                                    soundDied.stop();
+                                }
+                                if (Constants.USER_DIED && Constants.MUST_PLAY_MUSIC) {
+                                    soundGame.stop();
+                                }
+                                if (Constants.USER_DIED && !soundDied.playing && Constants.MUST_PLAY_MUSIC) {
+                                    soundDied.play();
+                                }
+                                if (!Constants.MUST_PLAY_MUSIC) {
+                                    soundGame.stop();
+                                    soundDied.stop();
+                                }
                             }
-                            if (Constants.USER_DIED && Constants.MUST_PLAY_MUSIC) {
-                                soundGame.stop();
-                            }
-                            if (Constants.USER_DIED && !soundDied.playing && Constants.MUST_PLAY_MUSIC) {
-                                soundDied.play();
-                            }
-                            if (!Constants.MUST_PLAY_MUSIC){
-                                soundGame.stop();
-                                soundDied.stop();
-                            }
-                        }
-                    }).start();
-                }
-                if (nowTime - Constants.TIME_START_PROGRAM > Constants.TIME_TO_DIED_LABIRINT) {
-                    try {
-                        labirint.update(nowTime - timePriviosPrint, userHuman, g);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        }).start();
                     }
-                }
+                    if (nowTime - Constants.TIME_START_PROGRAM > Constants.TIME_TO_DIED_LABIRINT) {
+                        try {
+                            labirint.update(nowTime - timePriviosPrint, userHuman, g);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
 
-                if (userHuman != null) {
-                    userHuman.update(labirint);
-                    Point gMP = getMousePosition();
+                    if (userHuman != null) {
+                        userHuman.update(labirint);
+                        Point gMP = getMousePosition();
                 /*if (gMP != null){
                     Vector vectorMouse = new Vector(-(double)gMP.x+userHuman.x, -(double)gMP.y + userHuman.y);
                     Vector vectorUp = new Vector(0.0, 1.0);
                     userHuman.rotate(Math.atan2(vectorUp.vectorComposition(vectorMouse), vectorUp.scalarComposition(vectorMouse)));
                     //System.out.println(vectorMouse.x + " " + vectorMouse.y);
                 }*/
-                    userHuman.rotateToAim(gMP);
-                }
-
-                if (labirint != null) {
-                    labirint.paint(g);
-                    long mega_bufer = nowTime - timePriviosPrint;
-                    labirint.goBullets(mega_bufer, g, userHuman);
-                }
-                if (userHuman != null) {
-                    try {
-                        userHuman.go(labirint, nowTime - timePriviosPrint);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        userHuman.rotateToAim(gMP);
                     }
-                    if (Constants.DEVELORER) {
-                        g.setColor(Color.GREEN);
-                        g.fillRect((int) labirint.getCell(userHuman.indexSector, userHuman.i, userHuman.j).x, (int) labirint.getCell(userHuman.indexSector, userHuman.i, userHuman.j).y, Constants.R, Constants.R);
-                        g.setColor(Color.RED);
+
+                    if (labirint != null) {
+                        labirint.paint(g);
+                        long mega_bufer = nowTime - timePriviosPrint;
+                        labirint.goBullets(mega_bufer, g, userHuman);
                     }
-                    userHuman.paint(g);
+                    if (userHuman != null) {
+                        try {
+                            userHuman.go(labirint, nowTime - timePriviosPrint);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        if (Constants.DEVELORER) {
+                            g.setColor(Color.GREEN);
+                            g.fillRect((int) labirint.getCell(userHuman.indexSector, userHuman.i, userHuman.j).x, (int) labirint.getCell(userHuman.indexSector, userHuman.i, userHuman.j).y, Constants.R, Constants.R);
+                            g.setColor(Color.RED);
+                        }
+                        userHuman.paint(g);
+                    }
+
+                    g.drawImage(imageClock, this.getWidth() - 150 - Constants.R * 5 / 4, Constants.SDVIG / 15 * 7 - Constants.R / 8, Constants.R * 5 / 4, Constants.R * 5 / 4, null);
+                    g.drawImage(imageCntBots, this.getWidth() - 150 - Constants.R * 6 - Constants.R * 5 / 4, Constants.SDVIG / 15 * 7 - Constants.R / 8, Constants.R * 5 / 4, Constants.R * 5 / 4, null);
+                    g.drawImage(imageCntWay, this.getWidth() - 150 - Constants.R * 12 - Constants.R * 5 / 4, Constants.SDVIG / 15 * 7 - Constants.R / 8, Constants.R * 5 / 4, Constants.R * 5 / 4, null);
+
+                    g.setFont(new Font("TimesRoman", Font.BOLD + Font.ITALIC, 40));
+                    g.setColor(Color.BLACK);
+                    g.drawString(Time.timeToString(), this.getWidth() - 146, Constants.SDVIG / 8 * 5 + Constants.R / 2 + 4);
+                    g.drawString(Constants.CNT_DIED_BOTS.getString(), this.getWidth() - 146 - Constants.R * 6, Constants.SDVIG / 8 * 5 + Constants.R / 2 + 4);
+                    g.drawString(Constants.CNT_WAY.getString(), this.getWidth() - 146 - Constants.R * 12, Constants.SDVIG / 8 * 5 + Constants.R / 2 + 4);
+
+                    g.setColor(Color.WHITE);
+                    g.drawString(Time.timeToString(), this.getWidth() - 150, Constants.SDVIG / 8 * 5 + Constants.R / 2);
+                    g.drawString(Constants.CNT_DIED_BOTS.getString(), this.getWidth() - 150 - Constants.R * 6, Constants.SDVIG / 8 * 5 + Constants.R / 2);
+                    g.drawString(Constants.CNT_WAY.getString(), this.getWidth() - 150 - Constants.R * 12, Constants.SDVIG / 8 * 5 + Constants.R / 2);
+
+                    g.drawImage(imageBoom, getWidth() / 2, Constants.SDVIG / 4, (int) (1.75 * Constants.R), (int) (1.75 * Constants.R), null);
+                    if (System.currentTimeMillis() - Constants.TIME_LAST_BUM <= Constants.TIME_UPGRADE_BOOM) {
+                        Integer time = (int) (Constants.TIME_UPGRADE_BOOM - System.currentTimeMillis() + Constants.TIME_LAST_BUM) / 1000;
+                        g.setFont(new Font("TimesRoman", Font.BOLD + Font.ITALIC, 25));
+                        g.setColor(Color.WHITE);
+                        System.out.println(time);
+                        if (time >= 10) {
+                            g.drawString(time.toString(), getWidth() / 2 + (int) (1.75 * Constants.R / 8), (int) (Constants.SDVIG * 0.85));
+                        } else {
+                            g.drawString(time.toString(), getWidth() / 2 + (int) (0.45 * Constants.R), (int) (Constants.SDVIG * 0.85));
+                        }
+                    } else {
+                        if (!Constants.BOOM_IS_READY) {
+                            if (Constants.MUST_PLAY_SOUND) {
+                                new Thread(() -> {
+                                    Sound sound = new Sound(SoundFiles.yesboom);
+                                    sound.setVolume((float) 0.75);
+                                    sound.play();
+                                    sound.join();
+                                }).start();
+                            }
+                            Constants.BOOM_IS_READY = true;
+                        }
+                        g.drawImage(imageCheckMark, getWidth() / 2 + (int) (0.4 * Constants.R), (int) (Constants.SDVIG * 0.6), (int) (0.6 * Constants.R), (int) (0.6 * Constants.R), null);
+                    }
+                    pauseButtom.paint(g, getMousePosition());
+                } else {
+                    startButtom.paint(g, getMousePosition());
                 }
-
-                g.drawImage(imageClock, this.getWidth() - 150 - Constants.R * 5 / 4, Constants.SDVIG / 15 * 7 - Constants.R / 8, Constants.R * 5 / 4, Constants.R * 5 / 4, null);
-                g.drawString(Time.timeToString(), this.getWidth() - 150, Constants.SDVIG / 8 * 5 + Constants.R / 2);
-                g.drawImage(imageCntBots, this.getWidth() - 150 - Constants.R * 6 - Constants.R * 5 / 4, Constants.SDVIG / 15 * 7 - Constants.R / 8, Constants.R * 5 / 4, Constants.R * 5 / 4, null);
-                g.drawString(Constants.CNT_DIED_BOTS.getString(), this.getWidth() - 150 - Constants.R * 6, Constants.SDVIG / 8 * 5 + Constants.R / 2);
-                g.drawImage(imageCntWay, this.getWidth() - 150 - Constants.R * 12 - Constants.R * 5 / 4, Constants.SDVIG / 15 * 7 - Constants.R / 8, Constants.R * 5 / 4, Constants.R * 5 / 4, null);
-                g.drawString(Constants.CNT_WAY.getString(), this.getWidth() - 150 - Constants.R * 12, Constants.SDVIG / 8 * 5 + Constants.R / 2);
-
-                timePriviosPrint = nowTime;
             }
+            timePriviosPrint = nowTime;
         }
 
         g.dispose();
@@ -253,12 +303,24 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
 //        System.out.println(e.getKeyCode());
         if (e.getID() == KeyEvent.KEY_PRESSED) {
 //            System.out.println(e.getKeyCode());
-            if (e.getKeyCode() == 32 && !labirint.boom.flag) {
-                try {
-                    labirint.addBoom(userHuman);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+            if (e.getKeyCode() == 32 && !labirint.boom.flag && Constants.START_GAME) {
+                if (Constants.BOOM_IS_READY) {
+                    try {
+                        labirint.addBoom(userHuman);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else {
+                    if (Constants.MUST_PLAY_SOUND) {
+                        new Thread(() -> {
+                            Sound sound = new Sound(SoundFiles.mimo);
+                            sound.setVolume((float) 1.00);
+                            sound.play();
+                            sound.join();
+                        }).start();
+                    }
                 }
+
             }
             if (Constants.DEVELORER && e.getKeyCode() == 66) {
                 Constants.FLAG_CHIT_BULLET = !Constants.FLAG_CHIT_BULLET;
@@ -338,94 +400,111 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         double x = e.getX();
         double y = e.getY();
         if (Constants.START_GAME) {
-            if (ModifiersEx == 2048) {
-                userHuman.aim.flagPrint = false;
-            } else if (ModifiersEx == 1024) {
-                BaseBullet bullet;
-                BaseBot aimBot = userHuman.aim.bot;
-                if (!userHuman.aim.flagPrint) {
-                    bullet = new BaseBullet(userHuman.x, userHuman.y, e.getX(), e.getY(), userHuman);
-                } else if (aimBot.type == 1 || aimBot.type == 2) {
-                    bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
-                } else if (aimBot.variantOrientation == 2 || aimBot.variantOrientation == 3) {
-                    if (aimBot.y > userHuman.y) {
-                        double xb = aimBot.x - userHuman.x;
-                        double yb = aimBot.y - userHuman.y;
-                        double vp = Constants.V_BULLET;
-                        double vb;
-                        if (aimBot.variantOrientation == 2) {
-                            vb = -Constants.V_BOTS;
-                        } else {
-                            vb = Constants.V_BOTS;
-                        }
-                        double l = vb / vp;
-                        double cosDelta = 1 / (xb * xb + yb * yb) * (l * yb * yb + xb * Math.sqrt(xb * xb + (1 - l * l) * yb * yb));
-                        double vpx = vp * cosDelta;
-                        double vpy = Math.sqrt(vp * vp - vpx * vpx);
-                        bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vpx, vpy), userHuman);
-                    } else {
-                        double xb = aimBot.x - userHuman.x;
-                        double yb = -(aimBot.y - userHuman.y);
-                        double vp = Constants.V_BULLET;
-                        double vb;
-                        if (aimBot.variantOrientation == 2) {
-                            vb = -Constants.V_BOTS;
-                        } else {
-                            vb = Constants.V_BOTS;
-                        }
-                        double l = vb / vp;
-                        double cosDelta = 1 / (xb * xb + yb * yb) * (l * yb * yb + xb * Math.sqrt(xb * xb + (1 - l * l) * yb * yb));
-                        double vpx = vp * cosDelta;
-                        double vpy = Math.sqrt(vp * vp - vpx * vpx);
-                        bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vpx, -vpy), userHuman);
+            if (Constants.PAUSE_MENU) {
+                if (ModifiersEx == 1024 && startButtom.isPush(getMousePosition())){
+                    Constants.PAUSE_MENU = false;
+                    long deltaTime = System.currentTimeMillis() - Constants.TIME_STOP;
+                    Constants.TIME_START_PROGRAM += deltaTime;
+                    Constants.TIME_LAST_BUM += deltaTime;
+                    for (BaseBot diedBot : labirint.diedBots){
+                        diedBot.timeDied += deltaTime;
                     }
-                } else if (aimBot.variantOrientation == 0 || aimBot.variantOrientation == 1) {
-                    if (aimBot.x > userHuman.x) {
-                        double yb = aimBot.y - userHuman.y;
-                        double xb = aimBot.x - userHuman.x;
-                        double vp = Constants.V_BULLET;
-                        double vb;
-                        if (aimBot.variantOrientation == 0) {
-                            vb = -Constants.V_BOTS;
-                        } else {
-                            vb = Constants.V_BOTS;
-                        }
-                        double l = vb / vp;
-                        double cosDelta = 1 / (yb * yb + xb * xb) * (l * xb * xb + yb * Math.sqrt(yb * yb + (1 - l * l) * xb * xb));
-                        double vpy = vp * cosDelta;
-                        double vpx = Math.sqrt(vp * vp - vpy * vpy);
-                        bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vpx, vpy), userHuman);
-                    } else {
-                        double yb = aimBot.y - userHuman.y;
-                        double xb = -(aimBot.x - userHuman.x);
-                        double vp = Constants.V_BULLET;
-                        double vb;
-                        if (aimBot.variantOrientation == 0) {
-                            vb = -Constants.V_BOTS;
-                        } else {
-                            vb = Constants.V_BOTS;
-                        }
-                        double l = vb / vp;
-                        double cosDelta = 1 / (yb * yb + xb * xb) * (l * xb * xb + yb * Math.sqrt(yb * yb + (1 - l * l) * xb * xb));
-                        double vpy = vp * cosDelta;
-                        double vpx = Math.sqrt(vp * vp - vpy * vpy);
-                        bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(-vpx, vpy), userHuman);
-                    }
-                } else {
-                    bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
                 }
-                labirint.addBullet(bullet);
             } else {
-                for (BaseBot bot : labirint.bots) {
-                    if ((x - bot.x) * (x - bot.x) + (y - bot.y) * (y - bot.y) < Constants.SQRT_LEN_AIM) {
-                        try {
-                            userHuman.aim = new Aim(bot);
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
+                if (ModifiersEx == 1024 && pauseButtom.isPush(getMousePosition())){
+                    Constants.PAUSE_MENU = true;
+                    Constants.TIME_STOP = System.currentTimeMillis();
+                }
+                if (ModifiersEx == 2048) {
+                    userHuman.aim.flagPrint = false;
+                } else if (ModifiersEx == 1024) {
+                    BaseBullet bullet;
+                    BaseBot aimBot = userHuman.aim.bot;
+                    if (!userHuman.aim.flagPrint) {
+                        bullet = new BaseBullet(userHuman.x, userHuman.y, e.getX(), e.getY(), userHuman);
+                    } else if (aimBot.type == 1 || aimBot.type == 2) {
+                        bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
+                    } else if (aimBot.variantOrientation == 2 || aimBot.variantOrientation == 3) {
+                        if (aimBot.y > userHuman.y) {
+                            double xb = aimBot.x - userHuman.x;
+                            double yb = aimBot.y - userHuman.y;
+                            double vp = Constants.V_BULLET;
+                            double vb;
+                            if (aimBot.variantOrientation == 2) {
+                                vb = -Constants.V_BOTS;
+                            } else {
+                                vb = Constants.V_BOTS;
+                            }
+                            double l = vb / vp;
+                            double cosDelta = 1 / (xb * xb + yb * yb) * (l * yb * yb + xb * Math.sqrt(xb * xb + (1 - l * l) * yb * yb));
+                            double vpx = vp * cosDelta;
+                            double vpy = Math.sqrt(vp * vp - vpx * vpx);
+                            bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vpx, vpy), userHuman);
+                        } else {
+                            double xb = aimBot.x - userHuman.x;
+                            double yb = -(aimBot.y - userHuman.y);
+                            double vp = Constants.V_BULLET;
+                            double vb;
+                            if (aimBot.variantOrientation == 2) {
+                                vb = -Constants.V_BOTS;
+                            } else {
+                                vb = Constants.V_BOTS;
+                            }
+                            double l = vb / vp;
+                            double cosDelta = 1 / (xb * xb + yb * yb) * (l * yb * yb + xb * Math.sqrt(xb * xb + (1 - l * l) * yb * yb));
+                            double vpx = vp * cosDelta;
+                            double vpy = Math.sqrt(vp * vp - vpx * vpx);
+                            bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vpx, -vpy), userHuman);
+                        }
+                    } else if (aimBot.variantOrientation == 0 || aimBot.variantOrientation == 1) {
+                        if (aimBot.x > userHuman.x) {
+                            double yb = aimBot.y - userHuman.y;
+                            double xb = aimBot.x - userHuman.x;
+                            double vp = Constants.V_BULLET;
+                            double vb;
+                            if (aimBot.variantOrientation == 0) {
+                                vb = -Constants.V_BOTS;
+                            } else {
+                                vb = Constants.V_BOTS;
+                            }
+                            double l = vb / vp;
+                            double cosDelta = 1 / (yb * yb + xb * xb) * (l * xb * xb + yb * Math.sqrt(yb * yb + (1 - l * l) * xb * xb));
+                            double vpy = vp * cosDelta;
+                            double vpx = Math.sqrt(vp * vp - vpy * vpy);
+                            bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(vpx, vpy), userHuman);
+                        } else {
+                            double yb = aimBot.y - userHuman.y;
+                            double xb = -(aimBot.x - userHuman.x);
+                            double vp = Constants.V_BULLET;
+                            double vb;
+                            if (aimBot.variantOrientation == 0) {
+                                vb = -Constants.V_BOTS;
+                            } else {
+                                vb = Constants.V_BOTS;
+                            }
+                            double l = vb / vp;
+                            double cosDelta = 1 / (yb * yb + xb * xb) * (l * xb * xb + yb * Math.sqrt(yb * yb + (1 - l * l) * xb * xb));
+                            double vpy = vp * cosDelta;
+                            double vpx = Math.sqrt(vp * vp - vpy * vpy);
+                            bullet = new BaseBullet(userHuman.x, userHuman.y, new Vector(-vpx, vpy), userHuman);
+                        }
+                    } else {
+                        bullet = new BaseBullet(userHuman.x, userHuman.y, userHuman.aim.bot.x, userHuman.aim.bot.y, userHuman);
+                    }
+                    labirint.addBullet(bullet);
+                } else {
+                    for (BaseBot bot : labirint.bots) {
+                        if ((x - bot.x) * (x - bot.x) + (y - bot.y) * (y - bot.y) < Constants.SQRT_LEN_AIM) {
+                            try {
+                                userHuman.aim = new Aim(bot);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
                         }
                     }
                 }
             }
+
         } else {
 //            System.out.println(buttom.isPush(getMousePosition()));
             if (!Constants.IN_SETTING && !Constants.IN_RECORDS) {
@@ -435,26 +514,26 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                 if (ModifiersEx == 1024 && buttoms.get(2).isPush(getMousePosition())) {
                     Constants.IN_SETTING = true;
                     buttoms = new ArrayList<>();
-                    if (Constants.MUST_PLAY_MUSIC){
+                    if (Constants.MUST_PLAY_MUSIC) {
                         try {
                             buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomMusicOn.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
-                    }else{
+                    } else {
                         try {
                             buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomMusicOff.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
                     }
-                    if (Constants.MUST_PLAY_SOUND){
+                    if (Constants.MUST_PLAY_SOUND) {
                         try {
                             buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomSoundOn.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
-                    }else{
+                    } else {
                         try {
                             buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomSoundOff.png"));
                         } catch (IOException ex) {
@@ -493,7 +572,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     }
                 }
 
-            } else if (Constants.IN_SETTING){
+            } else if (Constants.IN_SETTING) {
                 if (ModifiersEx == 1024 && buttoms.get(2).isPush(getMousePosition())) {
                     Constants.IN_SETTING = false;
                     buttoms = new ArrayList<>();
@@ -518,14 +597,14 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                         throw new RuntimeException(ex);
                     }
 
-                } else if (ModifiersEx == 1024 && buttoms.get(0).isPush(getMousePosition())){
+                } else if (ModifiersEx == 1024 && buttoms.get(0).isPush(getMousePosition())) {
                     Constants.MUST_PLAY_MUSIC = !Constants.MUST_PLAY_MUSIC;
                     try {
                         Constants.writeConstants();
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
-                    if (Constants.MUST_PLAY_MUSIC){
+                    if (Constants.MUST_PLAY_MUSIC) {
                         try {
                             buttoms.get(0).setImage("data\\ButtomMusicOn.png");
                         } catch (IOException ex) {
@@ -538,14 +617,14 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                             throw new RuntimeException(ex);
                         }
                     }
-                } else if (ModifiersEx == 1024 && buttoms.get(1).isPush(getMousePosition())){
+                } else if (ModifiersEx == 1024 && buttoms.get(1).isPush(getMousePosition())) {
                     Constants.MUST_PLAY_SOUND = !Constants.MUST_PLAY_SOUND;
                     try {
                         Constants.writeConstants();
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
-                    if (Constants.MUST_PLAY_SOUND){
+                    if (Constants.MUST_PLAY_SOUND) {
                         try {
                             buttoms.get(1).setImage("data\\ButtomSoundOn.png");
                         } catch (IOException ex) {
@@ -559,9 +638,9 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                         }
                     }
                 }
-            } else if (Constants.IN_RECORDS){
-                if (Constants.TYPE_OF_RECORDS == 0){
-                    if (ModifiersEx == 1024 && buttoms.get(3).isPush(getMousePosition())){
+            } else if (Constants.IN_RECORDS) {
+                if (Constants.TYPE_OF_RECORDS == 0) {
+                    if (ModifiersEx == 1024 && buttoms.get(3).isPush(getMousePosition())) {
                         Constants.IN_RECORDS = false;
                         buttoms = new ArrayList<>();
                         try {
@@ -585,28 +664,28 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                             throw new RuntimeException(ex);
                         }
                     }
-                    if (ModifiersEx == 1024 && buttoms.get(0).isPush(getMousePosition())){
+                    if (ModifiersEx == 1024 && buttoms.get(0).isPush(getMousePosition())) {
                         Constants.TYPE_OF_RECORDS = 1;
                         try {
-                            scoreboard = new Scoreboard(getWidth()/28.0, getWidth(), getHeight(), "files\\ways_records.txt");
+                            scoreboard = new Scoreboard(getWidth() / 28.0, getWidth(), getHeight(), "files\\ways_records.txt");
                             buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 4.0 * 5 / 4, "data\\ButtomBack.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
                     }
-                    if (ModifiersEx == 1024 && buttoms.get(1).isPush(getMousePosition())){
+                    if (ModifiersEx == 1024 && buttoms.get(1).isPush(getMousePosition())) {
                         Constants.TYPE_OF_RECORDS = 2;
                         try {
-                            scoreboard = new Scoreboard(getWidth()/28.0, getWidth(), getHeight(), "files\\bots_records.txt");
+                            scoreboard = new Scoreboard(getWidth() / 28.0, getWidth(), getHeight(), "files\\bots_records.txt");
                             buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 4.0 * 5 / 4, "data\\ButtomBack.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
                     }
-                    if (ModifiersEx == 1024 && buttoms.get(2).isPush(getMousePosition())){
+                    if (ModifiersEx == 1024 && buttoms.get(2).isPush(getMousePosition())) {
                         Constants.TYPE_OF_RECORDS = 3;
                         try {
-                            scoreboard = new Scoreboard(getWidth()/28.0, getWidth(), getHeight(), "files\\times_records.txt");
+                            scoreboard = new Scoreboard(getWidth() / 28.0, getWidth(), getHeight(), "files\\times_records.txt");
                             buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 4.0 * 5 / 4, "data\\ButtomBack.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);

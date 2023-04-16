@@ -61,39 +61,42 @@ public abstract class Human extends BaseHuman {
         g.fillOval((int) x - 1, (int) y - 1, 2, 2);
         g.setColor(Color.RED);
         if (flagChit) {
-            if (Constants.DEVELORER){
+            if (Constants.DEVELORER) {
                 g.setColor(Color.GREEN);
                 g.fillRect(0, 0, 40, 40);
                 g.setColor(Color.RED);
             }
         }
         g.setColor(Color.RED);
-        g.fillRect(Constants.SDVIG/2, Constants.SDVIG/2, (int)(((double)Constants.R*15.0) * hp), Constants.R/2);
+        g.fillRect(Constants.SDVIG / 2, Constants.SDVIG / 2, (int) (((double) Constants.R * 15.0) * hp), Constants.R / 2);
         g.setColor(Color.BLACK);
-        g.drawRect(Constants.SDVIG/2, Constants.SDVIG/2, (int)(((double)Constants.R*15.0)), Constants.R/2);
+        g.drawRect(Constants.SDVIG / 2, Constants.SDVIG / 2, (int) (((double) Constants.R * 15.0)), Constants.R / 2);
         g.setColor(Color.BLACK);
-        Integer itos = (int)(hp*100.0);
-        g.setFont(new Font("TimesRoman",Font.BOLD + Font.ITALIC,45));
-        g.drawString(itos.toString() + "%", Constants.SDVIG*3/4 + (int)((double)Constants.R*15.0), Constants.SDVIG/8*5 + Constants.R/2);
+        Integer itos = (int) (hp * 100.0);
+        g.setFont(new Font("TimesRoman", Font.BOLD + Font.ITALIC, 45));
+        g.setColor(Color.BLACK);
+        g.drawString(itos.toString() + "%", Constants.SDVIG * 3 / 4 + (int) ((double) Constants.R * 15.0 + 4), Constants.SDVIG / 8 * 5 + Constants.R / 2 + 4);
+        g.setColor(Color.WHITE);
+        g.drawString(itos.toString() + "%", Constants.SDVIG * 3 / 4 + (int) ((double) Constants.R * 15.0), Constants.SDVIG / 8 * 5 + Constants.R / 2);
         aim.print(g);
     }
 
-    public void hit(Graphics g, MyFrame frame){
+    public void hit(Graphics g, MyFrame frame) {
         Constants.TIME_HIT = System.currentTimeMillis();
         hp -= Constants.DAMAGE_BOT_BULLET;
-        if (hp <= 0.0){
+        if (hp <= 0.0) {
             Constants.USER_DIED = true;
         }
-        if (Constants.MUST_PLAY_SOUND){
+        if (Constants.MUST_PLAY_SOUND) {
             new Thread(() -> {
-
-                Sound sound = new Sound(new File("data\\music\\damage.wav"));
+                Sound sound = new Sound(SoundFiles.damage);
                 sound.setVolume((float) 0.8);
                 sound.play();
                 sound.join();
             }).start();
         }
     }
+
     public void go(Labirint labirint, long time) throws IOException {
         double v = (double) time * vHuman;
         if (indexSector >= labirint.sectors.size() - 1) {
@@ -204,12 +207,12 @@ public abstract class Human extends BaseHuman {
             if (flagLeft) {
                 labirint.go(v);
                 while (x < labirint.getCell(indexSector, i, j).x - Constants.R) {
-                  --i;
-                  if (i < 0) {
-                      i = labirint.getSector(indexSector).cells.size() - 1;
-                      --indexSector;
-                      sector = labirint.sectors.get(indexSector);
-                  }
+                    --i;
+                    if (i < 0) {
+                        i = labirint.getSector(indexSector).cells.size() - 1;
+                        --indexSector;
+                        sector = labirint.sectors.get(indexSector);
+                    }
                 }
             }
             if (flagRight) {
@@ -291,14 +294,14 @@ public abstract class Human extends BaseHuman {
         op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
     }
 
-    public void rotateToAim(Point gMP){
-        if (aim.flagPrint ){
-            Vector vectorAim = new Vector(-(double)aim.bot.x+this.x, -(double)aim.bot.y + this.y);
+    public void rotateToAim(Point gMP) {
+        if (aim.flagPrint) {
+            Vector vectorAim = new Vector(-(double) aim.bot.x + this.x, -(double) aim.bot.y + this.y);
             Vector vectorUp = new Vector(0.0, 1.0);
             this.rotate(Math.atan2(vectorUp.vectorComposition(vectorAim), vectorUp.scalarComposition(vectorAim)));
-        }else{
-            if (gMP != null){
-                Vector vectorMouse = new Vector(-(double)gMP.x+this.x, -(double)gMP.y + this.y);
+        } else {
+            if (gMP != null) {
+                Vector vectorMouse = new Vector(-(double) gMP.x + this.x, -(double) gMP.y + this.y);
                 Vector vectorUp = new Vector(0.0, 1.0);
                 this.rotate(Math.atan2(vectorUp.vectorComposition(vectorMouse), vectorUp.scalarComposition(vectorMouse)));
                 //System.out.println(vectorMouse.x + " " + vectorMouse.y);
@@ -307,11 +310,11 @@ public abstract class Human extends BaseHuman {
     }
 
     public void update(Labirint labirint) {
-        if (indexSector > maxIndex){
+        if (indexSector > maxIndex) {
             maxI = i;
             maxIndex = indexSector;
             Constants.CNT_WAY.update();
-        }else if (i > maxI){
+        } else if (i > maxI) {
             maxI = i;
             Constants.CNT_WAY.update();
         }
@@ -319,6 +322,10 @@ public abstract class Human extends BaseHuman {
         if (x - sector.x - Constants.R / 2 < sector.rightBound) {
             Constants.USER_DIED = true;
         }
+    }
+
+    public void hill(){
+        hp = Math.min(hp + 0.3, 1.0);
     }
 }
 

@@ -7,7 +7,6 @@ public class Main {
         MyFrame frame = new MyFrame();
         while (true){
             frame.repaint();
-
             Thread.sleep(1);
         }
     }

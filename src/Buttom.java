@@ -15,6 +15,24 @@ public class Buttom {
     AffineTransformOp op;
     double size;
 
+    boolean isIt = true;
+
+    public Buttom(double size, double x, double y, String adress, boolean isIt) throws IOException {
+        this.isIt = isIt;
+        this.size = size;
+        image = ImageIO.read(new File(adress));
+        double k = (size) / (double) image.getHeight();
+        tx = AffineTransform.getScaleInstance(k, k);
+        op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+        image = op.filter(image, null);
+        double locationX = image.getWidth() / 2;
+        double locationY = image.getHeight() / 2;
+        tx = AffineTransform.getRotateInstance(0.0, locationX, locationY);
+        op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+
+        this.x = x - image.getWidth() / 2;
+        this.y = y;
+    }
     public Buttom(double size, double x, double y, String adress) throws IOException {
         // получаем координаты центра верхней полоски и переводим в координаты левого угла
         this.size = size;

@@ -86,6 +86,7 @@ public abstract class Human extends BaseHuman {
         hp -= Constants.DAMAGE_BOT_BULLET;
         if (hp <= 0.0) {
             Constants.USER_DIED = true;
+            Constants.TIME_USER_DIED = System.currentTimeMillis();
         }
         if (Constants.MUST_PLAY_SOUND) {
             new Thread(() -> {

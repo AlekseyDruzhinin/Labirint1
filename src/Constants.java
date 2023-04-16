@@ -5,6 +5,7 @@ public class Constants {
 
     public static int i = 0;
     public static boolean START_GAME = false;
+    public static long TIME_USER_DIED = 0;
     public static long TIME_LAST_BUM;
     public static long TIME_UPGRADE_BOOM = 30000;
     public static boolean IN_SETTING = false;
@@ -75,7 +76,6 @@ public class Constants {
     public static int SIZE_BULLET;
 
     public static boolean DEVELORER = false;
-
     public static void writeConstants() throws IOException {
         FileWriter writer = new FileWriter("files\\Constants.txt", false);
         if (Constants.MUST_PLAY_MUSIC) {

@@ -83,12 +83,12 @@ public class BaseBullet {
         }*/
     }
 
-    public boolean go(Labirint labirint, long time, Graphics g) {
+    public boolean go(Labirint labirint, long time, Graphics g, Human userHuman) {
         boolean flagIAmDied1 = this.checkDied(labirint, time, g);
         this.updateCell(labirint, segment.getX2() + (double) time * v.getX(), segment.getY2() + (double) time * v.getY());
         boolean flagIAmDied = flagIAmDied1;
         for (BaseBot bot : labirint.bots){
-            if (iAmWin(labirint, bot, time)){
+            if (bot.indexSector <= userHuman.indexSector + 1 && bot.indexSector >= userHuman.indexSector - 1 && iAmWin(labirint, bot, time)){
                 flagIAmDied = true;
                 bot.hit();
             }

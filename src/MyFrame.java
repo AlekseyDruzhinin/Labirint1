@@ -159,6 +159,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
 
     @Override
     public void paint(Graphics g) {
+        System.out.println(buttoms.size());
         long nowTime = System.currentTimeMillis();
         //System.out.println(nowTime + " " + (nowTime - timePriviosPrint) + " " + Constants.V_NORMAL);
         BufferStrategy bufferStrategy = getBufferStrategy();
@@ -277,7 +278,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     }
 
                     if (labirint != null) {
-                        labirint.paint(g);
+                        labirint.paint(g, userHuman);
                         long mega_bufer = nowTime - timePriviosPrint;
                         labirint.goBullets(mega_bufer, g, userHuman);
                     }
@@ -315,7 +316,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                         Integer time = (int) (Constants.TIME_UPGRADE_BOOM - System.currentTimeMillis() + Constants.TIME_LAST_BUM) / 1000;
                         g.setFont(new Font("TimesRoman", Font.BOLD + Font.ITALIC, 25));
                         g.setColor(Color.WHITE);
-                        System.out.println(time);
+//                        System.out.println(time);
                         if (time >= 10) {
                             g.drawString(time.toString(), getWidth() / 2 + (int) (1.75 * Constants.R / 8), (int) (Constants.SDVIG * 0.85));
                         } else {

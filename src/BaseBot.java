@@ -101,18 +101,39 @@ public abstract class BaseBot{
 
         visu = true;
         Segment botHuman = new Segment(x, y, userHuman.x, userHuman.y);
-        for (BaseSector sector1 : labirint.sectors) {
-            for (ArrayList<StandardParallelWall> wallps : sector1.parallelWalls) {
-                for (StandardParallelWall wallp : wallps) {
-                    if (wallp.flag && botHuman.isIntersection(new Segment(wallp))) {
-                        visu = false;
+        if (userHuman.indexSector >= this.indexSector && userHuman.indexSector - this.indexSector <= 2){
+            for (int i = this.indexSector; i <= userHuman.indexSector; i++) {
+                BaseSector sector1 = labirint.sectors.get(i);
+                for (ArrayList<StandardParallelWall> wallps : sector1.parallelWalls) {
+                    for (StandardParallelWall wallp : wallps) {
+                        if (wallp.flag && botHuman.isIntersection(new Segment(wallp))) {
+                            visu = false;
+                        }
+                    }
+                }
+                for (ArrayList<StandardVerticalWall> wallvs : sector1.verticalWalls) {
+                    for (StandardVerticalWall wallv : wallvs) {
+                        if (wallv.flag && botHuman.isIntersection(new Segment(wallv))) {
+                            visu = false;
+                        }
                     }
                 }
             }
-            for (ArrayList<StandardVerticalWall> wallvs : sector1.verticalWalls) {
-                for (StandardVerticalWall wallv : wallvs) {
-                    if (wallv.flag && botHuman.isIntersection(new Segment(wallv))) {
-                        visu = false;
+        }else if (userHuman.indexSector == this.indexSector - 1){
+            for (int i = this.indexSector; i >= userHuman.indexSector; i--) {
+                BaseSector sector1 = labirint.sectors.get(i);
+                for (ArrayList<StandardParallelWall> wallps : sector1.parallelWalls) {
+                    for (StandardParallelWall wallp : wallps) {
+                        if (wallp.flag && botHuman.isIntersection(new Segment(wallp))) {
+                            visu = false;
+                        }
+                    }
+                }
+                for (ArrayList<StandardVerticalWall> wallvs : sector1.verticalWalls) {
+                    for (StandardVerticalWall wallv : wallvs) {
+                        if (wallv.flag && botHuman.isIntersection(new Segment(wallv))) {
+                            visu = false;
+                        }
                     }
                 }
             }

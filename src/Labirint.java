@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Labirint {
-    ArrayList<BaseSector> sectors = new ArrayList<>();
+
     Boom boom = new Boom();
 
     BufferedImage imagePesok;
@@ -16,6 +16,7 @@ public class Labirint {
     BufferedImage imageVerticalWall;
 
     //массив ботов
+    ArrayList<BaseSector> sectors = new ArrayList<>();
     ArrayList<BaseBot> bots = new ArrayList<>();
     ArrayList<BaseBot> diedBots = new ArrayList<>();
 
@@ -65,22 +66,37 @@ public class Labirint {
     }
 
 
-    public void paint(Graphics g) {
-        for (BaseSector sector : sectors) {
-            sector.paint(g, imagePesok, imageDiedPesok, imageParallelWall, imageVerticalWall);
+    public void paint(Graphics g, Human userHuman) {
+//        System.out.println(bots.size());
+//        System.out.println(diedBots.size());
+//        System.out.println(diedBullets.size());
+//        System.out.println(bullets.size());
+//        System.out.println(diedBotsBullets.size());
+//        System.out.println(botsBullets.size());
+//        System.out.println(sectors.size());
+
+        sectors.get(userHuman.indexSector).paint(g, imagePesok, imageDiedPesok, imageParallelWall, imageVerticalWall);
+        if (userHuman.indexSector > 0){
+            sectors.get(userHuman.indexSector-1).paint(g, imagePesok, imageDiedPesok, imageParallelWall, imageVerticalWall);
         }
+        if (userHuman.indexSector < sectors.size()-1){
+            sectors.get(userHuman.indexSector+1).paint(g, imagePesok, imageDiedPesok, imageParallelWall, imageVerticalWall);
+        }
+
         for (BaseBot bot : bots) {
-            if (Constants.DEVELORER) {
-                g.setColor(new Color(239, 124, 124, 255));
-                g.fillRect((int) getCell(bot.indexSector, bot.i, bot.j).x, (int) getCell(bot.indexSector, bot.i, bot.j).y, Constants.R, Constants.R);
-                g.setColor(Color.RED);
-                if (bot.type == 3) {
-                    g.setColor(Color.BLACK);
-                    g.drawString(Integer.toString(bot.variantOrientation), (int) getCell(bot.indexSector, bot.i, bot.j).x + Constants.R / 2, (int) getCell(bot.indexSector, bot.i, bot.j).y + Constants.R / 2);
+            if (bot.indexSector >= userHuman.indexSector-1 && bot.indexSector <= userHuman.indexSector + 1){
+                if (Constants.DEVELORER) {
+                    g.setColor(new Color(239, 124, 124, 255));
+                    g.fillRect((int) getCell(bot.indexSector, bot.i, bot.j).x, (int) getCell(bot.indexSector, bot.i, bot.j).y, Constants.R, Constants.R);
                     g.setColor(Color.RED);
+                    if (bot.type == 3) {
+                        g.setColor(Color.BLACK);
+                        g.drawString(Integer.toString(bot.variantOrientation), (int) getCell(bot.indexSector, bot.i, bot.j).x + Constants.R / 2, (int) getCell(bot.indexSector, bot.i, bot.j).y + Constants.R / 2);
+                        g.setColor(Color.RED);
+                    }
                 }
+                bot.paint(g);
             }
-            bot.paint(g);
         }
         for (BaseBullet bullet : bullets) {
             bullet.print(g, this);
@@ -98,7 +114,9 @@ public class Labirint {
             boom.paint(g, this, panel);
         }
         for (BaseBot diedBot : diedBots){
-            diedBot.paintAfterDied(g, panel);
+            if (diedBot.indexSector >= userHuman.indexSector-1 && diedBot.indexSector <= userHuman.indexSector + 1){
+                diedBot.paintAfterDied(g, panel);
+            }
         }
         boom.paintDied(g, this);
     }
@@ -172,7 +190,9 @@ public class Labirint {
         boolean itIsDied = sectors.get(indexDied).update((double) time * Constants.V_POLE);
 
         for (BaseBot bot : bots) {
-            bot.update(this, userHuman);
+            if (bot.indexSector >= userHuman.indexSector-1 && bot.indexSector <= userHuman.indexSector+1){
+                bot.update(this, userHuman);
+            }
         }
 
         if (itIsDied) {
@@ -239,7 +259,9 @@ public class Labirint {
         }
 
         for (BaseBot bot : bots) {
-            bot.go(userHuman, time, this);
+            if (bot.indexSector >= userHuman.indexSector-1 && bot.indexSector <= userHuman.indexSector+1){
+                bot.go(userHuman, time, this);
+            }
         }
 
         BaseSector sector = sectors.get(userHuman.indexSector);
@@ -266,7 +288,7 @@ public class Labirint {
     public void goBullets(long time, Graphics g, Human userHuman) {
         ArrayList<BaseBullet> bulletDiedInThisStep = new ArrayList<>();
         for (BaseBullet bullet : bullets) {
-            if (bullet.go(this, time, g)) {
+            if (bullet.go(this, time, g, userHuman)) {
                 bulletDiedInThisStep.add(bullet);
             }
         }

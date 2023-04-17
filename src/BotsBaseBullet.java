@@ -11,7 +11,7 @@ public class BotsBaseBullet extends BaseBullet{
         this.color = bot.colorBullets;
     }
     public boolean go(Labirint labirint, long time, Graphics g, Human userHuman, MyFrame frame) {
-        boolean flagIAmDied1 = this.checkDied(labirint, time, g);
+        boolean flagIAmDied1 = this.checkDied(labirint, time, g, userHuman);
         this.updateCell(labirint, segment.getX2() + (double) time * v.getX(), segment.getY2() + (double) time * v.getY());
         boolean flagIAmDied = flagIAmDied1;
         if (iAmWin(labirint, userHuman, time)){

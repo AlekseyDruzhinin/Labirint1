@@ -84,7 +84,7 @@ public class BaseBullet {
     }
 
     public boolean go(Labirint labirint, long time, Graphics g, Human userHuman) {
-        boolean flagIAmDied1 = this.checkDied(labirint, time, g);
+        boolean flagIAmDied1 = this.checkDied(labirint, time, g, userHuman);
         this.updateCell(labirint, segment.getX2() + (double) time * v.getX(), segment.getY2() + (double) time * v.getY());
         boolean flagIAmDied = flagIAmDied1;
         for (BaseBot bot : labirint.bots){
@@ -133,8 +133,14 @@ public class BaseBullet {
 
     }
 
-    public boolean checkDied(Labirint labirint, long time, Graphics g) {
+    public boolean checkDied(Labirint labirint, long time, Graphics g, Human userHuman) {
         //System.out.println(i + " " + j);
+        if (segment.getX2() <= labirint.sectors.get(Math.max(0, userHuman.indexSector-1)).x){
+            return true;
+        }
+        if (segment.getX2() >= labirint.sectors.get(Math.min(labirint.sectors.size()-1, userHuman.indexSector+2)).x){
+            return true;
+        }
         if (segment.getX2() <= labirint.sectors.get(0).cells.get(0).get(0).x){
             return true;
         }
@@ -147,7 +153,7 @@ public class BaseBullet {
         Segment jump = new Segment(segment.getX2(), segment.getY2(), segment.getX2() + (double) time * v.getX(), segment.getY2() + (double) time * v.getY());
         MyPoint pointFirstDied = new MyPoint(0.0, 0.0);
         MyPoint pointStart = new MyPoint(jump.getX1(), jump.getY1());
-        for (int indexSector1 = 0; indexSector1 < labirint.sectors.size(); ++indexSector1) {
+        for (int indexSector1 = Math.max(0, userHuman.indexSector-1); indexSector1 < Math.min(labirint.sectors.size(), userHuman.indexSector+2); ++indexSector1) {
             BaseSector sector = labirint.getSector(indexSector1);
             for (int i = 0; i < sector.cells.size(); ++i) {
                 for (int j = 0; j < sector.cells.get(0).size(); ++j) {

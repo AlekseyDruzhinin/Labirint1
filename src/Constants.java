@@ -22,6 +22,7 @@ public class Constants {
     public static int MUSIC_GAME = 0;
 
     public static long TIME_HIT = 0;
+    public static boolean RESTART_GAME = false;
     public static long TIME_LIFE_BACKGROUND_BLOOD = 1000;
 
     public static long TIME_LIFE_AFTER_DIED = 3000; // время существование следа после смерти пульки
@@ -91,4 +92,70 @@ public class Constants {
         }
         writer.flush();
     }
+
+    public static void rebuild(){
+        Constants.i = 0;
+        Constants.START_GAME = false;
+        Constants.TIME_USER_DIED = 0;
+        Constants.TIME_UPGRADE_BOOM = 30000;
+        Constants.IN_SETTING = false;
+        Constants.IN_RECORDS = false;
+        Constants.TYPE_OF_RECORDS = 0;
+        Constants.MUST_PLAY_MUSIC = true;
+        Constants.MUST_PLAY_SOUND = true;
+        Constants.SQRT_LEN_AIM = 0.0;
+        Constants.TIME_DIED_BOOM = 3000;
+        Constants.DAMAGE_USER_BULLET = 0.3;
+        Constants.DAMAGE_BOT_BULLET = 0.05;
+        Constants.GAME_OVER = 0;
+        Constants.MUSIC_GAME = 0;
+
+        Constants.TIME_HIT = 0;
+        Constants.TIME_LIFE_BACKGROUND_BLOOD = 1000;
+
+        Constants.TIME_LIFE_AFTER_DIED = 3000; // время существование следа после смерти пульки
+        Constants.R = 20;
+
+        Constants.COUNT_CELL_DOWN = 13;
+
+        Constants.V_POVOROT_PESOK = 0.001;
+        Constants.TIME_LAST_POVOROT_PESOK = 0;
+        Constants.SDVIG = 80;
+        Constants.TIME_LIVE_BOT_AFTER_DIED = 5000;
+
+        Constants.LEFT_END = 3000;
+        Constants.DOWN_END = 810;
+
+        Constants.SEED = 5254;
+
+        Constants.TIME_STOP = 0;
+        Constants.V_NORMAL_1 = 3000;
+
+        Constants.NUM_GEN_PARALLEL = 20;
+        Constants.NUM_GEN_VERTICAL = 20;
+        Constants.YES_KID_ON_PRIVIOS_SECTOR = true;
+        Constants.PAUSE_MENU = false;
+
+
+
+        Constants.V_POLE_1 = 10.0;
+        Constants.FLAG_CHIT_BULLET = false;
+
+        Constants.BOOM_IS_READY = true;
+
+        Constants.TIME_TO_DIED_LABIRINT = 5000;
+
+        Constants.USER_DIED = false;
+
+        Constants.V_ANGLE = 0.1;
+
+        Constants.DEVELORER = false;
+        Constants.MUSIC_GAME = 0;
+        Constants.TIME_HIT = 0;
+        Constants.YES_KID_ON_PRIVIOS_SECTOR = true;
+        Constants.GAME_OVER = 0;
+        Constants.TIME_USER_DIED = 0;
+        Constants.START_GAME = false;
+    }
+
 }

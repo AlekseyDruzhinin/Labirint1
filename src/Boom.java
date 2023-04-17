@@ -92,6 +92,7 @@ public class Boom {
             for (BaseBot bot : labirint.bots){
                 if (Math.sqrt((bot.x-cell.x)*(bot.x-cell.x) + (bot.y-cell.y)*(bot.y-cell.y))< 6*Constants.R){
                     bot.hp = 0.0;
+                    Constants.CNT_DIED_BOTS.update();
                 }
             }
             cell = labirint.getCell(indexSector, i, j);

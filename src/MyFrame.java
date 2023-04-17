@@ -40,6 +40,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
     Buttom exitButtom;
 
     public MyFrame() throws IOException {
+        Constants.TIME_START_PROGRAM = System.currentTimeMillis();
         this.imageBloodBackground = ImageIO.read(new File("data\\blood_background.png"));
         imageBackGround = ImageIO.read(new File("data\\Sky.jpg"));
         imageBackGround1 = ImageIO.read(new File("data\\Sand1.jpg"));
@@ -101,60 +102,6 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         pauseButtom = new Buttom(getWidth() / 40, getWidth() / 2 + (int) (2.25 * (double) Constants.R), Constants.SDVIG / 2, "data\\pause.png");
         startButtom = new Buttom(getWidth() / 4, getWidth() / 2, getHeight() / 4, "data\\start.png");
         exitButtom = new Buttom(getWidth() / 16, getWidth() / 2 + getWidth()/32, 6*getHeight() / 8, "data\\ButtumExit.png", false);
-    }
-
-    public void rebuild(){
-        try {
-            buttoms = new ArrayList<>();
-            labirint = new Labirint(this);
-            //System.out.println(sector.cells.get(0).size() +" " + sector.cells.get(0).get(0).r);
-            userHuman = new UserHuman(Constants.SDVIG + Constants.R, Constants.SDVIG + Constants.R, 0, 0);
-            //System.out.println(userHuman.x + " " + userHuman.y);
-
-            Constants.V_POLE = Constants.V_NORMAL / Constants.V_POLE_1;
-
-            Constants.FRAME_WIGHT = getWidth();
-            Constants.FRAME_HEIGHT = getHeight();
-
-            Constants.SIZE_BULLET = getHeight() / 100;
-
-            Constants.V_BOTS = 0.5 * Constants.V_NORMAL;
-
-            Constants.SQRT_LEN_AIM = (double) (Constants.R * Constants.R);
-            Constants.V_BULLET = 4.0 * Constants.V_NORMAL;
-
-            Constants.CNT_DIED_BOTS = new MyString(0);
-            Constants.CNT_WAY = new MyString(0);
-
-            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomStart.png"));
-            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomRecords.png"));
-            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomSetting.png"));
-            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 3.0 * 5 / 4, "data\\ButtomInfo.png"));
-
-            {
-                FileReader reader = new FileReader("files\\Constants.txt");
-                Constants.MUST_PLAY_MUSIC = (reader.read() == '1');
-                Constants.MUST_PLAY_SOUND = (reader.read() == '1');
-            }
-            Constants.writeConstants();
-
-            Constants.TIME_LAST_BUM = 0;
-
-            pauseButtom = new Buttom(getWidth() / 40, getWidth() / 2 + (int) (2.25 * (double) Constants.R), Constants.SDVIG / 2, "data\\pause.png");
-            startButtom = new Buttom(getWidth() / 4, getWidth() / 2, getHeight() / 4, "data\\start.png");
-            exitButtom = new Buttom(getWidth() / 16, getWidth() / 2 + getWidth()/32, 6*getHeight() / 8, "data\\ButtumExit.png", false);
-            Constants.START_GAME = false;
-            Constants.GAME_OVER = 0;
-            Constants.TIME_STOP = 0;
-            Constants.BOOM_IS_READY = true;
-            Constants.USER_DIED = false;
-            Constants.DEVELORER = false;
-            Constants.TIME_START_PROGRAM = System.currentTimeMillis();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
@@ -239,7 +186,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                             soundGame.setVolume((float) 0.65);
                             Sound soundDied = new Sound(SoundFiles.End);
                             soundDied.setVolume((float) 0.65);
-                            while (true) {
+                            while (Constants.START_GAME) {
                                 if (!soundGame.isPlaying() && !Constants.USER_DIED && Constants.MUST_PLAY_MUSIC) {
                                     soundGame.play();
                                     soundDied.stop();
@@ -255,6 +202,8 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                                     soundDied.stop();
                                 }
                             }
+                            soundGame.stop();
+                            soundDied.stop();
                         }).start();
                     }
                     if (nowTime - Constants.TIME_START_PROGRAM > Constants.TIME_TO_DIED_LABIRINT) {
@@ -460,10 +409,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         if (Constants.START_GAME) {
             if (Constants.USER_DIED) {
                 if (ModifiersEx == 1024 && exitButtom.isIt && exitButtom.isPush(getMousePosition())){
-                    Constants.START_GAME = false;
-                    Constants.USER_DIED = false;
-                    Constants.GAME_OVER = 0;
-                    rebuild();
+                    Constants.RESTART_GAME = true;
                 }
             } else {
                 if (Constants.PAUSE_MENU) {

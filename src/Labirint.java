@@ -268,12 +268,14 @@ public class Labirint {
         if (sector.yesKid && sector.iKid == userHuman.i && sector.jKid == userHuman.j){
             sector.yesKid = false;
             userHuman.hill();
-            new Thread(() -> {
-                Sound sound = new Sound(SoundFiles.upgrade);
-                sound.setVolume((float) 1.0);
-                sound.play();
-                sound.join();
-            }).start();
+            if (Constants.MUST_PLAY_SOUND){
+                new Thread(() -> {
+                    Sound sound = new Sound(SoundFiles.upgrade);
+                    sound.setVolume((float) 1.0);
+                    sound.play();
+                    sound.join();
+                }).start();
+            }
         }
     }
 

@@ -26,16 +26,25 @@ public class Main {
 
 
         while (true){
-            frame.repaint();
-            Thread.sleep(15);
-            fps++;
-            if(System.currentTimeMillis()-time>=1000){
-                Integer FPS = fps;
-                writer.write(FPS.toString() + '\n');
-                writer.flush();
-                fps=0;
-                time=System.currentTimeMillis();
+            while (!Constants.RESTART_GAME){
+                frame.repaint();
+                Thread.sleep(15);
+                fps++;
+                if(System.currentTimeMillis()-time>=1000){
+                    Integer FPS = fps;
+                    writer.write(FPS.toString() + '\n');
+                    writer.flush();
+                    fps=0;
+                    time=System.currentTimeMillis();
+                }
             }
+            frame.dispose();
+            Constants.rebuild();
+            Constants.TIME_START_PROGRAM = System.currentTimeMillis();
+            frame = new MyFrame();
+            time=System.currentTimeMillis();
+            fps=0;
+            Constants.RESTART_GAME = false;
         }
     }
 }

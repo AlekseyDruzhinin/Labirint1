@@ -38,12 +38,12 @@ public class Scoreboard {
         tx = AffineTransform.getRotateInstance(0.0, locationX, locationY);
         op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
-        double x = wight/2 - imageBackgroung.getWidth() - imageBackgroung.getHeight()/8.0;
+        double x = wight/2 - imageBackgroung.getWidth() - imageBackgroung.getHeight()/8.0+ Constants.R / 2;
         double y = hight / 2 - 5/4*imageBackgroung.getHeight();
         for (int i = 0; i < 5; i++){
             points.add(new MyPoint(x, y + i * 1.15*imageBackgroung.getHeight()));
         }
-        x = wight/2 + imageBackgroung.getHeight()/8.0;
+        x = wight/2 + imageBackgroung.getHeight()/8.0 + Constants.R / 2;
         for (int i = 0; i < 5; i++){
             points.add(new MyPoint(x, y + i * 1.15*imageBackgroung.getHeight()));
         }

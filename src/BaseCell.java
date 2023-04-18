@@ -18,7 +18,7 @@ public abstract class BaseCell {
         this.x = x+r;
         this.y = y+r;
         this.r = r;
-        int integer = random.nextInt(10);
+        int integer = random.nextInt(20);
         if (integer < 1){
             iWithBush = true;
         }

@@ -56,8 +56,10 @@ public class Constants {
 
     //10.0
     public static double V_POLE_1 = 10.0;
+    public static boolean USER_DIED_FIRST = true;
     public static boolean FLAG_CHIT_BULLET = false;
     public static double V_BOTS;
+    public static String TIME_DIED_RESULT;
 
     //время запуска программы
     public static long TIME_START_PROGRAM;

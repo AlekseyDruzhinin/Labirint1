@@ -87,6 +87,8 @@ public class Boom {
 
             if (Math.sqrt((userHuman.x-cell.x)*(userHuman.x-cell.x) + (userHuman.y-cell.y)*(userHuman.y-cell.y))< 6*Constants.R){
                 Constants.USER_DIED = true;
+                Constants.TIME_USER_DIED = System.currentTimeMillis();
+                Constants.TIME_DIED_RESULT = Time.timeToString();
             }
 
             for (BaseBot bot : labirint.bots){

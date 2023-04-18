@@ -87,6 +87,7 @@ public abstract class Human extends BaseHuman {
         if (hp <= 0.0) {
             Constants.USER_DIED = true;
             Constants.TIME_USER_DIED = System.currentTimeMillis();
+            Constants.TIME_DIED_RESULT = Time.timeToString();
         }
         if (Constants.MUST_PLAY_SOUND) {
             new Thread(() -> {
@@ -322,6 +323,8 @@ public abstract class Human extends BaseHuman {
         BaseSector sector = labirint.sectors.get(labirint.indexDied);
         if (x - sector.x - Constants.R / 2 < sector.rightBound) {
             Constants.USER_DIED = true;
+            Constants.TIME_USER_DIED = System.currentTimeMillis();
+            Constants.TIME_DIED_RESULT = Time.timeToString();
         }
     }
 

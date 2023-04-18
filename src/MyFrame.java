@@ -11,6 +11,8 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
 
 
 public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener, MouseMotionListener {
@@ -32,8 +34,15 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
     BufferedImage imageEnterBackGround;
     ArrayList<Buttom> buttoms = new ArrayList<>();
 
+    ArrayList<String> botsRecords = new ArrayList<>();
+    ArrayList<String> waysRecords = new ArrayList<>();
+    ArrayList<String> timesRecords = new ArrayList<>();
+
     AffineTransform tx;
     AffineTransformOp op;
+    String lastBotsRecords;
+    String lastWaysRecords;
+    String lastTimesRecords;
 
     Buttom pauseButtom;
     Buttom startButtom;
@@ -97,6 +106,34 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
             Constants.MUST_PLAY_SOUND = (reader.read() == '1');
         }
         Constants.writeConstants();
+
+        {
+            FileReader reader = new FileReader("files\\bots_records.txt");
+            Scanner scanner=new Scanner(reader);
+            for (int i = 0; i < 10; i++){
+                Integer iIn = i+1;
+                botsRecords.add(scanner.nextLine());
+            }
+            Collections.sort(botsRecords, Collections.reverseOrder ());
+        }
+        {
+            FileReader reader = new FileReader("files\\times_records.txt");
+            Scanner scanner=new Scanner(reader);
+            for (int i = 0; i < 10; i++){
+                Integer iIn = i+1;
+                timesRecords.add(scanner.nextLine());
+            }
+            Collections.sort(timesRecords, Collections.reverseOrder ());
+        }
+        {
+            FileReader reader = new FileReader("files\\ways_records.txt");
+            Scanner scanner=new Scanner(reader);
+            for (int i = 0; i < 10; i++){
+                Integer iIn = i+1;
+                waysRecords.add(scanner.nextLine());
+            }
+            Collections.sort(waysRecords, Collections.reverseOrder ());
+        }
 
         Constants.TIME_LAST_BUM = 0;
 
@@ -175,7 +212,166 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                 }
                 g.drawImage(image, this.getWidth() / 2 - this.getHeight() / 2, 0, this.getHeight(), this.getHeight(), null);
                 g.drawImage(imageBloodBackground, 0, 0, this.getWidth(), this.getHeight(), null);
-                if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 3000) {
+
+                if (Constants.USER_DIED_FIRST){
+                    lastTimesRecords = timesRecords.get(0);
+                    lastWaysRecords = waysRecords.get(0);
+                    lastBotsRecords = botsRecords.get(0);
+                    Constants.USER_DIED_FIRST = false;
+                    if (botsRecords.get(9).compareTo(Constants.CNT_DIED_BOTS.getString()) < 0){
+                        botsRecords.remove(9);
+                        botsRecords.add(Constants.CNT_DIED_BOTS.getString());
+                        Collections.sort(botsRecords, Collections.reverseOrder ());
+                        {
+                            FileWriter writer;
+                            try {
+                                writer = new FileWriter("files\\bots_records.txt", false);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            for (String str : botsRecords){
+//                                System.out.println(str + '\n');
+                                try {
+                                    writer.write(str+"\n");
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+//                            System.out.println("------------------------------------");
+                            try {
+                                writer.flush();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                    if (waysRecords.get(9).compareTo(Constants.CNT_WAY.getString()) < 0){
+                        waysRecords.remove(9);
+                        waysRecords.add(Constants.CNT_WAY.getString());
+                        Collections.sort(waysRecords, Collections.reverseOrder ());
+                        {
+                            FileWriter writer;
+                            try {
+                                writer = new FileWriter("files\\ways_records.txt", false);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            for (String str : waysRecords){
+//                                System.out.println(str + '\n');
+                                try {
+                                    writer.write(str+"\n");
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+//                            System.out.println("------------------------------------");
+                            try {
+                                writer.flush();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                    if (timesRecords.get(9).compareTo(Constants.TIME_DIED_RESULT) < 0){
+                        timesRecords.remove(9);
+                        timesRecords.add(Constants.TIME_DIED_RESULT);
+                        Collections.sort(timesRecords, Collections.reverseOrder ());
+                        {
+                            FileWriter writer;
+                            try {
+                                writer = new FileWriter("files\\times_records.txt", false);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            for (String str : timesRecords){
+//                                System.out.println(str + '\n');
+                                try {
+                                    writer.write(str+"\n");
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+//                            System.out.println("------------------------------------");
+                            try {
+                                writer.flush();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                }
+                if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 2000){
+                    g.setFont(new Font("TimesRoman", Font.BOLD + Font.ITALIC, 100));
+                    g.drawImage(imageCntWay, (int)(getWidth()/16-getWidth()/32), (int)getHeight()/4+ Constants.R/4 + Constants.R, 4*Constants.R, 4*Constants.R, null);
+                    g.setColor(Color.BLACK);
+                    g.drawString(Constants.CNT_WAY.getString(), (int)getWidth()/8-getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R);
+                    g.setColor(Color.WHITE);
+                    g.drawString(Constants.CNT_WAY.getString(), (int)getWidth()/8-getWidth()/32, (int)getHeight()/4 + 4*Constants.R);
+
+                    g.setColor(Color.BLACK);
+                    g.drawString(lastWaysRecords, 13*(int)getWidth()/16 - 2*Constants.R -getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R);
+                    g.setColor(Color.WHITE);
+                    g.drawString(lastWaysRecords, 13*(int)getWidth()/16 - 2*Constants.R -getWidth()/32, (int)getHeight()/4 + 4*Constants.R);
+
+
+                }
+
+                if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 3000){
+                    g.setFont(new Font("TimesRoman", Font.BOLD + Font.ITALIC, 100));
+                    g.drawImage(imageCntBots, (int)(getWidth()/16-getWidth()/32), (int)getHeight()/4+ Constants.R/4 + Constants.R+ 3*Constants.R, 4*Constants.R, 4*Constants.R, null);
+                    g.setColor(Color.BLACK);
+                    g.drawString(Constants.CNT_DIED_BOTS.getString(), (int)getWidth()/8-getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R+ 3*Constants.R);
+                    g.setColor(Color.WHITE);
+                    g.drawString(Constants.CNT_DIED_BOTS.getString(), (int)getWidth()/8-getWidth()/32, (int)getHeight()/4 + 4*Constants.R+ 3*Constants.R);
+
+                    g.setColor(Color.BLACK);
+                    g.drawString(lastBotsRecords, 13*(int)getWidth()/16 - 2*Constants.R -getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R+ 3*Constants.R);
+                    g.setColor(Color.WHITE);
+                    g.drawString(lastBotsRecords, 13*(int)getWidth()/16 - 2*Constants.R -getWidth()/32, (int)getHeight()/4 + 4*Constants.R+ 3*Constants.R);
+
+
+                }
+
+                if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 4000){
+                    g.setFont(new Font("TimesRoman", Font.BOLD + Font.ITALIC, 100));
+                    g.drawImage(imageClock, (int)(getWidth()/16-getWidth()/32)+Constants.R, (int)getHeight()/4+ Constants.R/4 + Constants.R+ 6*Constants.R+Constants.R, 2*Constants.R, 2*Constants.R, null);
+                    g.setColor(Color.BLACK);
+                    g.drawString(Constants.TIME_DIED_RESULT, (int)getWidth()/8-getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R+ 6*Constants.R);
+                    g.setColor(Color.WHITE);
+                    g.drawString(Constants.TIME_DIED_RESULT, (int)getWidth()/8-getWidth()/32, (int)getHeight()/4 + 4*Constants.R+ 6*Constants.R);
+
+                    g.setColor(Color.BLACK);
+                    g.drawString(lastTimesRecords, 13*(int)getWidth()/16 - 2*Constants.R -getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R+ 6*Constants.R);
+                    g.setColor(Color.WHITE);
+                    g.drawString(lastTimesRecords, 13*(int)getWidth()/16 - 2*Constants.R -getWidth()/32, (int)getHeight()/4 + 4*Constants.R+ 6*Constants.R);
+
+
+                }
+
+                if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 5000) {
+                    if (lastWaysRecords.compareTo(Constants.CNT_WAY.getString())<=0){
+                        g.setColor(Color.BLACK);
+                        g.drawString("NEW RECORD", 5*(int)getWidth()/16-getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R);
+                        g.setColor(new Color(144, 43, 187));
+                        g.drawString("NEW RECORD", 5*(int)getWidth()/16-getWidth()/32, (int)getHeight()/4 + 4*Constants.R);
+                    }
+
+                    if (lastBotsRecords.compareTo(Constants.CNT_DIED_BOTS.getString())<=0){
+                        g.setColor(Color.BLACK);
+                        g.drawString("NEW RECORD", 5*(int)getWidth()/16-getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R+ 3*Constants.R);
+                        g.setColor(new Color(144, 43, 187));
+                        g.drawString("NEW RECORD", 5*(int)getWidth()/16-getWidth()/32, (int)getHeight()/4 + 4*Constants.R+ 3*Constants.R);
+                    }
+
+                    if (lastTimesRecords.compareTo(Constants.TIME_DIED_RESULT)<=0){
+                        g.setColor(Color.BLACK);
+                        g.drawString("NEW RECORD", 5*(int)getWidth()/16-getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R+ 6*Constants.R);
+                        g.setColor(new Color(144, 43, 187));
+                        g.drawString("NEW RECORD", 5*(int)getWidth()/16-getWidth()/32, (int)getHeight()/4 + 4*Constants.R+ 6*Constants.R);
+                    }
+                }
+
+                if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 6000) {
                     exitButtom.paint(g, getMousePosition());
                     exitButtom.isIt = true;
                 }

@@ -97,6 +97,14 @@ public class Boom {
             }
             cell = labirint.getCell(indexSector, i, j);
             for (BaseSector sector : labirint.sectors){
+                for (ArrayList<BaseCell> cells1 : sector.cells){
+                    for (BaseCell cell1: cells1){
+                        Segment segment = new Segment(cell1.x, cell1.y, cell.x, cell.y);
+                        if (segment.length() <= 6*Constants.R){
+                            cell1.iWithBush = false;
+                        }
+                    }
+                }
                 for (ArrayList<StandardParallelWall> walls : sector.parallelWalls){
                     for (StandardParallelWall wallp : walls){
                         Segment segment = new Segment(wallp.x +Constants.R, wallp.y, cell.x, cell.y);

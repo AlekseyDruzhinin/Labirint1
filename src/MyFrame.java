@@ -288,6 +288,8 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                         g.drawImage(imageCheckMark, getWidth() / 2 + (int) (0.4 * Constants.R), (int) (Constants.SDVIG * 0.6), (int) (0.6 * Constants.R), (int) (0.6 * Constants.R), null);
                     }
                     pauseButtom.paint(g, getMousePosition());
+
+                    labirint.paintBushes(g, userHuman);
                 } else {
                     g.drawImage(imageEnterBackGround, 0, 0, getWidth(), getHeight(), null);
                     if (!Constants.IN_SETTING) {

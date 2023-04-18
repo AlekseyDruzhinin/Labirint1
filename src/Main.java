@@ -28,7 +28,7 @@ public class Main {
         while (true){
             while (!Constants.RESTART_GAME){
                 frame.repaint();
-                Thread.sleep(15);
+                Thread.sleep(10);
                 fps++;
                 if(System.currentTimeMillis()-time>=1000){
                     Integer FPS = fps;

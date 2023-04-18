@@ -14,6 +14,7 @@ public class Labirint {
     BufferedImage imageDiedPesok;
     BufferedImage imageParallelWall;
     BufferedImage imageVerticalWall;
+    BufferedImage imageBush;
 
     //массив ботов
     ArrayList<BaseSector> sectors = new ArrayList<>();
@@ -34,6 +35,7 @@ public class Labirint {
         imageDiedPesok = ImageIO.read(new File("data\\diedGround.png"));
         imageParallelWall = ImageIO.read(new File("data\\ParallelWall2.png"));
         imageVerticalWall = ImageIO.read(new File("data\\VerticalWall2.png"));
+        imageBush = ImageIO.read(new File("data\\Bush.png"));
 
         this.panel = panel;
         sectors.add(new StandardSector(Constants.SDVIG, Constants.SDVIG, panel));
@@ -275,6 +277,16 @@ public class Labirint {
                     sound.play();
                     sound.join();
                 }).start();
+            }
+        }
+    }
+
+    public void paintBushes(Graphics g, Human userHuman){
+        for (int i = Math.max(userHuman.indexSector-1, 0); i <= Math.min(userHuman.indexSector+1, sectors.size()-1); ++i){
+            for (ArrayList<BaseCell> cells1 : sectors.get(i).cells){
+                for (BaseCell cell : cells1){
+                    cell.paintBush(g, imageBush);
+                }
             }
         }
     }

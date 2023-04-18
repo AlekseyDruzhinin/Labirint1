@@ -25,7 +25,9 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
     BufferedImage image;
     BufferedImage imageClock;
     BufferedImage imageBoom;
+    BufferedImage imageRope;
     BufferedImage imageCheckMark;
+    BufferedImage imageInfo;
     BufferedImage imageCntBots;
     BufferedImage imageCntWay;
 
@@ -55,6 +57,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         imageBackGround = ImageIO.read(new File("data\\Sky.jpg"));
         imageBackGround1 = ImageIO.read(new File("data\\Sand1.jpg"));
         imageEnterBackGround = ImageIO.read(new File("data\\EnterBackGround1.jpg"));
+        imageInfo = ImageIO.read(new File("data\\info1.png"));
         imageCheckMark = ImageIO.read(new File("data\\CheckMark.png"));
 
         addMouseListener(this);
@@ -62,6 +65,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
 
         image = ImageIO.read(new File("data\\GameOver.png"));
         imageClock = ImageIO.read(new File("data\\clock1.png"));
+        imageRope = ImageIO.read(new File("data\\rope.png"));
         imageBoom = ImageIO.read(new File("data\\boom.gif"));
         imageCntBots = ImageIO.read(new File("data\\BotForCnt.png"));
         imageCntWay = ImageIO.read(new File("data\\ForCntWay.png"));
@@ -109,30 +113,30 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
 
         {
             FileReader reader = new FileReader("files\\bots_records.txt");
-            Scanner scanner=new Scanner(reader);
-            for (int i = 0; i < 10; i++){
-                Integer iIn = i+1;
+            Scanner scanner = new Scanner(reader);
+            for (int i = 0; i < 10; i++) {
+                Integer iIn = i + 1;
                 botsRecords.add(scanner.nextLine());
             }
-            Collections.sort(botsRecords, Collections.reverseOrder ());
+            Collections.sort(botsRecords, Collections.reverseOrder());
         }
         {
             FileReader reader = new FileReader("files\\times_records.txt");
-            Scanner scanner=new Scanner(reader);
-            for (int i = 0; i < 10; i++){
-                Integer iIn = i+1;
+            Scanner scanner = new Scanner(reader);
+            for (int i = 0; i < 10; i++) {
+                Integer iIn = i + 1;
                 timesRecords.add(scanner.nextLine());
             }
-            Collections.sort(timesRecords, Collections.reverseOrder ());
+            Collections.sort(timesRecords, Collections.reverseOrder());
         }
         {
             FileReader reader = new FileReader("files\\ways_records.txt");
-            Scanner scanner=new Scanner(reader);
-            for (int i = 0; i < 10; i++){
-                Integer iIn = i+1;
+            Scanner scanner = new Scanner(reader);
+            for (int i = 0; i < 10; i++) {
+                Integer iIn = i + 1;
                 waysRecords.add(scanner.nextLine());
             }
-            Collections.sort(waysRecords, Collections.reverseOrder ());
+            Collections.sort(waysRecords, Collections.reverseOrder());
         }
 
         Constants.TIME_LAST_BUM = 0;
@@ -145,6 +149,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
 
     @Override
     public void paint(Graphics g) {
+
 //        System.out.println(buttoms.size());
         long nowTime = System.currentTimeMillis();
         //System.out.println(nowTime + " " + (nowTime - timePriviosPrint) + " " + Constants.V_NORMAL);
@@ -179,6 +184,10 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                 }).start();
             }
             g.drawImage(imageEnterBackGround, 0, 0, this.getWidth(), this.getHeight(), null);
+            if (buttoms != null && buttoms.size() > 0) {
+                g.drawImage(imageRope, (int) buttoms.get(0).x + Constants.R/2, (int) buttoms.get(0).y - Constants.R * 2 - Constants.R / 4 - 2, Constants.R / 2, (int) (buttoms.get(buttoms.size() - 1).y + Constants.R / 2 - buttoms.get(0).y + Constants.R * 2 + Constants.R / 4 + 2), null);
+                g.drawImage(imageRope, (int) buttoms.get(0).x + buttoms.get(0).image.getWidth() - Constants.R, (int) buttoms.get(0).y - Constants.R * 2 - Constants.R / 4 - 2, Constants.R / 2, (int) (buttoms.get(buttoms.size() - 1).y + Constants.R / 2 - buttoms.get(0).y + Constants.R * 2 + Constants.R / 4 + 2), null);
+            }
             if (!Constants.IN_RECORDS || (Constants.IN_RECORDS && Constants.TYPE_OF_RECORDS == 0)) {
                 for (Buttom buttom : buttoms) {
                     if (buttom != null) {
@@ -190,6 +199,8 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     buttoms.get(buttoms.size() - 1).paint(g, getMousePosition());
                 }
                 if (scoreboard != null) {
+                    g.drawImage(imageRope, (int) (scoreboard.points.get(0).x + Constants.R*1.75), (int) buttoms.get(0).y - Constants.R * 2 - Constants.R / 4 - 2, Constants.R / 2, (int) (scoreboard.points.get(9).y + Constants.R / 2 - buttoms.get(0).y + Constants.R * 2 + Constants.R / 4 + 2), null);
+                    g.drawImage(imageRope, (int) (scoreboard.points.get(5).x + buttoms.get(0).image.getWidth() - Constants.R*2), (int) buttoms.get(0).y - Constants.R * 2 - Constants.R / 4 - 2, Constants.R / 2, (int) (scoreboard.points.get(9).y + Constants.R / 2 - buttoms.get(0).y + Constants.R * 2 + Constants.R / 4 + 2), null);
                     scoreboard.paint(g);
                 }
             }
@@ -213,15 +224,15 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                 g.drawImage(image, this.getWidth() / 2 - this.getHeight() / 2, 0, this.getHeight(), this.getHeight(), null);
                 g.drawImage(imageBloodBackground, 0, 0, this.getWidth(), this.getHeight(), null);
 
-                if (Constants.USER_DIED_FIRST){
+                if (Constants.USER_DIED_FIRST) {
                     lastTimesRecords = timesRecords.get(0);
                     lastWaysRecords = waysRecords.get(0);
                     lastBotsRecords = botsRecords.get(0);
                     Constants.USER_DIED_FIRST = false;
-                    if (botsRecords.get(9).compareTo(Constants.CNT_DIED_BOTS.getString()) < 0){
+                    if (botsRecords.get(9).compareTo(Constants.CNT_DIED_BOTS.getString()) < 0) {
                         botsRecords.remove(9);
                         botsRecords.add(Constants.CNT_DIED_BOTS.getString());
-                        Collections.sort(botsRecords, Collections.reverseOrder ());
+                        Collections.sort(botsRecords, Collections.reverseOrder());
                         {
                             FileWriter writer;
                             try {
@@ -229,10 +240,10 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
-                            for (String str : botsRecords){
+                            for (String str : botsRecords) {
 //                                System.out.println(str + '\n');
                                 try {
-                                    writer.write(str+"\n");
+                                    writer.write(str + "\n");
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -245,10 +256,10 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                             }
                         }
                     }
-                    if (waysRecords.get(9).compareTo(Constants.CNT_WAY.getString()) < 0){
+                    if (waysRecords.get(9).compareTo(Constants.CNT_WAY.getString()) < 0) {
                         waysRecords.remove(9);
                         waysRecords.add(Constants.CNT_WAY.getString());
-                        Collections.sort(waysRecords, Collections.reverseOrder ());
+                        Collections.sort(waysRecords, Collections.reverseOrder());
                         {
                             FileWriter writer;
                             try {
@@ -256,10 +267,10 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
-                            for (String str : waysRecords){
+                            for (String str : waysRecords) {
 //                                System.out.println(str + '\n');
                                 try {
-                                    writer.write(str+"\n");
+                                    writer.write(str + "\n");
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -272,10 +283,10 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                             }
                         }
                     }
-                    if (timesRecords.get(9).compareTo(Constants.TIME_DIED_RESULT) < 0){
+                    if (timesRecords.get(9).compareTo(Constants.TIME_DIED_RESULT) < 0) {
                         timesRecords.remove(9);
                         timesRecords.add(Constants.TIME_DIED_RESULT);
-                        Collections.sort(timesRecords, Collections.reverseOrder ());
+                        Collections.sort(timesRecords, Collections.reverseOrder());
                         {
                             FileWriter writer;
                             try {
@@ -283,10 +294,10 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
-                            for (String str : timesRecords){
+                            for (String str : timesRecords) {
 //                                System.out.println(str + '\n');
                                 try {
-                                    writer.write(str+"\n");
+                                    writer.write(str + "\n");
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -300,74 +311,89 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                         }
                     }
                 }
-                if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 2000){
+
+                if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 1000) {
                     g.setFont(new Font("TimesRoman", Font.BOLD + Font.ITALIC, 100));
-                    g.drawImage(imageCntWay, (int)(getWidth()/16-getWidth()/32), (int)getHeight()/4+ Constants.R/4 + Constants.R, 4*Constants.R, 4*Constants.R, null);
                     g.setColor(Color.BLACK);
-                    g.drawString(Constants.CNT_WAY.getString(), (int)getWidth()/8-getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R);
+                    g.drawString("Results:", (int) getWidth() / 8 - getWidth() / 32 + Constants.R / 4 - 4 * Constants.R, (int) getHeight() / 4 + Constants.R / 4);
                     g.setColor(Color.WHITE);
-                    g.drawString(Constants.CNT_WAY.getString(), (int)getWidth()/8-getWidth()/32, (int)getHeight()/4 + 4*Constants.R);
+                    g.drawString("Results:", (int) getWidth() / 8 - getWidth() / 32 - 4 * Constants.R, (int) getHeight() / 4);
 
                     g.setColor(Color.BLACK);
-                    g.drawString(lastWaysRecords, 13*(int)getWidth()/16 - 2*Constants.R -getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R);
+                    g.drawString("Last records:", 13 * (int) getWidth() / 16 - 2 * Constants.R - getWidth() / 32 + Constants.R / 4 - 8 * Constants.R, (int) getHeight() / 4 + Constants.R / 4);
                     g.setColor(Color.WHITE);
-                    g.drawString(lastWaysRecords, 13*(int)getWidth()/16 - 2*Constants.R -getWidth()/32, (int)getHeight()/4 + 4*Constants.R);
+                    g.drawString("Last records:", 13 * (int) getWidth() / 16 - 2 * Constants.R - getWidth() / 32 - 8 * Constants.R, (int) getHeight() / 4);
+
+                }
+
+                if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 2000) {
+                    g.setFont(new Font("TimesRoman", Font.BOLD + Font.ITALIC, 100));
+                    g.drawImage(imageCntWay, (int) (getWidth() / 16 - getWidth() / 32), (int) getHeight() / 4 + Constants.R / 4 + Constants.R, 4 * Constants.R, 4 * Constants.R, null);
+                    g.setColor(Color.BLACK);
+                    g.drawString(Constants.CNT_WAY.getString(), (int) getWidth() / 8 - getWidth() / 32 + Constants.R / 4, (int) getHeight() / 4 + Constants.R / 4 + 4 * Constants.R);
+                    g.setColor(Color.WHITE);
+                    g.drawString(Constants.CNT_WAY.getString(), (int) getWidth() / 8 - getWidth() / 32, (int) getHeight() / 4 + 4 * Constants.R);
+
+                    g.setColor(Color.BLACK);
+                    g.drawString(lastWaysRecords, 13 * (int) getWidth() / 16 - 2 * Constants.R - getWidth() / 32 + Constants.R / 4, (int) getHeight() / 4 + Constants.R / 4 + 4 * Constants.R);
+                    g.setColor(Color.WHITE);
+                    g.drawString(lastWaysRecords, 13 * (int) getWidth() / 16 - 2 * Constants.R - getWidth() / 32, (int) getHeight() / 4 + 4 * Constants.R);
 
 
                 }
 
-                if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 3000){
+                if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 3000) {
                     g.setFont(new Font("TimesRoman", Font.BOLD + Font.ITALIC, 100));
-                    g.drawImage(imageCntBots, (int)(getWidth()/16-getWidth()/32), (int)getHeight()/4+ Constants.R/4 + Constants.R+ 3*Constants.R, 4*Constants.R, 4*Constants.R, null);
+                    g.drawImage(imageCntBots, (int) (getWidth() / 16 - getWidth() / 32), (int) getHeight() / 4 + Constants.R / 4 + Constants.R + 3 * Constants.R, 4 * Constants.R, 4 * Constants.R, null);
                     g.setColor(Color.BLACK);
-                    g.drawString(Constants.CNT_DIED_BOTS.getString(), (int)getWidth()/8-getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R+ 3*Constants.R);
+                    g.drawString(Constants.CNT_DIED_BOTS.getString(), (int) getWidth() / 8 - getWidth() / 32 + Constants.R / 4, (int) getHeight() / 4 + Constants.R / 4 + 4 * Constants.R + 3 * Constants.R);
                     g.setColor(Color.WHITE);
-                    g.drawString(Constants.CNT_DIED_BOTS.getString(), (int)getWidth()/8-getWidth()/32, (int)getHeight()/4 + 4*Constants.R+ 3*Constants.R);
+                    g.drawString(Constants.CNT_DIED_BOTS.getString(), (int) getWidth() / 8 - getWidth() / 32, (int) getHeight() / 4 + 4 * Constants.R + 3 * Constants.R);
 
                     g.setColor(Color.BLACK);
-                    g.drawString(lastBotsRecords, 13*(int)getWidth()/16 - 2*Constants.R -getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R+ 3*Constants.R);
+                    g.drawString(lastBotsRecords, 13 * (int) getWidth() / 16 - 2 * Constants.R - getWidth() / 32 + Constants.R / 4, (int) getHeight() / 4 + Constants.R / 4 + 4 * Constants.R + 3 * Constants.R);
                     g.setColor(Color.WHITE);
-                    g.drawString(lastBotsRecords, 13*(int)getWidth()/16 - 2*Constants.R -getWidth()/32, (int)getHeight()/4 + 4*Constants.R+ 3*Constants.R);
+                    g.drawString(lastBotsRecords, 13 * (int) getWidth() / 16 - 2 * Constants.R - getWidth() / 32, (int) getHeight() / 4 + 4 * Constants.R + 3 * Constants.R);
 
 
                 }
 
-                if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 4000){
+                if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 4000) {
                     g.setFont(new Font("TimesRoman", Font.BOLD + Font.ITALIC, 100));
-                    g.drawImage(imageClock, (int)(getWidth()/16-getWidth()/32)+Constants.R, (int)getHeight()/4+ Constants.R/4 + Constants.R+ 6*Constants.R+Constants.R, 2*Constants.R, 2*Constants.R, null);
+                    g.drawImage(imageClock, (int) (getWidth() / 16 - getWidth() / 32) + Constants.R, (int) getHeight() / 4 + Constants.R / 4 + Constants.R + 6 * Constants.R + Constants.R, 2 * Constants.R, 2 * Constants.R, null);
                     g.setColor(Color.BLACK);
-                    g.drawString(Constants.TIME_DIED_RESULT, (int)getWidth()/8-getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R+ 6*Constants.R);
+                    g.drawString(Constants.TIME_DIED_RESULT, (int) getWidth() / 8 - getWidth() / 32 + Constants.R / 4, (int) getHeight() / 4 + Constants.R / 4 + 4 * Constants.R + 6 * Constants.R);
                     g.setColor(Color.WHITE);
-                    g.drawString(Constants.TIME_DIED_RESULT, (int)getWidth()/8-getWidth()/32, (int)getHeight()/4 + 4*Constants.R+ 6*Constants.R);
+                    g.drawString(Constants.TIME_DIED_RESULT, (int) getWidth() / 8 - getWidth() / 32, (int) getHeight() / 4 + 4 * Constants.R + 6 * Constants.R);
 
                     g.setColor(Color.BLACK);
-                    g.drawString(lastTimesRecords, 13*(int)getWidth()/16 - 2*Constants.R -getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R+ 6*Constants.R);
+                    g.drawString(lastTimesRecords, 13 * (int) getWidth() / 16 - 2 * Constants.R - getWidth() / 32 + Constants.R / 4, (int) getHeight() / 4 + Constants.R / 4 + 4 * Constants.R + 6 * Constants.R);
                     g.setColor(Color.WHITE);
-                    g.drawString(lastTimesRecords, 13*(int)getWidth()/16 - 2*Constants.R -getWidth()/32, (int)getHeight()/4 + 4*Constants.R+ 6*Constants.R);
+                    g.drawString(lastTimesRecords, 13 * (int) getWidth() / 16 - 2 * Constants.R - getWidth() / 32, (int) getHeight() / 4 + 4 * Constants.R + 6 * Constants.R);
 
 
                 }
 
                 if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 5000) {
-                    if (lastWaysRecords.compareTo(Constants.CNT_WAY.getString())<=0){
+                    if (lastWaysRecords.compareTo(Constants.CNT_WAY.getString()) <= 0) {
                         g.setColor(Color.BLACK);
-                        g.drawString("NEW RECORD", 5*(int)getWidth()/16-getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R);
+                        g.drawString("NEW RECORD", 5 * (int) getWidth() / 16 - getWidth() / 32 + Constants.R / 4, (int) getHeight() / 4 + Constants.R / 4 + 4 * Constants.R);
                         g.setColor(new Color(144, 43, 187));
-                        g.drawString("NEW RECORD", 5*(int)getWidth()/16-getWidth()/32, (int)getHeight()/4 + 4*Constants.R);
+                        g.drawString("NEW RECORD", 5 * (int) getWidth() / 16 - getWidth() / 32, (int) getHeight() / 4 + 4 * Constants.R);
                     }
 
-                    if (lastBotsRecords.compareTo(Constants.CNT_DIED_BOTS.getString())<=0){
+                    if (lastBotsRecords.compareTo(Constants.CNT_DIED_BOTS.getString()) <= 0) {
                         g.setColor(Color.BLACK);
-                        g.drawString("NEW RECORD", 5*(int)getWidth()/16-getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R+ 3*Constants.R);
+                        g.drawString("NEW RECORD", 5 * (int) getWidth() / 16 - getWidth() / 32 + Constants.R / 4, (int) getHeight() / 4 + Constants.R / 4 + 4 * Constants.R + 3 * Constants.R);
                         g.setColor(new Color(144, 43, 187));
-                        g.drawString("NEW RECORD", 5*(int)getWidth()/16-getWidth()/32, (int)getHeight()/4 + 4*Constants.R+ 3*Constants.R);
+                        g.drawString("NEW RECORD", 5 * (int) getWidth() / 16 - getWidth() / 32, (int) getHeight() / 4 + 4 * Constants.R + 3 * Constants.R);
                     }
 
-                    if (lastTimesRecords.compareTo(Constants.TIME_DIED_RESULT)<=0){
+                    if (lastTimesRecords.compareTo(Constants.TIME_DIED_RESULT) <= 0) {
                         g.setColor(Color.BLACK);
-                        g.drawString("NEW RECORD", 5*(int)getWidth()/16-getWidth()/32 + Constants.R/4, (int)getHeight()/4+ Constants.R/4 + 4*Constants.R+ 6*Constants.R);
+                        g.drawString("NEW RECORD", 5 * (int) getWidth() / 16 - getWidth() / 32 + Constants.R / 4, (int) getHeight() / 4 + Constants.R / 4 + 4 * Constants.R + 6 * Constants.R);
                         g.setColor(new Color(144, 43, 187));
-                        g.drawString("NEW RECORD", 5*(int)getWidth()/16-getWidth()/32, (int)getHeight()/4 + 4*Constants.R+ 6*Constants.R);
+                        g.drawString("NEW RECORD", 5 * (int) getWidth() / 16 - getWidth() / 32, (int) getHeight() / 4 + 4 * Constants.R + 6 * Constants.R);
                     }
                 }
 
@@ -489,18 +515,28 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                 } else {
                     g.drawImage(imageEnterBackGround, 0, 0, getWidth(), getHeight(), null);
                     if (!Constants.IN_SETTING) {
+                        if (buttoms != null && buttoms.size() > 0) {
+                            g.drawImage(imageRope, (int) buttoms.get(0).x + Constants.R/2, (int) buttoms.get(0).y - Constants.R * 2 - Constants.R / 4 - 2, Constants.R / 2, (int) (buttoms.get(1).y + Constants.R / 2 - buttoms.get(0).y + Constants.R * 2 + Constants.R / 4 + 2), null);
+                            g.drawImage(imageRope, (int) buttoms.get(0).x + buttoms.get(0).image.getWidth() - Constants.R, (int) buttoms.get(0).y - Constants.R * 2 - Constants.R / 4 - 2, Constants.R / 2, (int) (buttoms.get(1).y + Constants.R / 2 - buttoms.get(0).y + Constants.R * 2 + Constants.R / 4 + 2), null);
+                        }
                         startButtom.paint(g, getMousePosition());
                         settingButtom.paint(g, getMousePosition());
                     } else {
+                        if (buttoms != null && buttoms.size() > 0) {
+                            g.drawImage(imageRope, (int) buttoms.get(0).x + Constants.R/2, (int) buttoms.get(0).y - Constants.R * 2 - Constants.R / 4 - 2, Constants.R / 2, (int) (buttoms.get(buttoms.size() - 1).y + Constants.R / 2 - buttoms.get(0).y + Constants.R * 2 + Constants.R / 4 + 2), null);
+                            g.drawImage(imageRope, (int) buttoms.get(0).x + buttoms.get(0).image.getWidth() - Constants.R, (int) buttoms.get(0).y - Constants.R * 2 - Constants.R / 4 - 2, Constants.R / 2, (int) (buttoms.get(buttoms.size() - 1).y + Constants.R / 2 - buttoms.get(0).y + Constants.R * 2 + Constants.R / 4 + 2), null);
+                        }
                         for (Buttom buttom : buttoms) {
                             buttom.paint(g, getMousePosition());
                         }
                     }
                 }
             }
+
             timePriviosPrint = nowTime;
         }
 
+        g.drawImage(imageInfo, 0, 0, getWidth(), getHeight(), null);
         g.dispose();
         bufferStrategy.show();
     }

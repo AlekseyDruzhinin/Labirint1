@@ -37,6 +37,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
 
     Buttom pauseButtom;
     Buttom startButtom;
+    Buttom settingButtom;
     Buttom exitButtom;
 
     public MyFrame() throws IOException {
@@ -44,7 +45,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         this.imageBloodBackground = ImageIO.read(new File("data\\blood_background.png"));
         imageBackGround = ImageIO.read(new File("data\\Sky.jpg"));
         imageBackGround1 = ImageIO.read(new File("data\\Sand1.jpg"));
-        imageEnterBackGround = ImageIO.read(new File("data\\ImageBackGround2.jpg"));
+        imageEnterBackGround = ImageIO.read(new File("data\\EnterBackGround1.jpg"));
         imageCheckMark = ImageIO.read(new File("data\\CheckMark.png"));
 
         addMouseListener(this);
@@ -85,10 +86,10 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         Constants.CNT_DIED_BOTS = new MyString(0);
         Constants.CNT_WAY = new MyString(0);
 
-        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomStart.png"));
-        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomRecords.png"));
-        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomSetting.png"));
-        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 3.0 * 5 / 4, "data\\ButtomInfo.png"));
+        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2, "data\\ButtomStart.png"));
+        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomRecords.png"));
+        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomSetting.png"));
+        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 3.0 * 5 / 4, "data\\ButtomInfo.png"));
 
         {
             FileReader reader = new FileReader("files\\Constants.txt");
@@ -100,13 +101,14 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         Constants.TIME_LAST_BUM = 0;
 
         pauseButtom = new Buttom(getWidth() / 40, getWidth() / 2 + (int) (2.25 * (double) Constants.R), Constants.SDVIG / 2, "data\\pause.png");
-        startButtom = new Buttom(getWidth() / 4, getWidth() / 2, getHeight() / 4, "data\\start.png");
-        exitButtom = new Buttom(getWidth() / 16, getWidth() / 2 + getWidth()/32, 6*getHeight() / 8, "data\\ButtumExit.png", false);
+        startButtom = new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2, "data\\ButtomContinue.png");
+        settingButtom = new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomSetting.png");
+        exitButtom = new Buttom(getWidth() / 16, getWidth() / 2 + getWidth() / 32, 6 * getHeight() / 8, "data\\ButtumExit.png", false);
     }
 
     @Override
     public void paint(Graphics g) {
-        System.out.println(buttoms.size());
+//        System.out.println(buttoms.size());
         long nowTime = System.currentTimeMillis();
         //System.out.println(nowTime + " " + (nowTime - timePriviosPrint) + " " + Constants.V_NORMAL);
         BufferStrategy bufferStrategy = getBufferStrategy();
@@ -287,7 +289,15 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     }
                     pauseButtom.paint(g, getMousePosition());
                 } else {
-                    startButtom.paint(g, getMousePosition());
+                    g.drawImage(imageEnterBackGround, 0, 0, getWidth(), getHeight(), null);
+                    if (!Constants.IN_SETTING) {
+                        startButtom.paint(g, getMousePosition());
+                        settingButtom.paint(g, getMousePosition());
+                    } else {
+                        for (Buttom buttom : buttoms) {
+                            buttom.paint(g, getMousePosition());
+                        }
+                    }
                 }
             }
             timePriviosPrint = nowTime;
@@ -408,18 +418,122 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         double y = e.getY();
         if (Constants.START_GAME) {
             if (Constants.USER_DIED) {
-                if (ModifiersEx == 1024 && exitButtom.isIt && exitButtom.isPush(getMousePosition())){
+                if (ModifiersEx == 1024 && exitButtom.isIt && exitButtom.isPush(getMousePosition())) {
                     Constants.RESTART_GAME = true;
                 }
             } else {
                 if (Constants.PAUSE_MENU) {
-                    if (ModifiersEx == 1024 && startButtom.isPush(getMousePosition())) {
-                        Constants.PAUSE_MENU = false;
-                        long deltaTime = System.currentTimeMillis() - Constants.TIME_STOP;
-                        Constants.TIME_START_PROGRAM += deltaTime;
-                        Constants.TIME_LAST_BUM += deltaTime;
-                        for (BaseBot diedBot : labirint.diedBots) {
-                            diedBot.timeDied += deltaTime;
+                    if (!Constants.IN_SETTING) {
+                        if (ModifiersEx == 1024 && startButtom.isPush(getMousePosition())) {
+                            Constants.PAUSE_MENU = false;
+                            long deltaTime = System.currentTimeMillis() - Constants.TIME_STOP;
+                            Constants.TIME_START_PROGRAM += deltaTime;
+                            Constants.TIME_LAST_BUM += deltaTime;
+                            for (BaseBot diedBot : labirint.diedBots) {
+                                diedBot.timeDied += deltaTime;
+                            }
+                        }
+                        if (ModifiersEx == 1024 && settingButtom.isPush(getMousePosition())) {
+                            Constants.IN_SETTING = true;
+                            buttoms = new ArrayList<>();
+                            if (Constants.MUST_PLAY_MUSIC) {
+                                try {
+                                    buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2, "data\\ButtomMusicOn.png"));
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            } else {
+                                try {
+                                    buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2, "data\\ButtomMusicOff.png"));
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+                            if (Constants.MUST_PLAY_SOUND) {
+                                try {
+                                    buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomSoundOn.png"));
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            } else {
+                                try {
+                                    buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomSoundOff.png"));
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+
+                            try {
+                                buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomBack.png"));
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                    } else {
+                        if (ModifiersEx == 1024 && buttoms.get(2).isPush(getMousePosition())) {
+                            Constants.IN_SETTING = false;
+                            buttoms = new ArrayList<>();
+                            try {
+                                buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2, "data\\ButtomStart.png"));
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            try {
+                                buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomRecords.png"));
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            try {
+                                buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomSetting.png"));
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            try {
+                                buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 3.0 * 5 / 4, "data\\ButtomInfo.png"));
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+
+                        } else if (ModifiersEx == 1024 && buttoms.get(0).isPush(getMousePosition())) {
+                            Constants.MUST_PLAY_MUSIC = !Constants.MUST_PLAY_MUSIC;
+                            try {
+                                Constants.writeConstants();
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            if (Constants.MUST_PLAY_MUSIC) {
+                                try {
+                                    buttoms.get(0).setImage("data\\ButtomMusicOn.png");
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            } else {
+                                try {
+                                    buttoms.get(0).setImage("data\\ButtomMusicOff.png");
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+                        } else if (ModifiersEx == 1024 && buttoms.get(1).isPush(getMousePosition())) {
+                            Constants.MUST_PLAY_SOUND = !Constants.MUST_PLAY_SOUND;
+                            try {
+                                Constants.writeConstants();
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            if (Constants.MUST_PLAY_SOUND) {
+                                try {
+                                    buttoms.get(1).setImage("data\\ButtomSoundOn.png");
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            } else {
+                                try {
+                                    buttoms.get(1).setImage("data\\ButtomSoundOff.png");
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
                         }
                     }
                 } else {
@@ -528,33 +642,33 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     buttoms = new ArrayList<>();
                     if (Constants.MUST_PLAY_MUSIC) {
                         try {
-                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomMusicOn.png"));
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2, "data\\ButtomMusicOn.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
                     } else {
                         try {
-                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomMusicOff.png"));
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2, "data\\ButtomMusicOff.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
                     }
                     if (Constants.MUST_PLAY_SOUND) {
                         try {
-                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomSoundOn.png"));
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomSoundOn.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
                     } else {
                         try {
-                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomSoundOff.png"));
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomSoundOff.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
                     }
 
                     try {
-                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomBack.png"));
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomBack.png"));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -563,22 +677,22 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     Constants.IN_RECORDS = true;
                     buttoms = new ArrayList<>();
                     try {
-                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomRecord`sTypeWay.png"));
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2, "data\\ButtomRecord`sTypeWay.png"));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
                     try {
-                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 1.0 * 5 / 4, "data\\ButtomRecord`sTypeBots.png"));
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 1.0 * 5 / 4, "data\\ButtomRecord`sTypeBots.png"));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
                     try {
-                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomRecord`sTypeTime.png"));
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomRecord`sTypeTime.png"));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
                     try {
-                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 3.0 * 5 / 4, "data\\ButtomBack.png"));
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 3.0 * 5 / 4, "data\\ButtomBack.png"));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -589,22 +703,22 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     Constants.IN_SETTING = false;
                     buttoms = new ArrayList<>();
                     try {
-                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomStart.png"));
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2, "data\\ButtomStart.png"));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
                     try {
-                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomRecords.png"));
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomRecords.png"));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
                     try {
-                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomSetting.png"));
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomSetting.png"));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
                     try {
-                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 3.0 * 5 / 4, "data\\ButtomInfo.png"));
+                        buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 3.0 * 5 / 4, "data\\ButtomInfo.png"));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -656,22 +770,22 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                         Constants.IN_RECORDS = false;
                         buttoms = new ArrayList<>();
                         try {
-                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2, "data\\ButtomStart.png"));
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2, "data\\ButtomStart.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
                         try {
-                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomRecords.png"));
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomRecords.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
                         try {
-                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomSetting.png"));
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 2.0 * 5 / 4, "data\\ButtomSetting.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
                         try {
-                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 3.0 * 5 / 4, "data\\ButtomInfo.png"));
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 3.0 * 5 / 4, "data\\ButtomInfo.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
@@ -680,7 +794,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                         Constants.TYPE_OF_RECORDS = 1;
                         try {
                             scoreboard = new Scoreboard(getWidth() / 28.0, getWidth(), getHeight(), "files\\ways_records.txt");
-                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 4.0 * 5 / 4, "data\\ButtomBack.png"));
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 4.0 * 5 / 4, "data\\ButtomBack.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
@@ -689,7 +803,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                         Constants.TYPE_OF_RECORDS = 2;
                         try {
                             scoreboard = new Scoreboard(getWidth() / 28.0, getWidth(), getHeight(), "files\\bots_records.txt");
-                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 4.0 * 5 / 4, "data\\ButtomBack.png"));
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 4.0 * 5 / 4, "data\\ButtomBack.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
@@ -698,7 +812,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                         Constants.TYPE_OF_RECORDS = 3;
                         try {
                             scoreboard = new Scoreboard(getWidth() / 28.0, getWidth(), getHeight(), "files\\times_records.txt");
-                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2, getHeight() / 2 + getWidth() / 28.0 * 4.0 * 5 / 4, "data\\ButtomBack.png"));
+                            buttoms.add(new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 4.0 * 5 / 4, "data\\ButtomBack.png"));
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }

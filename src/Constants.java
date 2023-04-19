@@ -4,6 +4,7 @@ import java.io.IOException;
 public class Constants {
 
     public static int i = 0;
+    public static boolean IN_INFO = false;
     public static boolean START_GAME = false;
     public static long TIME_USER_DIED = 0;
     public static long TIME_LAST_BUM;
@@ -96,68 +97,71 @@ public class Constants {
     }
 
     public static void rebuild(){
-        Constants.i = 0;
-        Constants.START_GAME = false;
-        Constants.TIME_USER_DIED = 0;
-        Constants.TIME_UPGRADE_BOOM = 30000;
-        Constants.IN_SETTING = false;
-        Constants.IN_RECORDS = false;
-        Constants.TYPE_OF_RECORDS = 0;
-        Constants.MUST_PLAY_MUSIC = true;
-        Constants.MUST_PLAY_SOUND = true;
-        Constants.SQRT_LEN_AIM = 0.0;
-        Constants.TIME_DIED_BOOM = 3000;
-        Constants.DAMAGE_USER_BULLET = 0.3;
-        Constants.DAMAGE_BOT_BULLET = 0.05;
-        Constants.GAME_OVER = 0;
-        Constants.MUSIC_GAME = 0;
+        i = 0;
+        START_GAME = false;
+        TIME_USER_DIED = 0;
+        TIME_UPGRADE_BOOM = 30000;
+        IN_SETTING = false;
+        IN_RECORDS = false;
+        TYPE_OF_RECORDS = 0;
+        MUST_PLAY_MUSIC = true;
+        MUST_PLAY_SOUND = true;
+        SQRT_LEN_AIM = 0.0;
+        TIME_DIED_BOOM = 3000;
+        DAMAGE_USER_BULLET = 0.3;
+        DAMAGE_BOT_BULLET = 0.05;
+        GAME_OVER = 0;
+        MUSIC_GAME = 0;
 
-        Constants.TIME_HIT = 0;
-        Constants.TIME_LIFE_BACKGROUND_BLOOD = 1000;
+        TIME_HIT = 0;
+        RESTART_GAME = false;
+        TIME_LIFE_BACKGROUND_BLOOD = 1000;
 
-        Constants.TIME_LIFE_AFTER_DIED = 3000; // время существование следа после смерти пульки
-        Constants.R = 20;
+        TIME_LIFE_AFTER_DIED = 3000; // время существование следа после смерти пульки
+        R = 20;
 
-        Constants.COUNT_CELL_DOWN = 13;
+        COUNT_CELL_DOWN = 13;
 
-        Constants.V_POVOROT_PESOK = 0.001;
-        Constants.TIME_LAST_POVOROT_PESOK = 0;
-        Constants.SDVIG = 80;
-        Constants.TIME_LIVE_BOT_AFTER_DIED = 5000;
+        V_POVOROT_PESOK = 0.001;
+        TIME_LAST_POVOROT_PESOK = 0;
+        SDVIG = 80;
+        TIME_LIVE_BOT_AFTER_DIED = 5000;
 
-        Constants.LEFT_END = 3000;
-        Constants.DOWN_END = 810;
+        LEFT_END = 3000;
+        DOWN_END = 810;
 
-        Constants.SEED = 5254;
+        SEED = 5254;
 
-        Constants.TIME_STOP = 0;
-        Constants.V_NORMAL_1 = 3000;
+        TIME_STOP = 0;
+        V_NORMAL_1 = 3000;
 
-        Constants.NUM_GEN_PARALLEL = 20;
-        Constants.NUM_GEN_VERTICAL = 20;
-        Constants.YES_KID_ON_PRIVIOS_SECTOR = true;
-        Constants.PAUSE_MENU = false;
+        NUM_GEN_PARALLEL = 20;
+        NUM_GEN_VERTICAL = 20;
+        YES_KID_ON_PRIVIOS_SECTOR = true;
+        PAUSE_MENU = false;
 
 
+        // скорость заполнения квадратиком
 
-        Constants.V_POLE_1 = 10.0;
-        Constants.FLAG_CHIT_BULLET = false;
+        //10.0
+        V_POLE_1 = 10.0;
+        USER_DIED_FIRST = true;
+        FLAG_CHIT_BULLET = false;
 
-        Constants.BOOM_IS_READY = true;
+        //время запуска программы
+        BOOM_IS_READY = true;
 
-        Constants.TIME_TO_DIED_LABIRINT = 5000;
+        //время до начала разрушения лабиринта 5000
+        TIME_TO_DIED_LABIRINT = 5000;
 
-        Constants.USER_DIED = false;
+        //умер ли персоонаж
+        USER_DIED = false;
 
-        Constants.V_ANGLE = 0.1;
+        //скорость поворота
+        V_ANGLE = 0.1;
 
-        Constants.DEVELORER = false;
-        Constants.MUSIC_GAME = 0;
-        Constants.TIME_HIT = 0;
-        Constants.YES_KID_ON_PRIVIOS_SECTOR = true;
-        Constants.GAME_OVER = 0;
-        Constants.TIME_USER_DIED = 0;
-        Constants.START_GAME = false;
+        DEVELORER = false;
+        IN_INFO = false;
     }
 
 }

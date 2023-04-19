@@ -50,15 +50,24 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
     Buttom startButtom;
     Buttom settingButtom;
     Buttom exitButtom;
+    Buttom nextButtom;
+    ArrayList<BufferedImage> information = new ArrayList<>();
+
+    int infoIter = 0;
 
     public MyFrame() throws IOException {
         Constants.TIME_START_PROGRAM = System.currentTimeMillis();
         this.imageBloodBackground = ImageIO.read(new File("data\\blood_background.png"));
         imageBackGround = ImageIO.read(new File("data\\Sky.jpg"));
         imageBackGround1 = ImageIO.read(new File("data\\Sand1.jpg"));
-        imageEnterBackGround = ImageIO.read(new File("data\\EnterBackGround1.jpg"));
+        imageEnterBackGround = ImageIO.read(new File("data\\EnterBackGround2.png"));
         imageInfo = ImageIO.read(new File("data\\info1.png"));
         imageCheckMark = ImageIO.read(new File("data\\CheckMark.png"));
+        information.add(ImageIO.read(new File("data\\infBlock1.png")));
+        information.add(ImageIO.read(new File("data\\infoBlock2.png")));
+        information.add(ImageIO.read(new File("data\\infoBlock3.png")));
+        information.add(ImageIO.read(new File("data\\infoBlock4.png")));
+        information.add(ImageIO.read(new File("data\\infoBlock5.png")));
 
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -145,6 +154,8 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         startButtom = new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2, "data\\ButtomContinue.png");
         settingButtom = new Buttom(getWidth() / 28.0, getWidth() / 2 + Constants.R / 2, getHeight() / 2 + getWidth() / 28.0 * 5 / 4, "data\\ButtomSetting.png");
         exitButtom = new Buttom(getWidth() / 16, getWidth() / 2 + getWidth() / 32, 6 * getHeight() / 8, "data\\ButtumExit.png", false);
+        exitButtom.x -= exitButtom.image.getWidth()/2;
+        nextButtom = new Buttom(getWidth() / 16, (int)(getWidth()*0.85),  (int)(getHeight() *0.8), "data\\ButtomNext.png", false);
     }
 
     @Override
@@ -168,7 +179,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     Sound soundMenu = new Sound(SoundFiles.Giornos_Theme);
                     soundMenu.setVolume((float) 0.75);
 //                    soundMenu.play();
-                    while (!Constants.START_GAME) {
+                    while (!Constants.RESTART_GAME && !Constants.START_GAME) {
                         if (Constants.MUST_PLAY_MUSIC) {
                             if (!soundMenu.isPlaying()) {
 //                                System.out.println("..");
@@ -180,7 +191,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     }
                     Constants.MUSIC_GAME = 0;
                     Constants.TIME_START_PROGRAM = System.currentTimeMillis();
-                    soundMenu.stop();
+                    soundMenu.close();
                 }).start();
             }
             g.drawImage(imageEnterBackGround, 0, 0, this.getWidth(), this.getHeight(), null);
@@ -188,12 +199,15 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                 g.drawImage(imageRope, (int) buttoms.get(0).x + Constants.R/2, (int) buttoms.get(0).y - Constants.R * 2 - Constants.R / 4 - 2, Constants.R / 2, (int) (buttoms.get(buttoms.size() - 1).y + Constants.R / 2 - buttoms.get(0).y + Constants.R * 2 + Constants.R / 4 + 2), null);
                 g.drawImage(imageRope, (int) buttoms.get(0).x + buttoms.get(0).image.getWidth() - Constants.R, (int) buttoms.get(0).y - Constants.R * 2 - Constants.R / 4 - 2, Constants.R / 2, (int) (buttoms.get(buttoms.size() - 1).y + Constants.R / 2 - buttoms.get(0).y + Constants.R * 2 + Constants.R / 4 + 2), null);
             }
-            if (!Constants.IN_RECORDS || (Constants.IN_RECORDS && Constants.TYPE_OF_RECORDS == 0)) {
+            if (!Constants.IN_INFO && (!Constants.IN_RECORDS || (Constants.IN_RECORDS && Constants.TYPE_OF_RECORDS == 0))) {
                 for (Buttom buttom : buttoms) {
                     if (buttom != null) {
                         buttom.paint(g, getMousePosition());
                     }
                 }
+            } else if (Constants.IN_INFO) {
+                g.drawImage(information.get(infoIter), 0, 0, getWidth(), getHeight(), null);
+                nextButtom.paint(g, getMousePosition());
             } else {
                 if (buttoms != null && buttoms.get(buttoms.size() - 1) != null) {
                     buttoms.get(buttoms.size() - 1).paint(g, getMousePosition());
@@ -311,7 +325,6 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                         }
                     }
                 }
-
                 if (System.currentTimeMillis() - Constants.TIME_USER_DIED >= 1000) {
                     g.setFont(new Font("TimesRoman", Font.BOLD + Font.ITALIC, 100));
                     g.setColor(Color.BLACK);
@@ -410,7 +423,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                             soundGame.setVolume((float) 0.65);
                             Sound soundDied = new Sound(SoundFiles.End);
                             soundDied.setVolume((float) 0.65);
-                            while (Constants.START_GAME) {
+                            while (!Constants.RESTART_GAME && Constants.START_GAME) {
                                 if (!soundGame.isPlaying() && !Constants.USER_DIED && Constants.MUST_PLAY_MUSIC) {
                                     soundGame.play();
                                     soundDied.stop();
@@ -536,7 +549,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
             timePriviosPrint = nowTime;
         }
 
-        g.drawImage(imageInfo, 0, 0, getWidth(), getHeight(), null);
+        //g.drawImage(imageInfo, 0, 0, getWidth(), getHeight(), null);
         g.dispose();
         bufferStrategy.show();
     }
@@ -867,6 +880,15 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
             }
         } else {
 //            System.out.println(buttom.isPush(getMousePosition()));
+            if (Constants.IN_INFO){
+                if (ModifiersEx == 1024 && nextButtom.isPush(getMousePosition())) {
+                    infoIter++;
+                }
+                if (infoIter >= 5){
+                    infoIter = 0;
+                    Constants.IN_INFO = false;
+                }
+            }
             if (!Constants.IN_SETTING && !Constants.IN_RECORDS) {
                 if (ModifiersEx == 1024 && buttoms.get(0).isPush(getMousePosition())) {
                     Constants.START_GAME = true;
@@ -930,6 +952,9 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
+                }
+                if (ModifiersEx == 1024 && buttoms.get(3).isPush(getMousePosition())){
+                    Constants.IN_INFO = true;
                 }
 
             } else if (Constants.IN_SETTING) {

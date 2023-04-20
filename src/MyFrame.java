@@ -65,7 +65,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
         imageCheckMark = ImageIO.read(new File("data\\CheckMark.png"));
         information.add(ImageIO.read(new File("data\\infBlock1.png")));
         information.add(ImageIO.read(new File("data\\infoBlock2.png")));
-        information.add(ImageIO.read(new File("data\\infoBlock3.png")));
+//        information.add(ImageIO.read(new File("data\\infoBlock3.png")));
         information.add(ImageIO.read(new File("data\\infoBlock4.png")));
         information.add(ImageIO.read(new File("data\\infoBlock5.png")));
 
@@ -884,7 +884,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                 if (ModifiersEx == 1024 && nextButtom.isPush(getMousePosition())) {
                     infoIter++;
                 }
-                if (infoIter >= 5){
+                if (infoIter >= 4){
                     infoIter = 0;
                     Constants.IN_INFO = false;
                 }
@@ -953,7 +953,7 @@ public class MyFrame extends JFrame implements KeyEventDispatcher, MouseListener
                         throw new RuntimeException(ex);
                     }
                 }
-                if (ModifiersEx == 1024 && buttoms.get(3).isPush(getMousePosition())){
+                if (ModifiersEx == 1024 && buttoms.size() >= 4 &&  buttoms.get(3).isPush(getMousePosition())){
                     Constants.IN_INFO = true;
                 }
 

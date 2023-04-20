@@ -154,6 +154,7 @@ public class BaseBullet {
         MyPoint pointFirstDied = new MyPoint(0.0, 0.0);
         MyPoint pointStart = new MyPoint(jump.getX1(), jump.getY1());
         for (int indexSector1 = Math.max(0, userHuman.indexSector-1); indexSector1 < Math.min(labirint.sectors.size(), userHuman.indexSector+2); ++indexSector1) {
+//            System.out.println(Math.max(0, userHuman.indexSector-1) + " " + labirint.sectors.size() + " " + userHuman.indexSector+2 + " " + Math.min(labirint.sectors.size(), userHuman.indexSector+2));
             BaseSector sector = labirint.getSector(indexSector1);
             for (int i = 0; i < sector.cells.size(); ++i) {
                 for (int j = 0; j < sector.cells.get(0).size(); ++j) {
